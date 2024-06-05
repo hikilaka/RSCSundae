@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -361,6 +362,21 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			}
 			offset += 2;
 			player_unwear(p, slot);
+		}
+		break;
+	case OP_CLI_ITEM_DROP:
+		{
+			uint16_t slot;
+
+			if (buf_getu16(data, offset, len, &slot) == -1) {
+				return;
+			}
+			offset += 2;
+			printf("Drop inventory slot %d\n", slot);
+			if (slot >= p->inv_count) {
+				return;
+			}
+			p->drop_item = (int16_t)slot;
 		}
 		break;
 	case OP_CLI_ITEM_TAKE:

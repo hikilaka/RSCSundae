@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include "entity.h"
 #include "zone.h"
 
@@ -192,6 +193,7 @@ server_add_ground_item(struct ground_item *item)
 		}
 		zone->item_max = new_max;
 	}
+	printf("added ground item\n");
 	memcpy(&zone->items[zone->item_count++],
 	    item, sizeof(struct ground_item));
 }
@@ -199,6 +201,37 @@ server_add_ground_item(struct ground_item *item)
 void
 server_remove_ground_item(struct ground_item *item)
 {
-	/* TODO implement */
+	struct zone *zone;
+
 	assert(item != NULL);
+
+	if (!item->removal_queued) {
+		item->removal_queued = true;
+		item->creation_time = UINT64_MAX;
+		puts("removal queued");
+	}
+
+	if (item->subscribers > 0) {
+		puts("item still has subscribers");
+		return;
+	}
+
+	zone = server_find_zone(item->x, item->y);
+	if (zone == NULL) {
+		return;
+	}
+	for (int i = 0; i < zone->item_count; ++i) {
+		if (zone->items[i].id != item->id ||
+		    zone->items[i].x != item->x ||
+		    zone->items[i].y != item->y ||
+		    zone->items[i].owner != item->owner) {
+			continue;
+		}
+		zone->item_count--;
+		for (int j = i; j < zone->item_count; ++j) {
+			zone->items[j] = zone->items[j + 1];
+		}
+		puts("removal executed");
+		break;
+	}
 }

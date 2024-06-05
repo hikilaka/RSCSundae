@@ -205,6 +205,7 @@ struct player {
 	struct bound *known_bounds;
 	struct zone *known_zones[MAX_KNOWN_ZONES];
 	struct ground_item *take_item;
+	int16_t drop_item;
 	uint64_t last_update;
 };
 
@@ -224,6 +225,7 @@ struct player *player_accept(struct server *, int);
 void player_process_walk_queue(struct player *);
 void player_process_combat(struct player *);
 void player_process_take_item(struct player *);
+void player_process_drop_item(struct player *);
 void player_die(struct player *);
 void player_close_ui(struct player *);
 void player_destroy(struct player *);
@@ -255,6 +257,7 @@ void player_add_known_bound(struct player *, struct bound *);
 bool player_has_known_zone(struct player *, int, int);
 void player_update_known_zones(struct player *);
 void player_clear_actions(struct player *);
+bool player_sees_item(struct player *, struct ground_item *);
 
 /* incoming.c */
 int player_parse_incoming(struct player *);

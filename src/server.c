@@ -214,6 +214,9 @@ server_tick(void)
 		if (s.players[i]->take_item != NULL) {
 			player_process_take_item(s.players[i]);
 		}
+		if (s.players[i]->drop_item != -1) {
+			player_process_drop_item(s.players[i]);
+		}
 		net_player_recv(s.players[i]);
 		player_parse_incoming(s.players[i]);
 		player_process_combat(s.players[i]);
@@ -403,11 +406,11 @@ static void
 load_map_tile(struct jag_map *chunk,
     int tile_x, int tile_y, int global_x, int global_y)
 {
-	struct loc loc;
+	struct loc loc = {0};
 	struct loc_config *loc_config;
-	struct bound bound;
+	struct bound bound = {0};
 	struct bound_config *bound_config;
-	struct ground_item item;
+	struct ground_item item = {0};
 	uint32_t object_type;
 	uint16_t object_dir;
 	int ind;
@@ -498,6 +501,8 @@ load_map_tile(struct jag_map *chunk,
 		item.respawn = true;
 		item.creation_time = 0;
 		item.respawn_time = 0;
+		item.owner = -1;
+		item.stack = 1;
 		server_add_ground_item(&item);
 	} else if (object_type > JAG_MAP_DIAG_NPC) {
 		/* TODO */

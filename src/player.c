@@ -144,6 +144,7 @@ player_accept(struct server *s, int sock)
 	p->inv_changed = true;
 	p->ui_design_open = true;
 	p->following_player = -1;
+	p->drop_item = -1;
 	p->last_packet = s->tick_counter;
 
 	player_recalculate_combat_level(p);
@@ -1239,21 +1240,88 @@ player_process_take_item(struct player *p)
 		p->take_item = NULL;
 		return;
 	}
-	if (p->mob.x != item->x || p->mob.y != item->y) {
-		/* not reached it yet */
+	if (!player_sees_item(p, item) || item->removal_queued) {
+		p->take_item = NULL;
 		return;
 	}
 	if (item->respawn_time > p->mob.server->tick_counter) {
 		/* not respawned yet */
+		p->take_item = NULL;
 		return;
 	}
-	player_inv_give(p, config, 1);
+	puts("found gorund item");
+	if (p->mob.x != item->x || p->mob.y != item->y) {
+		/* not reached it yet */
+		return;
+	}
+	player_inv_give(p, config, item->stack);
 	if (item->respawn) {
 		item->respawn_time = p->mob.server->tick_counter +
 		    (config->respawn_rate / 5);
+		item->creation_time = p->mob.server->tick_counter;
 	} else {
-		/* TODO implement */
+		server_remove_ground_item(p->take_item);
 	}
-	item->creation_time = p->mob.server->tick_counter;
 	p->take_item = NULL;
+}
+
+void
+player_process_drop_item(struct player *p)
+{
+	struct ground_item item = {0};
+	struct item_config *config;
+
+	if (p->drop_item >= p->inv_count) {
+		p->drop_item = -1;
+		puts("ey?");
+		return;
+	}
+	puts("proceeding with drop");
+
+	config = server_item_config_by_id(p->inventory[p->drop_item].id);
+	assert(config != NULL);
+
+	item.id = p->inventory[p->drop_item].id;
+	item.x = p->mob.x;
+	item.y = p->mob.y;
+	item.owner = p->mob.id;
+	item.stack = p->inventory[p->drop_item].stack;
+	item.creation_time = p->mob.server->tick_counter;
+
+	player_inv_remove(p, config, p->inventory[p->drop_item].stack);
+	server_add_ground_item(&item);
+	p->drop_item = -1;
+}
+
+bool
+player_sees_item(struct player *p, struct ground_item *item)
+{
+	struct item_config *config;
+	struct player *owner;
+	int disappear;
+
+	config = server_item_config_by_id(item->id);
+	assert(config != NULL);
+	if (item->owner == -1) {
+		return true;
+	}
+	/*
+	 * owned non-tradable items disappear after ca. 3 minutes
+	 * owned tradable items disappear after ca. 2 minutes
+	 */
+	disappear = config->quest_item ? 300 : 200;
+	if (p->mob.server->tick_counter >= (item->creation_time + disappear)) {
+		server_remove_ground_item(item);
+		return false;
+	}
+	owner = p->mob.server->players[item->owner];
+	if (config->quest_item && owner != p) {
+		return false;
+	}
+	if (owner != p &&
+	    p->mob.server->tick_counter < (item->creation_time + 100)) {
+		/* items appear to other players after ca. 1 minute */
+		return false;
+	}
+	return true;
 }

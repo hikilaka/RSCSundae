@@ -62,8 +62,12 @@ struct ground_item {
 	uint16_t x;
 	uint16_t y;
 	uint8_t respawn;
+	uint8_t removal_queued;
+	uint32_t stack;
 	uint64_t creation_time;
 	uint64_t respawn_time;
+	int16_t owner; /* index of player or -1 */
+	uint64_t subscribers;
 };
 
 /* small chunk of the game world */

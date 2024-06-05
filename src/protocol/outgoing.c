@@ -1018,8 +1018,10 @@ player_send_ground_items(struct player *p)
 	struct ground_item nearby[MAX_NEARBY_ITEMS];
 	size_t nearby_count = 0;
 	size_t update_count = 0;
+	struct ground_item *item;
 	struct zone *origin;
 	struct zone *zone;
+	bool was_removed;
 
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
 		        OP_SRV_GROUND_ITEMS);
@@ -1028,36 +1030,56 @@ player_send_ground_items(struct player *p)
 	    nearby, MAX_NEARBY_ITEMS);
 
 	for (size_t i = 0; i < nearby_count; ++i) {
-		zone = server_find_zone(nearby[i].x, nearby[i].y);
+		was_removed = false;
+		item = server_find_ground_item(nearby[i].x,
+		    nearby[i].y, nearby[i].id);
+		assert(item != NULL);
+		if (!player_sees_item(p, item)) {
+			continue;
+		}
+		zone = server_find_zone(item->x, item->y);
 		if (zone == NULL) {
 			continue;
 		}
 		if (player_has_known_zone(p, zone->x, zone->y)) {
-			if (p->last_update > nearby[i].creation_time &&
-			    nearby[i].respawn_time != p->mob.server->tick_counter) {
+			/* skip items client already knows about */
+			if (p->last_update >= item->creation_time &&
+			    item->respawn_time != p->mob.server->tick_counter) {
 				continue;
 			}
 		}
-		if (nearby[i].respawn_time > p->mob.server->tick_counter) {
-			/* not respawned yet, remove it */
+		if (item->respawn_time > p->mob.server->tick_counter ||
+		    item->removal_queued) {
+			/* remove it from their view */
 			if (buf_putu16(p->tmpbuf, offset,
-			    PLAYER_BUFSIZE, nearby[i].id | 0x8000) == -1) {
+			    PLAYER_BUFSIZE, item->id | 0x8000) == -1) {
 				return -1;
 			}
+			was_removed = true;
+			printf("item delete\n");
 		} else {
 			if (buf_putu16(p->tmpbuf, offset,
-			    PLAYER_BUFSIZE, nearby[i].id) == -1) {
+			    PLAYER_BUFSIZE, item->id) == -1) {
 				return -1;
 			}
+			item->subscribers++;
+			printf("item inform\n");
 		}
 		offset += 2;
 		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		    (uint8_t)(nearby[i].x - (int)p->mob.x)) == -1) {
+		    (uint8_t)(item->x - (int)p->mob.x)) == -1) {
 			return -1;
 		}
 		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		    (uint8_t)(nearby[i].y - (int)p->mob.y)) == -1) {
+		    (uint8_t)(item->y - (int)p->mob.y)) == -1) {
 			return -1;
+		}
+		if (was_removed) {
+			assert(item->subscribers >= 1);
+			item->subscribers--;
+			if (item->subscribers == 0) {
+				server_remove_ground_item(item);
+			}
 		}
 		update_count++;
 	}
@@ -1075,18 +1097,32 @@ player_send_ground_items(struct player *p)
 		}
 		/* remove out of range items */
 		for (int j = 0; j < zone->item_count; ++j) {
+			item = &zone->items[j];
+			if (!player_sees_item(p, item)) {
+				continue;
+			}
+			if (item->respawn_time > p->mob.server->tick_counter ||
+			    item->removal_queued) {
+				continue;
+			}
+			assert(item->subscribers >= 1);
+			item->subscribers--;
 			if (buf_putu16(p->tmpbuf, offset,
-			    PLAYER_BUFSIZE, zone->items[j].id | 0x8000) == -1) {
+			    PLAYER_BUFSIZE, item->id | 0x8000) == -1) {
 				return -1;
 			}
 			offset += 2;
 			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-			    (uint8_t)(zone->items[j].x - (int)p->mob.x)) == -1) {
+			    (uint8_t)(item->x - (int)p->mob.x)) == -1) {
 				return -1;
 			}
 			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-			    (uint8_t)(zone->items[j].y - (int)p->mob.y)) == -1) {
+			    (uint8_t)(item->y - (int)p->mob.y)) == -1) {
 				return -1;
+			}
+			if (item->subscribers == 0 &&
+			    item->removal_queued) {
+				server_remove_ground_item(item);
 			}
 			update_count++;
 		}
