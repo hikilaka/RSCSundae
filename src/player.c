@@ -1434,7 +1434,6 @@ player_process_take_item(struct player *p)
 		p->take_item = NULL;
 		return;
 	}
-	puts("found gorund item");
 	if (p->mob.x != item->x || p->mob.y != item->y) {
 		/* not reached it yet */
 		return;
