@@ -1252,6 +1252,46 @@ player_prayer_drain(struct player *p)
 }
 
 bool
+player_has_known_item(struct player *p, struct ground_item *item)
+{
+	for (size_t i = 0; i < p->known_item_count; ++i) {
+		if (p->known_items[i] == item) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void
+player_add_known_item(struct player *p, struct ground_item *item)
+{
+	if (p->known_item_count >= p->known_item_max) {
+		size_t n = p->known_item_max * 2;
+		if (n == 0) {
+			n = 32;
+		}
+		if (reallocarr(&p->known_items,
+		    n, sizeof(struct ground_item)) == -1) {
+			return;
+		}
+		p->known_item_max = n;
+	}
+	item->subscribers++;
+	p->known_items[p->known_item_count++] = item;
+}
+
+void
+player_remove_known_item(struct player *p, size_t index)
+{
+	assert(index < p->known_item_count);
+	p->known_items[index]->subscribers--;
+	p->known_item_count--;
+	for (size_t i = index; i < p->known_item_count; ++i) {
+		p->known_items[i] = p->known_items[i + 1];
+	}
+}
+
+bool
 player_has_known_loc(struct player *p, int x, int y)
 {
 	for (size_t i = 0; i < p->known_loc_count; ++i) {
