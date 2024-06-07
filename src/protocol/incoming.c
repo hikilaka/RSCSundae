@@ -383,6 +383,14 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			if (slot >= p->inv_count) {
 				return;
 			}
+			if (p->mob.in_combat) {
+				player_send_message(p,
+				    "You can't do that whilst you are fighting");
+				return;
+			}
+			if (p->ui_trade_open) {
+				return;
+			}
 			p->drop_item = (int16_t)slot;
 		}
 		break;
