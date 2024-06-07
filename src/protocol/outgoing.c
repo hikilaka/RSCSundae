@@ -27,6 +27,7 @@ enum player_update_type {
 
 static ssize_t player_send_appearance(struct player *, void *, size_t);
 static ssize_t player_send_damage(struct player *, void *, size_t);
+static ssize_t player_send_projectile(struct player *, void *, size_t);
 static int player_write_packet(struct player *, void *, size_t);
 
 static int
@@ -192,11 +193,10 @@ player_send_movement(struct player *p)
 			}
 		}
 		if (p->known_players[i] != -1) {
+			p->known_players_seen[new_known_count] = true;
 			new_known[new_known_count++] = p->known_players[i];
 		}
 	}
-
-	memset(p->known_players_seen, 0, new_known_count * sizeof(uint8_t));
 
 	/* players the client doesn't know about yet */
 	for (size_t i = 0; i < nearby_count; ++i) {
@@ -355,6 +355,31 @@ player_send_damage(struct player *p, void *tmpbuf, size_t offset)
 		      p->mob.base_stats[SKILL_HITS]) == -1) {
 		return -1;
 	}
+	return offset;
+}
+
+static ssize_t
+player_send_projectile(struct player *p, void *tmpbuf, size_t offset)
+{
+	if (buf_putu16(tmpbuf, offset, PLAYER_BUFSIZE,
+		       p->mob.id) == -1) {
+		return -1;
+	}
+	offset += 2;
+	if (buf_putu8(tmpbuf, offset++, PLAYER_BUFSIZE,
+		      PLAYER_UPDATE_SHOOT_PLAYER) == -1) {
+		return -1;
+	}
+	if (buf_putu16(tmpbuf, offset, PLAYER_BUFSIZE,
+		      p->projectile_sprite) == -1) {
+		return -1;
+	}
+	offset += 2;
+	if (buf_putu16(tmpbuf, offset, PLAYER_BUFSIZE,
+		      p->projectile_target_player) == -1) {
+		return -1;
+	}
+	offset += 2;
 	return offset;
 }
 
@@ -567,6 +592,14 @@ player_send_appearance_update(struct player *p)
 		offset = tmpofs;
 		update_count++;
 	}
+	if (p->projectile_sprite != UINT16_MAX) {
+		tmpofs = player_send_projectile(p, p->tmpbuf, offset);
+		if (tmpofs == -1) {
+			return -1;
+		}
+		offset = tmpofs;
+		update_count++;
+	}
 
 	for (int i = 0; i < p->known_player_count; ++i) {
 		struct player *p2;
@@ -602,6 +635,14 @@ player_send_appearance_update(struct player *p)
 		}
 		if (p2->mob.damage != UINT8_MAX) {
 			tmpofs = player_send_damage(p2, p->tmpbuf, offset);
+			if (tmpofs == -1) {
+				return -1;
+			}
+			offset = tmpofs;
+			update_count++;
+		}
+		if (p2->projectile_sprite != UINT16_MAX) {
+			tmpofs = player_send_projectile(p2, p->tmpbuf, offset);
 			if (tmpofs == -1) {
 				return -1;
 			}
@@ -857,30 +898,22 @@ player_send_locs(struct player *p)
 	struct loc nearby[MAX_NEARBY_LOCS];
 	size_t nearby_count = 0;
 	size_t update_count = 0;
+	size_t removed_count = 0;
+	struct zone *player_zone;
+	struct zone *zone;
 
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
 		        OP_SRV_LOCS);
 
+	player_zone = server_find_zone(p->mob.x, p->mob.y);
+
 	for (size_t i = 0; i < p->known_loc_count; ++i) {
 		struct loc *loc;
+		bool remove = false;
 
 		loc = server_find_loc(p->known_locs[i].x, p->known_locs[i].y);
 		if (loc == NULL) {
-			if (buf_putu16(p->tmpbuf, offset,
-			    PLAYER_BUFSIZE, 60000) == -1) {
-				return -1;
-			}
-			offset += 2;
-			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-			    (uint8_t)(loc->x - (int)p->mob.x)) == -1) {
-				return -1;
-			}
-			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-			    (uint8_t)(loc->y - (int)p->mob.y)) == -1) {
-				return -1;
-			}
-			update_count++;
-			/* TODO remove from player array */
+			remove = true;
 		} else if (loc->id != p->known_locs[i].id) {
 			if (buf_putu16(p->tmpbuf, offset,
 			    PLAYER_BUFSIZE, loc->id) == -1) {
@@ -897,8 +930,53 @@ player_send_locs(struct player *p)
 			}
 			p->known_locs[i].id = loc->id;
 			update_count++;
+		} else {
+			/*
+			 * remove locs far beyond the update range to free
+			 * up client and server memory, but don't remove
+			 * those on a nearby plane in case the player
+			 * travels up or down stairs
+			 */
+			zone = server_find_zone(p->known_locs[i].x,
+			    p->known_locs[i].y);
+			if (zone != NULL && player_zone != NULL) {
+				if (abs(zone->x - (int)player_zone->x) >= 8 ||
+				    abs(zone->y - (int)player_zone->y) >= 8) {
+					remove = true;
+				}
+			} else {
+				remove = true;
+			}
+		}
+		if (remove) {
+			if (buf_putu16(p->tmpbuf, offset,
+			    PLAYER_BUFSIZE, 60000) == -1) {
+				return -1;
+			}
+			offset += 2;
+			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+			    (uint8_t)(loc->x - (int)p->mob.x)) == -1) {
+				return -1;
+			}
+			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+			    (uint8_t)(loc->y - (int)p->mob.y)) == -1) {
+				return -1;
+			}
+			update_count++;
+			removed_count++;
+			player_remove_known_loc(p, i);
 		}
 	}
+
+#if 0 /* just for testing efficiency */
+	if (removed_count > 0) {
+		printf("Removed %zu locs from player cache\n",
+		    removed_count);
+	}
+	printf("Player loc cache size: %zu\n", p->known_loc_count);
+#else
+	(void)removed_count;
+#endif
 
 	nearby_count = mob_get_nearby_locs(&p->mob,
 	    nearby, MAX_NEARBY_LOCS);
@@ -1132,5 +1210,158 @@ player_send_ground_items(struct player *p)
 		/* nothing to inform client */
 		return 0;
 	}
+	return player_write_packet(p, p->tmpbuf, offset);
+}
+
+int
+player_send_trade_open(struct player *p)
+{
+	size_t offset = 0;
+
+	assert(p->trading_player != -1);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        OP_SRV_SHOW_TRADE);
+
+	(void)buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
+			 p->trading_player);
+	offset += 2;
+
+	p->ui_trade_open = true;
+	return player_write_packet(p, p->tmpbuf, offset);
+}
+
+int
+player_send_partner_trade_offer(struct player *p)
+{
+	size_t offset = 0;
+	struct player *partner;
+
+	assert(p->trading_player != -1);
+	partner = p->mob.server->players[p->trading_player];
+	assert(partner != NULL);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        OP_SRV_UPDATE_TRADE_OFFER);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        partner->offer_count);
+
+	for (int i = 0; i < partner->offer_count; ++i) {
+		if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				partner->trade_offer[i].id) == -1) {
+			return -1;
+		}
+		offset += 2;
+		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				partner->trade_offer[i].stack) == -1) {
+			return -1;
+		}
+		offset += 4;
+	}
+
+	return player_write_packet(p, p->tmpbuf, offset);
+}
+
+int
+player_send_close_trade(struct player *p)
+{
+	size_t offset = 0;
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        OP_SRV_CLOSE_TRADE);
+
+	return player_write_packet(p, p->tmpbuf, offset);
+}
+
+int
+player_send_trade_state(struct player *p)
+{
+	size_t offset = 0;
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        OP_SRV_TRADE_STATE_LOCAL);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        p->trade_state != TRADE_STATE_NONE);
+
+	return player_write_packet(p, p->tmpbuf, offset);
+}
+
+int
+player_send_trade_state_remote(struct player *p)
+{
+	size_t offset = 0;
+	struct player *partner;
+
+	assert(p->trading_player != -1);
+	partner = p->mob.server->players[p->trading_player];
+	assert(partner != NULL);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        OP_SRV_TRADE_STATE_REMOTE);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        partner->trade_state != TRADE_STATE_NONE);
+
+	return player_write_packet(p, p->tmpbuf, offset);
+}
+
+int
+player_send_trade_confirm(struct player *p)
+{
+	size_t offset = 0;
+	struct player *partner;
+
+	assert(p->trading_player != -1);
+	partner = p->mob.server->players[p->trading_player];
+	assert(partner != NULL);
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        OP_SRV_TRADE_CONFIRM);
+
+	(void)buf_putu64(p->tmpbuf, offset, PLAYER_BUFSIZE,
+		         partner->name);
+	offset += 8;
+
+	/*
+	 * send over the final offer, note that the 110 client
+	 * appears to have a bug where this isn't actually
+	 * used but rather it displays the previously sent
+	 * offer.
+	 */
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        p->offer_count);
+
+	for (int i = 0; i < p->offer_count; ++i) {
+		if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				p->trade_offer[i].id) == -1) {
+			return -1;
+		}
+		offset += 2;
+		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				p->trade_offer[i].stack) == -1) {
+			return -1;
+		}
+		offset += 4;
+	}
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        partner->offer_count);
+
+	for (int i = 0; i < partner->offer_count; ++i) {
+		if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				partner->trade_offer[i].id) == -1) {
+			return -1;
+		}
+		offset += 2;
+		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				partner->trade_offer[i].stack) == -1) {
+			return -1;
+		}
+		offset += 4;
+	}
+
 	return player_write_packet(p, p->tmpbuf, offset);
 }

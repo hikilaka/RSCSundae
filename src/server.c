@@ -1,9 +1,10 @@
 #include <jag.h>
 #include <map.h>
 #include <sys/types.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include "server.h"
 #include "loop.h"
@@ -256,6 +257,9 @@ server_tick(void)
 		if (s.players[i]->prayers_changed) {
 			player_send_prayers(s.players[i]);
 		}
+		if (s.players[i]->partner_offer_changed) {
+			player_send_partner_trade_offer(s.players[i]);
+		}
 		player_send_movement(s.players[i]);
 		player_send_appearance_update(s.players[i]);
 		player_send_ground_items(s.players[i]);
@@ -275,7 +279,9 @@ server_tick(void)
 		s.players[i]->inv_changed = false;
 		s.players[i]->bonus_changed = false;
 		s.players[i]->prayers_changed = false;
+		s.players[i]->partner_offer_changed = false;
 		s.players[i]->moved = false;
+		s.players[i]->projectile_sprite = UINT16_MAX;
 		s.players[i]->mob.damage = UINT8_MAX;
 		s.players[i]->mob.prev_dir = s.players[i]->mob.dir;
 		s.players[i]->last_update = s.tick_counter;
@@ -381,10 +387,18 @@ load_config_jag(void)
 	printf("read configuration for %zu bounds\n",
 	    s.bound_config_count);
 
-	if (archive.must_free) {
-		free(archive.data);
-		archive.data = NULL;
+	if (jag_find_entry(&archive, "projectile.txt", &entry) == -1 ||
+	    jag_unpack_entry(&entry) == -1) {
+		goto err;
 	}
+	s.projectile_config = config_parse_projectiles((char *)entry.data,
+	    entry.unpacked_len, &s.projectile_config_count);
+	if (s.projectile_config == NULL) {
+		goto err;
+	}
+	printf("read configuration for %zu projectiles\n",
+	    s.projectile_config_count);
+
 	return 0;
 err:
 	if (entry.must_free) {
@@ -614,6 +628,22 @@ server_item_config_by_id(int id)
 	return &s.item_config[id];
 }
 
+struct item_config *
+server_find_item_config(const char *name)
+{
+	if (strcmp("na", name) == 0) {
+		return NULL;
+	}
+	for (size_t i = 0; i < s.item_config_count; ++i) {
+		for (size_t j = 0; j < s.item_config[i].name_count; ++j) {
+			if (strcasecmp(s.item_config[i].names[j], name) == 0) {
+				return &s.item_config[i];
+			}
+		}
+	}
+	return NULL;
+}
+
 struct prayer_config *
 server_prayer_config_by_id(int id)
 {
@@ -639,4 +669,18 @@ server_bound_config_by_id(int id)
 		return NULL;
 	}
 	return &s.bound_config[id];
+}
+
+struct projectile_config *
+server_find_projectile(const char *name)
+{
+	if (name[0] == '_') {
+		return NULL;
+	}
+	for (size_t i = 0; i < s.projectile_config_count; ++i) {
+		if (strcmp(s.projectile_config[i].name, name) == 0) {
+			return &s.projectile_config[i];
+		}
+	}
+	return NULL;
 }

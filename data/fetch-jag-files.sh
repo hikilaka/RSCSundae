@@ -4,7 +4,7 @@ if curl -V 2>&1 >/dev/null; then
 	USE_FETCH=curl
 elif wget -V 2>&1 >/dev/null; then
 	USE_FETCH=wget
-elif [ "$(uname -s)" = "FreeBSD"]; then
+elif [ "$(uname -s)" = "FreeBSD" ]; then
 	# don't see a way to test fetch
 	USE_FETCH=fetch
 elif ftp -? 2>&1 >/dev/null; then
@@ -23,7 +23,7 @@ elif echo "a" | sha256 -q 2>/dev/null >/dev/null; then
 elif echo "a" | cksum -a sha256 -q 2>/dev/null; then
 	CKSUM="cksum -a sha256 -q"
 else
-	printf "Please install a sha256sum utility and make sure" >/dev/stderr
+	printf "Please install a sha256sum utility and make sure " >/dev/stderr
 	printf "it's in your PATH.\n" >/dev/stderr
 	exit 1
 fi

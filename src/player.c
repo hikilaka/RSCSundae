@@ -22,6 +22,8 @@ static int player_get_attack_boosted(struct player *);
 static int player_get_defense_boosted(struct player *);
 static int player_get_strength_boosted(struct player *);
 static int player_pvp_roll(struct player *, struct player *);
+static int player_pvp_ranged_roll(struct player *, struct player *);
+static void player_process_ranged_pvp(struct player *, struct player *);
 static void player_recalculate_bonus(struct player *);
 
 struct player *
@@ -137,6 +139,10 @@ player_accept(struct server *s, int sock)
 	p->inventory[p->inv_count++].stack = 1;
 	p->inventory[p->inv_count].id = 184;
 	p->inventory[p->inv_count++].stack = 1;
+	p->inventory[p->inv_count].id = 11;
+	p->inventory[p->inv_count++].stack = 25;
+	p->inventory[p->inv_count].id = 190;
+	p->inventory[p->inv_count++].stack = 25;
 
 	p->stats_changed = true;
 	p->bonus_changed = true;
@@ -145,6 +151,8 @@ player_accept(struct server *s, int sock)
 	p->ui_design_open = true;
 	p->following_player = -1;
 	p->drop_item = -1;
+	p->trading_player = -1;
+	p->projectile_sprite = UINT16_MAX;
 	p->last_packet = s->tick_counter;
 
 	player_recalculate_combat_level(p);
@@ -254,9 +262,15 @@ player_process_walk_queue(struct player *p)
 void
 player_close_ui(struct player *p)
 {
+	if (p->ui_trade_open) {
+		player_send_close_trade(p);
+	}
+	p->trade_state = TRADE_STATE_NONE;
+	p->trading_player = -1;
+	p->offer_count = 0;
 	p->ui_dialog_open = false;
 	p->ui_design_open = false;
-	p->ui_bank_open = false;
+	p->ui_trade_open = false;
 }
 
 void
@@ -469,6 +483,21 @@ player_get_strength_boosted(struct player *p)
 }
 
 static int
+player_pvp_ranged_roll(struct player *attacker, struct player *defender)
+{
+	int def = player_get_defense_boosted(defender);
+
+	assert(attacker->projectile != NULL);
+
+	return mob_combat_roll(&attacker->mob.server->ran,
+	    8 + attacker->mob.cur_stats[SKILL_RANGED],
+	    attacker->projectile->aim,
+	    def, defender->bonus_armour,
+	    8 + attacker->mob.cur_stats[SKILL_RANGED],
+	    attacker->projectile->power);
+}
+
+static int
 player_pvp_roll(struct player *attacker, struct player *defender)
 {
 	int att = player_get_attack_boosted(attacker);
@@ -502,9 +531,13 @@ player_die(struct player *p)
 	for (int i = 0; i < MAX_SKILL_ID; ++i) {
 		p->mob.cur_stats[i] = p->mob.base_stats[i];
 	}
+
+	p->mob.damage_timer = 0;
+	p->mob.combat_timer = 0;
 	p->walk_queue_len = 0;
 	p->walk_queue_pos = 0;
 	player_clear_actions(p);
+
 	mob_combat_reset(&p->mob);
 
 	if (p->skulled) {
@@ -556,6 +589,97 @@ player_die(struct player *p)
 	p->appearance_changed = true;
 }
 
+static void
+player_process_ranged_pvp(struct player *p, struct player *target)
+{
+	struct item_config *ammo_config;
+	char name[32], message[64];
+	int range;
+	int roll;
+
+	assert(p != NULL);
+	assert(target != NULL);
+	assert(p->projectile != NULL);
+
+	range = p->projectile->range;
+
+	p->walk_queue_len = 0;
+	p->walk_queue_pos = 0;
+	p->following_player = -1;
+
+	if (p->mob.server->tick_counter < p->mob.combat_next_hit) {
+		return;
+	}
+
+	if ((abs(p->mob.x - (int)target->mob.x) > range) ||
+	    (abs(p->mob.y - (int)target->mob.y) > range)) {
+		p->following_player = target->mob.id;
+		return;
+	}
+
+	if (target->prayers[PRAY_PROTECT_FROM_MISSILES]) {
+		player_send_message(p,
+		    "Player has a protection from missiles prayer active!");
+		p->mob.target_player = -1;
+		return;
+	}
+
+	ammo_config = server_find_item_config(p->projectile->item);
+	if (ammo_config != NULL) {
+		if (player_inv_held(p, ammo_config, 1)) {
+			player_inv_remove(p, ammo_config, 1);
+		} else {
+			player_send_message(p, "I've run out of ammo!");
+			p->mob.target_player = -1;
+			return;
+		}
+	}
+
+	/* TODO: verify reachability */
+
+	/* XXX verify if it's always northwest */
+	p->mob.dir = MOB_DIR_NORTHWEST;
+
+	if (!p->skulled) {
+		/* skull remains for 20 minutes */
+		/* TODO: should track players who attacked us */
+		p->skulled = true;
+		p->skull_timer =
+		    p->mob.server->tick_counter + 2000;
+		p->appearance_changed = true;
+	}
+
+	roll = player_pvp_ranged_roll(p, target);
+	if (roll > 0) {
+		stat_advance(p, SKILL_RANGED, roll * 16, 0);
+	}
+	if (roll >= target->mob.cur_stats[SKILL_HITS]) {
+		char name[32], msg[64];
+
+		p->mob.target_player = -1;
+		player_die(target);
+		mod37_namedec(target->name, name);
+		(void)snprintf(msg, sizeof(msg),
+		    "You have defeated %s!", name);
+		player_send_message(p, msg);
+		return;
+	}
+
+	target->mob.cur_stats[SKILL_HITS] -= roll;
+	target->mob.damage = roll;
+	target->mob.damage_timer = p->mob.server->tick_counter;
+
+	p->projectile_sprite = p->projectile->sprite;
+	p->projectile_target_player = target->mob.id;
+
+	mod37_namedec(p->name, name);
+	(void)snprintf(message, sizeof(message),
+	    "Warning! %s is shooting at you!", name);
+	player_send_message(target, message);
+
+	p->mob.combat_next_hit = p->mob.server->tick_counter + 4;
+}
+
 void
 player_process_combat(struct player *p)
 {
@@ -566,18 +690,6 @@ player_process_combat(struct player *p)
 
 			target = p->mob.server->players[p->mob.target_player];
 			if (target == NULL) {
-				mob_combat_reset(&p->mob);
-				return;
-			}
-
-			if (p->mob.server->tick_counter <
-			    (target->mob.combat_timer + 6)) {
-				/*
-				 * hp bar in client takes roughly 4 seconds
-				 * to be gone
-				 */
-				p->walk_queue_pos = 0;
-				p->walk_queue_len = 0;
 				mob_combat_reset(&p->mob);
 				return;
 			}
@@ -599,6 +711,23 @@ player_process_combat(struct player *p)
 				    depth);
 				player_send_message(p, msgdepth);
 				player_send_message(p, "Move further into the wilderness for less restrictions");
+				mob_combat_reset(&p->mob);
+				return;
+			}
+
+			if (p->projectile != NULL) {
+				player_process_ranged_pvp(p, target);
+				return;
+			}
+
+			if (p->mob.server->tick_counter <
+			    (target->mob.combat_timer + 6)) {
+				/*
+				 * hp bar in client takes roughly 4 seconds
+				 * to be gone
+				 */
+				p->walk_queue_pos = 0;
+				p->walk_queue_len = 0;
 				mob_combat_reset(&p->mob);
 				return;
 			}
@@ -643,6 +772,7 @@ player_process_combat(struct player *p)
 				p->appearance_changed = true;
 			}
 
+			player_close_ui(p);
 			player_clear_actions(p);
 			p->mob.target_player = target->mob.id;
 			p->mob.target_npc = -1;
@@ -650,7 +780,7 @@ player_process_combat(struct player *p)
 			p->mob.combat_next_hit = 0;
 			p->mob.combat_rounds = 0;
 
-
+			player_close_ui(target);
 			player_clear_actions(target);
 			target->walk_queue_len = 0;
 			target->walk_queue_pos = 0;
@@ -662,7 +792,6 @@ player_process_combat(struct player *p)
 			target->mob.combat_rounds = 0;
 			target->mob.dir = MOB_DIR_COMBAT_LEFT;
 
-			player_close_ui(target);
 			player_send_message(target, "You are under attack!");
 		}
 		return;
@@ -706,7 +835,6 @@ player_process_combat(struct player *p)
 			player_award_combat_xp(p, &target->mob);
 			player_die(target);
 			mod37_namedec(target->name, name);
-			/* TODO give experience */
 			(void)snprintf(msg, sizeof(msg),
 			    "You have defeated %s!", name);
 			player_send_message(p, msg);
@@ -716,6 +844,7 @@ player_process_combat(struct player *p)
 		target->mob.damage = roll;
 		target->mob.combat_rounds++;
 		target->mob.combat_timer = p->mob.server->tick_counter;
+		target->mob.damage_timer = p->mob.server->tick_counter;
 	}
 
 	p->mob.combat_next_hit = p->mob.server->tick_counter + 4;
@@ -751,6 +880,7 @@ static void
 player_recalculate_bonus(struct player *p)
 {
 	struct item_config *item;
+	struct projectile_config *proj;
 	int orig_armour = p->bonus_armour;
 	int orig_aim = p->bonus_weaponaim;
 	int orig_power = p->bonus_weaponpower;
@@ -762,12 +892,18 @@ player_recalculate_bonus(struct player *p)
 	p->bonus_weaponpower = 1;
 	p->bonus_magic = 1;
 	p->bonus_prayer = 1;
+	p->projectile = NULL;
 
 	for (int i = 0; i < p->inv_count; ++i) {
 		if (!p->inventory[i].worn) {
 			continue;
 		}
 		item = server_item_config_by_id(p->inventory[i].id);
+		assert(item != NULL);
+		proj = server_find_projectile(item->projectile);
+		if (proj != NULL) {
+			p->projectile = proj;
+		}
 		p->bonus_armour += item->bonus_armour;
 		p->bonus_weaponaim += item->bonus_aim;
 		p->bonus_weaponpower += item->bonus_power;
@@ -1014,7 +1150,6 @@ player_prayer_enable(struct player *p, int prayer)
 		return;
 	}
 	/* do not allow overlapping stat boost prayers */
-	/* TODO: manage drain */
 	switch (prayer) {
 	case PRAY_THICK_SKIN:
 	case PRAY_ROCK_SKIN:
@@ -1144,6 +1279,15 @@ player_add_known_loc(struct player *p, struct loc *loc)
 	memcpy(&p->known_locs[p->known_loc_count++], loc, sizeof(struct loc));
 }
 
+void
+player_remove_known_loc(struct player *p, size_t index)
+{
+	p->known_loc_count--;
+	for (size_t i = index; i < p->known_loc_count; ++i) {
+		p->known_locs[i] = p->known_locs[i + 1];
+	}
+}
+
 bool
 player_has_known_bound(struct player *p, int x, int y, int dir)
 {
@@ -1224,6 +1368,7 @@ player_clear_actions(struct player *p)
 {
 	p->take_item = NULL;
 	p->following_player = -1;
+	p->trading_player = -1;
 	p->ui_design_open = false;
 }
 

@@ -26,6 +26,8 @@ struct server {
 	size_t loc_config_count;
 	struct bound_config *bound_config;
 	size_t bound_config_count;
+	struct projectile_config *projectile_config;
+	size_t projectile_config_count;
 	uint16_t start_tile_x;
 	uint16_t start_tile_y;
 	int xp_multiplier;
@@ -40,8 +42,10 @@ void server_register_hide_status(struct player *);
 void server_register_unhide_status(struct player *);
 void server_send_pm(struct player *, int64_t, uint8_t *, size_t);
 struct item_config *server_item_config_by_id(int);
+struct item_config *server_find_item_config(const char *);
 struct prayer_config *server_prayer_config_by_id(int);
 struct loc_config *server_loc_config_by_id(int);
 struct bound_config *server_bound_config_by_id(int);
+struct projectile_config *server_find_projectile(const char *);
 
 #endif

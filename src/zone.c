@@ -3,6 +3,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include "entity.h"
+#include "utility.h"
 #include "zone.h"
 
 static struct zone *zones[ZONE_TOTAL_X][ZONE_TOTAL_Y][ZONE_MAX_PLANE] = {0};
@@ -29,12 +30,14 @@ struct zone *
 server_find_zone(int x, int y)
 {
 	struct zone *zone;
-	int plane;
+	int plane = 0;
 
-	plane = y / PLANE_LEVEL_INC;
-	y -= (plane * PLANE_LEVEL_INC);
+	if (y > PLANE_LEVEL_INC) {
+		plane = y / PLANE_LEVEL_INC;
+		y -= (plane * PLANE_LEVEL_INC);
+	}
 
-	if (x < 1 || y < 1 || x >= ZONE_MAX_X || y >= ZONE_MAX_Y) {
+	if (x < 0 || y < 0 || x >= ZONE_MAX_X || y >= ZONE_MAX_Y) {
 		return NULL;
 	}
 	if (plane >= ZONE_MAX_PLANE) {

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+
 #include <stdio.h>
 #include <string.h>
 #include "opcodes.h"
@@ -8,10 +9,13 @@
 #include "../entity.h"
 #include "../netio.h"
 #include "../server.h"
+#include "../trade.h"
 #include "../utility.h"
 #include "../zone.h"
 
-#define MAX_PACKETS_PER_TICK		(10)
+/* roughly one packet per frame at 50fps */
+#define MAX_PACKETS_PER_TICK		(32)
+
 #define MAX_PLAYER_HAIR_COLOUR		(9)
 #define MAX_PLAYER_SKIN_COLOUR		(4)
 #define MAX_PLAYER_CLOTHING_COLOUR	(14)
@@ -139,7 +143,7 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 	case OP_CLI_LOGOUT:
 		{
 			if (p->mob.in_combat || p->mob.server->tick_counter <
-			    (p->mob.combat_timer + 17)) {
+			    (p->mob.damage_timer + 17)) {
 				player_send_logout_reject(p);
 				return;
 			}
@@ -253,6 +257,9 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				server_register_unhide_status(p);
 			}
 		}
+		break;
+	case OP_CLI_TRADE_CONFIRM:
+		player_trade_confirm(p);
 		break;
 	case OP_CLI_PRAYER_OFF:
 		{
@@ -444,6 +451,55 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			p->walk_queue_len = steps + 1;
 			p->walk_queue_pos = 0;
 			player_clear_actions(p);
+		}
+		break;
+	case OP_CLI_TRADE_ACCEPT:
+		player_trade_accept(p);
+		break;
+	case OP_CLI_TRADE_DECLINE:
+		player_trade_decline(p);
+		break;
+	case OP_CLI_TRADE_UPDATE:
+		{
+			uint8_t count;
+			uint16_t id;
+			uint32_t amount;
+			struct player *partner = NULL;
+
+			if (p->trading_player == -1 || !p->ui_trade_open) {
+				return;
+			}
+			partner = p->mob.server->players[p->trading_player];
+			if (partner == NULL) {
+				return;
+			}
+
+			p->offer_count = 0;
+			if (buf_getu8(data, offset++, len, &count) == -1) {
+				return;
+			}
+			for (int i = 0; i < count; ++i) {
+				if (buf_getu16(data, offset, len, &id) == -1) {
+					return;
+				}
+				offset += 2;
+				if (buf_getu32(data, offset, len, &amount) == -1) {
+					return;
+				}
+				offset += 4;
+				player_trade_offer(p, id, amount);
+			}
+			partner->partner_offer_changed = true;
+		}
+		break;
+	case OP_CLI_TRADE_PLAYER:
+		{
+			uint16_t id;
+
+			if (buf_getu16(data, offset, len, &id) == -1) {
+				return;
+			}
+			player_trade_request(p, id);
 		}
 		break;
 	case OP_CLI_ACCEPT_DESIGN:
