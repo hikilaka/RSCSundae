@@ -196,7 +196,6 @@ server_add_ground_item(struct ground_item *item)
 		}
 		zone->item_max = new_max;
 	}
-	printf("added ground item\n");
 	memcpy(&zone->items[zone->item_count++],
 	    item, sizeof(struct ground_item));
 }
