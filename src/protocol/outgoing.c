@@ -278,13 +278,23 @@ player_send_movement(struct player *p)
 
 	bitpos = offset * 8;
 
-	buf_putbits(p->tmpbuf, bitpos,
-		    PLAYER_BUFSIZE, 10, p->mob.x);
-	bitpos += 10;
+	if (p->protocol_rev < 149) {
+		buf_putbits(p->tmpbuf, bitpos,
+			    PLAYER_BUFSIZE, 10, p->mob.x);
+		bitpos += 10;
 
-	buf_putbits(p->tmpbuf, bitpos,
-		    PLAYER_BUFSIZE, 12, p->mob.y);
-	bitpos += 12;
+		buf_putbits(p->tmpbuf, bitpos,
+			    PLAYER_BUFSIZE, 12, p->mob.y);
+		bitpos += 12;
+	} else {
+		buf_putbits(p->tmpbuf, bitpos,
+			    PLAYER_BUFSIZE, 11, p->mob.x);
+		bitpos += 11;
+
+		buf_putbits(p->tmpbuf, bitpos,
+			    PLAYER_BUFSIZE, 13, p->mob.y);
+		bitpos += 13;
+	}
 
 	buf_putbits(p->tmpbuf, bitpos,
 	            PLAYER_BUFSIZE, 4, p->mob.dir);
