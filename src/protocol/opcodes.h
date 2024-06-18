@@ -1,5 +1,6 @@
 #ifndef OPCODES_H
 #define OPCODES_H
+#include <stdint.h>
 
 #define OP_CLI_LOGIN		(0)
 #define OP_CLI_PUBLIC_CHAT	(3)
@@ -92,4 +93,7 @@
 #define RESP_LOGIN_OK		(0)
 #define RESP_ACCOUNT_USED	(4)
 #define RESP_FULL		(14)
+
+extern uint8_t opcodes_in_203[256];
+extern uint8_t opcodes_out_203[256];
 #endif

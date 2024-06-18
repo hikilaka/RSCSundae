@@ -24,6 +24,9 @@
 static void
 process_packet(struct player *, uint8_t *, size_t);
 
+static int
+process_login_legacy(struct player *, uint8_t *, size_t, size_t);
+
 int
 player_parse_incoming(struct player *p)
 {
@@ -96,78 +99,37 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 
 	printf("process packet opcode %d len %zu\n", opcode, len);
 
+	if (p->login_stage == LOGIN_STAGE_ZERO) {
+		if ((opcode == OP_CLI_LOGIN || OP_CLI_RECONNECT)) {
+			p->protocol_rev = 110;
+			p->last_packet = p->mob.server->tick_counter;
+		} else if (opcode == 32) {
+			p->protocol_rev = 203;
+			p->login_stage = LOGIN_STAGE_SESSION;
+			p->last_packet = p->mob.server->tick_counter;
+			return;
+		} else {
+			return;
+		}
+	}
+
+	if (p->protocol_rev == 203) {
+		opcode = opcodes_in_203[opcode];
+	}
+
 	p->last_packet = p->mob.server->tick_counter;
 
 	switch (opcode) {
 	case OP_CLI_LOGIN:
 	case OP_CLI_RECONNECT:
 		{
-			char namestr[64];
-			char password[32];
-			uint16_t ver;
-			int64_t name;
 
-			if (p->name != -1) {
-				return;
-			}
-			if (buf_getu16(data, offset, len, &ver) == -1) {
-				return;
-			}
-			offset += 2;
-			printf("got version number: %d\n", ver);
-
-			if (buf_gets64(data, offset, len, &name) == -1) {
-				return;
-			}
-			offset += 8;
-			printf("got username: %s\n",
-			    mod37_namedec(name, namestr));
-
-			if (server_has_player(name)) {
-				p->logout_confirmed = true;
-				net_login_response(p->sock, RESP_ACCOUNT_USED);
+			if (p->protocol_rev == 110 &&
+			    process_login_legacy(p, data, offset, len) == -1) {
 				return;
 			}
 
-			for (int i = 0; i < 3; ++i) {
-				uint8_t block_len;
-				uint8_t encrypted[128];
-				uint8_t decrypted[128];
-				int decrypted_len;
-
-				if (buf_getu8(data, offset++, len,
-						&block_len) == -1) {
-					return;
-				}
-				if (block_len > sizeof(encrypted)) {
-					return;
-				}
-				for (size_t j = 0; j < block_len; ++j) {
-					if (buf_getu8(data, offset++, len,
-							&encrypted[j]) == -1) {
-						return;
-					}
-				}
-				decrypted_len = rsa_decrypt(&p->mob.server->rsa,
-				    encrypted, block_len,
-				    decrypted, sizeof(decrypted));
-				if (decrypted_len == -1) {
-					return;
-				}
-				memcpy(password + (i * 7), decrypted + 8, 7);
-			}
-
-			for (size_t i = 0; i < sizeof(password); ++i) {
-				if (isspace((unsigned char)password[i])) {
-					password[i] = '\0';
-					break;
-				}
-			}
-			password[sizeof(password) - 1] = '\0';
-
-			printf("got password %s\n", password);
-
-			p->name = name;
+			p->login_stage = LOGIN_STAGE_GOT_LOGIN;
 
 			player_send_privacy_settings(p);
 			player_send_design_ui(p);
@@ -898,4 +860,77 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 		}
 		break;
 	}
+}
+
+static int
+process_login_legacy(struct player *p, uint8_t *data, size_t offset, size_t len)
+{
+	char namestr[64];
+	char password[32];
+	uint16_t ver;
+	int64_t name;
+
+	if (p->name != -1) {
+		return -1;
+	}
+	if (buf_getu16(data, offset, len, &ver) == -1) {
+		return -1;
+	}
+	offset += 2;
+	printf("got version number: %d\n", ver);
+
+	if (buf_gets64(data, offset, len, &name) == -1) {
+		return -1;
+	}
+	offset += 8;
+	printf("got username: %s\n",
+	    mod37_namedec(name, namestr));
+
+	if (server_has_player(name)) {
+		p->logout_confirmed = true;
+		net_login_response(p->sock, RESP_ACCOUNT_USED);
+		return -1;
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		uint8_t block_len;
+		uint8_t encrypted[128];
+		uint8_t decrypted[128];
+		int decrypted_len;
+
+		if (buf_getu8(data, offset++, len,
+				&block_len) == -1) {
+			return -1;
+		}
+		if (block_len > sizeof(encrypted)) {
+			return -1;
+		}
+		for (size_t j = 0; j < block_len; ++j) {
+			if (buf_getu8(data, offset++, len,
+					&encrypted[j]) == -1) {
+				return -1;
+			}
+		}
+		decrypted_len = rsa_decrypt(&p->mob.server->rsa,
+		    encrypted, block_len,
+		    decrypted, sizeof(decrypted));
+		if (decrypted_len == -1) {
+			return -1;
+		}
+		memcpy(password + (i * 7), decrypted + 8, 7);
+	}
+
+	for (size_t i = 0; i < sizeof(password); ++i) {
+		if (isspace((unsigned char)password[i])) {
+			password[i] = '\0';
+			break;
+		}
+	}
+	password[sizeof(password) - 1] = '\0';
+
+	printf("got password %s\n", password);
+
+	p->name = name;
+
+	return 0;
 }

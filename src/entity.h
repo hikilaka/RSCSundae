@@ -38,6 +38,12 @@ struct bound;
 struct loc;
 struct ground_item;
 
+enum login_state {
+	LOGIN_STAGE_ZERO	= 0,
+	LOGIN_STAGE_SESSION	= 1,
+	LOGIN_STAGE_GOT_LOGIN	= 2,
+};
+
 struct bank_item {
 	uint16_t id;
 	uint32_t amount;
@@ -218,6 +224,8 @@ struct player {
 	int64_t name;
 	int16_t following_player;
 	int16_t trading_player;
+	uint8_t protocol_rev;
+	uint8_t login_stage;
 	uint8_t stats_changed;
 	uint8_t bonus_changed;
 	uint8_t appearance_changed;
