@@ -8,7 +8,7 @@
 #include <time.h>
 #include "utility.h"
 
-const char legacy_chartab[] = {
+static const char legacy_chartab[] = {
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 	'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 	'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3',
@@ -46,6 +46,48 @@ encode_chat_legacy(const char *mes, uint8_t *out, size_t outlen)
 	for (size_t i = 0; i < inlen && i < outlen; ++i) {
 		out[i] = (uint8_t)encode_char_legacy(mes[i]);
 	}
+}
+
+void
+username_sanitize(const char *name, char *out, size_t len)
+{
+	for (size_t i = 0; i < len; ++i) {
+		if (isupper((unsigned char)name[i])) {
+			out[i] = tolower((unsigned char)name[i]);
+		} else if (isalnum((unsigned char)name[i])) {
+			out[i] = name[i];
+		} else {
+			out[i] = ' ';
+		}
+	}
+	out[len - 1] = '\0';
+}
+
+int64_t
+mod37_nameenc(const char *name)
+{
+	int64_t encoded = 0;
+	char sanitized[21];
+	size_t len;
+
+	len = strlen(name);
+	if (len > 20) {
+		return encoded;
+	}
+
+	username_sanitize(name, sanitized, len);
+
+	for (size_t i = 0; i < len; i++) {
+		encoded *= 37;
+
+		if (isalpha((unsigned char)sanitized[i])) {
+		    encoded += 1 + sanitized[i] - 97;
+		} else if (isdigit((unsigned char)sanitized[i])) {
+		    encoded += 27 + sanitized[i] - 48;
+		}
+	}
+
+	return encoded;
 }
 
 char *

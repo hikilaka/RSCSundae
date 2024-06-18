@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "ext/isaac.h"
 
 #define PLAYER_BUFSIZE		(5000)
 
@@ -28,6 +29,9 @@
 #define MAX_FRIENDS		(200)
 #define MAX_IGNORE		(100)
 
+/* restriction of 204 protocol */
+#define MAX_USERNAME_LEN	(20)
+
 #define MAX_ENTITY_SPRITES	(12)
 
 #define WALK_QUEUE_LEN		(16)
@@ -38,7 +42,7 @@ struct bound;
 struct loc;
 struct ground_item;
 
-enum login_state {
+enum login_stage {
 	LOGIN_STAGE_ZERO	= 0,
 	LOGIN_STAGE_SESSION	= 1,
 	LOGIN_STAGE_GOT_LOGIN	= 2,
@@ -311,6 +315,9 @@ struct player {
 	uint16_t bank_count;
 	struct bank_item bank[MAX_BANK_SIZE];
 	struct shop_config *shop;
+	struct isaac isaac_in;
+	struct isaac isaac_out;
+	uint8_t isaac_ready;
 };
 
 /* mob.c */

@@ -56,22 +56,22 @@ player_create(struct server *s, int sock)
 		printf("set max player id %d\n", s->max_player_id);
 	}
 
-	if (slot == -1) {
-		/* server is full */
-		net_login_response(sock, RESP_FULL);
+	struct player *p = calloc(1, sizeof(struct player));
+	if (p == NULL) {
 		return NULL;
 	}
 
-	struct player *p = calloc(1, sizeof(struct player));
-	if (p == NULL) {
-		net_login_response(sock, RESP_FULL);
+	p->sock = sock;
+
+	if (slot == -1) {
+		/* server is full */
+		net_login_response(p, RESP_FULL);
 		return NULL;
 	}
 
 	p->name = -1;
-	p->mob.id = (uint16_t)slot;
 	p->session_id = session_id;
-	p->sock = sock;
+	p->mob.id = (uint16_t)slot;
 
 	for (int i = 0; i < MAX_SKILL_ID; ++i) {
 		p->mob.cur_stats[i] = 1;

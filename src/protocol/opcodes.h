@@ -96,4 +96,6 @@
 
 extern uint8_t opcodes_in_203[256];
 extern uint8_t opcodes_out_203[256];
+
+void init_opcodes_203(void);
 #endif

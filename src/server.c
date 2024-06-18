@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include "protocol/opcodes.h"
 #include "server.h"
 #include "loop.h"
 #include "netio.h"
@@ -85,6 +86,7 @@ main(int argc, char **argv)
 	/* init random number generator */
 	raninit(&s.ran, time(NULL));
 
+	init_opcodes_203();
 	stat_calculate_table();
 
 	if (ini_parse(conffile, server_parse_settings, &s) < 0) {
