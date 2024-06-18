@@ -155,6 +155,7 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 
 			p->login_stage = LOGIN_STAGE_GOT_LOGIN;
 
+			player_load(p);
 			player_send_privacy_settings(p);
 			player_send_design_ui(p);
 			player_send_client_settings(p);
@@ -972,6 +973,7 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 	uint8_t decrypted[128];
 	char username[21];
 	char password[21];
+	int64_t name;
 	int decrypted_len;
 
 	if (buf_getu8(data, offset++, len, &reconnecting) == -1) {
@@ -1029,7 +1031,6 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 
 		p->isaac_in.randrsl[i] = val;
 		p->isaac_out.randrsl[i] = val;
-
 	}
 
 	isaac_init(&p->isaac_in, 1);
@@ -1056,6 +1057,15 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 	username[sizeof(username) - 1] = '\0';
 	offset += sizeof(username);
 
+	name = mod37_nameenc(username);
+
+	if (server_has_player(name)) {
+		net_login_response(p, RESP_ACCOUNT_USED);
+		return -1;
+	}
+
+	p->name = name;
+
 	for (size_t i = 0; i < (sizeof(password) - 1); ++i) {
 		if (buf_getu8(decrypted, offset + i, decrypted_len,
 				(uint8_t *)&password[i]) == -1) {
@@ -1072,8 +1082,6 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 
 	printf("got username %s\n", username);
 	printf("got password %s\n", password);
-
-	p->name = mod37_nameenc(username);
 
 	return 0;
 }

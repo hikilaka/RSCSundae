@@ -72,7 +72,26 @@ player_create(struct server *s, int sock)
 	p->name = -1;
 	p->session_id = session_id;
 	p->mob.id = (uint16_t)slot;
+	p->mob.server = s;
 
+	p->following_player = -1;
+	p->trading_player = -1;
+	p->projectile_target_player = UINT16_MAX;
+	p->projectile_target_npc = UINT16_MAX;
+	p->bubble_id = UINT16_MAX;
+	p->mob.damage = UINT8_MAX;
+	p->last_packet = s->tick_counter;
+
+	mob_combat_reset(&p->mob);
+
+	s->players[slot] = p;
+	loop_add_player(p);
+	return p;
+}
+
+int
+player_load(struct player *p)
+{
 	for (int i = 0; i < MAX_SKILL_ID; ++i) {
 		p->mob.cur_stats[i] = 1;
 		p->mob.base_stats[i] = 1;
@@ -104,26 +123,14 @@ player_create(struct server *s, int sock)
 	p->plane_changed = true;
 	p->inv_changed = true;
 	p->ui_design_open = true;
-	p->following_player = -1;
-	p->trading_player = -1;
+
 	p->rpg_class = UINT8_MAX;
-	p->projectile_target_player = UINT16_MAX;
-	p->projectile_target_npc = UINT16_MAX;
-	p->bubble_id = UINT16_MAX;
-	p->last_packet = s->tick_counter;
 
 	player_recalculate_combat_level(p);
 
-	p->mob.server = s;
-	p->mob.x = s->start_tile_x;
-	p->mob.y = s->start_tile_y;
-	p->mob.damage = UINT8_MAX;
-
-	mob_combat_reset(&p->mob);
-	s->players[slot] = p;
-
-	loop_add_player(p);
-	return p;
+	p->mob.x = p->mob.server->start_tile_x;
+	p->mob.y = p->mob.server->start_tile_y;
+	return 0;
 }
 
 void

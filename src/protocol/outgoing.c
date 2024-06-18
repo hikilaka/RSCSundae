@@ -40,6 +40,22 @@ player_write_packet(struct player *p, void *b, size_t len)
 	uint8_t *payload = b;
 	size_t off = p->outbuf_len;
 	size_t orig_off = off;
+	uint32_t opcode;
+
+	if (p->protocol_rev == 203) {
+		opcode = opcodes_out_203[payload[0]];
+		if (opcode == 0) {
+			return -1;
+		}
+		payload[0] = opcode;
+		printf("write packet opcode %d, len %zu\n", opcode, len);
+	}
+
+	if (p->isaac_ready) {
+		opcode = payload[0];
+
+		payload[0] = (opcode + isaac_next(&p->isaac_out)) & 0xff;
+	}
 
 	if (len >= 160) {
 		if (buf_putu8(p->outbuf, off++, PLAYER_BUFSIZE,
@@ -1503,8 +1519,10 @@ player_send_ground_items(struct player *p)
 	    p->known_item_count, new_known_count, nearby_count, update_count);
 #endif
 
-	memcpy(p->known_items, new_known,
-	    new_known_count * sizeof(struct ground_item));
+	if (new_known_count > 0) {
+		memcpy(p->known_items, new_known,
+		    new_known_count * sizeof(struct ground_item));
+	}
 	p->known_item_count = new_known_count;
 
 	if (update_count == 0) {
