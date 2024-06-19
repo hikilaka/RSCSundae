@@ -108,11 +108,13 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			puts("using 110");
 			p->protocol_rev = 110;
 			p->last_packet = p->mob.server->tick_counter;
+			net_send_session_id(p);
 		} else if (opcode == 32) {
 			puts("using 203");
 			p->protocol_rev = 203;
 			p->login_stage = LOGIN_STAGE_SESSION;
 			p->last_packet = p->mob.server->tick_counter;
+			net_send_session_id(p);
 			return;
 		} else {
 			return;
