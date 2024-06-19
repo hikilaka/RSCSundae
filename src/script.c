@@ -232,7 +232,7 @@ script_say(lua_State *L)
 		len = MAX_CHAT_LEN;
 	}
 
-	encode_chat(mes, (uint8_t *)p->mob.chat_enc, len);
+	encode_chat_legacy(mes, (uint8_t *)p->mob.chat_enc, len);
 	p->mob.chat_len = len;
 	p->chat_type = CHAT_TYPE_QUEST;
 
@@ -355,7 +355,7 @@ script_npcsay(lua_State *L)
 		mob_face(&player->mob, npc->mob.x, npc->mob.y);
 	}
 
-	encode_chat(mes, (uint8_t *)npc->mob.chat_enc, len);
+	encode_chat_legacy(mes, (uint8_t *)npc->mob.chat_enc, len);
 	npc->mob.chat_len = len;
 
 	return 0;
