@@ -99,7 +99,7 @@ void
 process_packet(struct player *p, uint8_t *data, size_t len)
 {
 	size_t offset = 0;
-	uint8_t opcode = data[offset++] & 0xff;
+	uint32_t opcode = data[offset++] & 0xff;
 
 	printf("process packet opcode %d len %zu\n", opcode, len);
 
@@ -120,8 +120,6 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 	}
 
 	if (p->protocol_rev == 203) {
-		int opcode = opcode;
-
 		if (p->isaac_ready) {
 			opcode = (opcode - isaac_next(&p->isaac_in)) & 0xff;
 		}

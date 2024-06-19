@@ -105,13 +105,15 @@ init_opcodes_203(void)
 	opcodes_out_203[OP_SRV_GROUND_ITEMS] = 99;
 	opcodes_out_203[OP_SRV_PLAYER_MOVEMENT] = 191;*/
 
-	//opcodes_out_203[OP_SRV_MESSAGE] = 131;
+	opcodes_out_203[OP_SRV_MESSAGE] = 131;
 	//opcodes_out_203[OP_SRV_NPC_MOVEMENT] = 79;
+	opcodes_out_203[OP_SRV_INVENTORY] = 53;
 	opcodes_out_203[OP_SRV_CLIENT_SETTINGS] = 240;
 	opcodes_out_203[OP_SRV_PRIVACY_SETTINGS] = 51;
 	opcodes_out_203[OP_SRV_INIT_FRIENDS] = 71;
 	opcodes_out_203[OP_SRV_INIT_IGNORE] = 109;
-	//opcodes_out_203[OP_SRV_SHOW_DESIGN] = 59;
+	opcodes_out_203[OP_SRV_EQUIP_BONUSES] = 153;
+	opcodes_out_203[OP_SRV_SHOW_DESIGN] = 59;
 	opcodes_out_203[OP_SRV_BOUNDARIES] = 91;
 	opcodes_out_203[OP_SRV_PLAYER_APPEARANCE] = 234;
 	opcodes_out_203[OP_SRV_LOCS] = 48;
