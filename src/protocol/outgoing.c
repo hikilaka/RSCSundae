@@ -32,6 +32,7 @@ static ssize_t player_send_appearance(struct player *, void *, size_t);
 static ssize_t player_send_damage(struct mob *, void *, size_t);
 static ssize_t player_send_projectile_pvp(struct player *, void *, size_t);
 static ssize_t player_send_projectile_pvm(struct player *, void *, size_t);
+static ssize_t player_send_chat(struct player *, struct mob *, size_t);
 static int player_write_packet(struct player *, void *, size_t);
 
 static int
@@ -617,6 +618,34 @@ player_send_projectile_pvm(struct player *p, void *tmpbuf, size_t offset)
 	return offset;
 }
 
+static ssize_t
+player_send_chat(struct player *p, struct mob *mob, size_t offset)
+{
+	if (p->protocol_rev > 163) {
+		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+			      mob->chat_compressed_len) == -1) {
+			return -1;
+		}
+		if (buf_putdata(p->tmpbuf, offset, PLAYER_BUFSIZE,
+		    mob->chat_compressed,
+		    mob->chat_compressed_len) == -1) {
+			return -1;
+		}
+		offset += mob->chat_compressed_len;
+	} else {
+		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+			      mob->chat_len) == -1) {
+			return -1;
+		}
+		if (buf_putdata(p->tmpbuf, offset, PLAYER_BUFSIZE,
+		      mob->chat_enc, mob->chat_len) == -1) {
+			return -1;
+		}
+		offset += mob->chat_len;
+	}
+	return offset;
+}
+
 int
 player_send_design_ui(struct player *p)
 {
@@ -854,15 +883,11 @@ player_send_npc_appearance_update(struct player *p)
 				return -1;
 			}
 			offset += 2;
-			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-				      npc->mob.chat_len) == -1) {
+			tmpofs = player_send_chat(p, &npc->mob, offset);
+			if (tmpofs == -1) {
 				return -1;
 			}
-			if (buf_putdata(p->tmpbuf, offset, PLAYER_BUFSIZE,
-			      npc->mob.chat_enc, npc->mob.chat_len) == -1) {
-				return -1;
-			}
-			offset += npc->mob.chat_len;
+			offset = tmpofs;
 			update_count++;
 		}
 		if (npc->mob.damage != UINT8_MAX) {
@@ -947,15 +972,11 @@ player_send_appearance_update(struct player *p)
 				PLAYER_UPDATE_CHAT_QUEST) == -1) {
 			return -1;
 		}
-		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-			      p->mob.chat_len) == -1) {
+		tmpofs = player_send_chat(p, &p->mob, offset);
+		if (tmpofs == -1) {
 			return -1;
 		}
-		if (buf_putdata(p->tmpbuf, offset, PLAYER_BUFSIZE,
-		      p->mob.chat_enc, p->mob.chat_len) == -1) {
-			return -1;
-		}
-		offset += p->mob.chat_len;
+		offset = tmpofs;
 		update_count++;
 	}
 
@@ -990,15 +1011,11 @@ player_send_appearance_update(struct player *p)
 					PLAYER_UPDATE_CHAT_QUEST) == -1) {
 				return -1;
 			}
-			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-				      p2->mob.chat_len) == -1) {
+			tmpofs = player_send_chat(p, &p2->mob, offset);
+			if (tmpofs == -1) {
 				return -1;
 			}
-			if (buf_putdata(p->tmpbuf, offset, PLAYER_BUFSIZE,
-			      p2->mob.chat_enc, p2->mob.chat_len) == -1) {
-				return -1;
-			}
-			offset += p2->mob.chat_len;
+			offset = tmpofs;
 			update_count++;
 		}
 		if (p2->mob.damage != UINT8_MAX) {

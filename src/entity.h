@@ -167,7 +167,9 @@ struct mob {
 	uint8_t base_stats[MAX_SKILL_ID];
 	uint8_t combat_level;
 	uint8_t chat_len;
+	uint8_t chat_compressed_len;
 	char chat_enc[MAX_CHAT_LEN];
+	char chat_compressed[MAX_CHAT_LEN];
 	int16_t target_player;
 	int16_t target_npc;
 };

@@ -184,6 +184,7 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 	case OP_CLI_PUBLIC_CHAT:
 		{
 			/* want to eventually decode this to moderate */
+			/* FIXME: need to decode for inter-client compat */
 			size_t msglen = len - 1;
 			if (msglen > MAX_CHAT_LEN) {
 				msglen = MAX_CHAT_LEN;
