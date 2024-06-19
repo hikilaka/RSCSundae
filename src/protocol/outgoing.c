@@ -218,11 +218,19 @@ player_send_npc_movement(struct player *p)
 			continue;
 		}
 
-		if (buf_putbits(p->tmpbuf, bitpos,
-				PLAYER_BUFSIZE, 11, nearby[i]->mob.id) == -1) {
-			return -1;
+		if (p->protocol_rev < 155) {
+			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 11,
+					nearby[i]->mob.id) == -1) {
+				return -1;
+			}
+			bitpos += 11;
+		} else {
+			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 12,
+					nearby[i]->mob.id) == -1) {
+				return -1;
+			}
+			bitpos += 12;
 		}
-		bitpos += 11;
 
 		if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 5,
 				(int)nearby[i]->mob.x - (int)p->mob.x) == -1) {
@@ -242,11 +250,19 @@ player_send_npc_movement(struct player *p)
 		}
 		bitpos += 4;
 
-		if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 8,
-				nearby[i]->config->id) == -1) {
-			return -1;
+		if (p->protocol_rev < 159) {
+			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 8,
+					nearby[i]->config->id) == -1) {
+				return -1;
+			}
+			bitpos += 8;
+		} else {
+			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 10,
+					nearby[i]->config->id) == -1) {
+				return -1;
+			}
+			bitpos += 10;
 		}
-		bitpos += 8;
 
 		new_known[new_known_count++] = nearby[i]->mob.id;
 	}
@@ -748,26 +764,45 @@ int
 player_send_init_stats(struct player *p)
 {
 	size_t offset = 0;
+	int skill_count = MAX_SKILL_ID;
+
+	if (p->protocol_rev >= 134) {
+		skill_count = 18;
+	}
 
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, OP_SRV_INIT_STATS);
 
-	for (int i = 0; i < MAX_SKILL_ID; ++i) {
+	for (int i = 0; i < skill_count; ++i) {
+		uint8_t cur_stat = 1;
+
+		if (i < MAX_SKILL_ID) {
+			cur_stat = p->mob.cur_stats[i];
+		}
 		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-				p->mob.cur_stats[i]) == -1) {
+				cur_stat) == -1) {
 			return -1;
 		}
 	}
 
-	for (int i = 0; i < MAX_SKILL_ID; ++i) {
+	for (int i = 0; i < skill_count; ++i) {
+		uint8_t base_stat = 1;
+
+		if (i < MAX_SKILL_ID) {
+			base_stat = p->mob.base_stats[i];
+		}
 		if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-				p->mob.base_stats[i]) == -1) {
+				base_stat) == -1) {
 			return -1;
 		}
 	}
 
-	for (int i = 0; i < MAX_SKILL_ID; ++i) {
-		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
-				p->experience[i]) == -1) {
+	for (int i = 0; i < skill_count; ++i) {
+		uint32_t xp = 0;
+
+		if (i < MAX_SKILL_ID) {
+			xp = p->experience[i];
+		}
+		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE, xp) == -1) {
 			return -1;
 		}
 		offset += 4;
