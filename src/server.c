@@ -326,7 +326,8 @@ server_tick(void)
 	}
 
 	for (int i = 0; i < s.max_player_id; ++i) {
-		if (s.players[i] == NULL) {
+		if (s.players[i] == NULL ||
+		    s.players[i]->login_stage != LOGIN_STAGE_GOT_LOGIN) {
 			continue;
 		}
 		if (s.players[i]->plane_changed) {
