@@ -1,5 +1,4 @@
 #include <sys/socket.h>
-#include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -989,17 +988,14 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 	int decrypted_len;
 
 	if (buf_getu8(data, offset++, len, &reconnecting) == -1) {
-		assert(0);
 		return -1;
 	}
 	if (buf_getu16(data, offset, len, &revision) == -1) {
-		assert(0);
 		return -1;
 	}
 	offset += 2;
 
 	if (buf_getu8(data, offset++, len, &limit30) == -1) {
-		assert(0);
 		return -1;
 	}
 
@@ -1007,16 +1003,13 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 	printf("got protocol rev %d\n", revision);
 
 	if (buf_getu8(data, offset++, len, &encrypted_len) == -1) {
-		assert(0);
 		return -1;
 	}
 	if (encrypted_len > sizeof(encrypted)) {
-		assert(0);
 		return -1;
 	}
 	for (size_t i = 0; i < encrypted_len; ++i) {
 		if (buf_getu8(data, offset++, len, &encrypted[i]) == -1) {
-			assert(0);
 			return -1;
 		}
 	}
@@ -1024,20 +1017,17 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 	    encrypted, encrypted_len,
 	    decrypted, sizeof(decrypted));
 	if (decrypted_len == -1) {
-		assert(0);
 		return -1;
 	}
 
 	offset = 0;
 
 	if (buf_getu8(decrypted, offset++, decrypted_len, &magic) == -1) {
-		assert(0);
 		return -1;
 	}
 
 	/* this is used to verify that RSA decryption succeeded */
 	if (magic != 10) {
-		assert(0);
 		net_login_response(p, RESP_FULL);
 		return -1;
 	}
@@ -1046,7 +1036,6 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 		uint32_t val;
 
 		if (buf_getu32(decrypted, offset, decrypted_len, &val) == -1) {
-			assert(0);
 			return -1;
 		}
 		offset += 4;
@@ -1061,7 +1050,6 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 	p->isaac_ready = true;
 
 	if (buf_getu32(decrypted, offset, decrypted_len, &uid) == -1) {
-		assert(0);
 		return -1;
 	}
 	offset += 4;
@@ -1069,7 +1057,6 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 	for (size_t i = 0; i < (sizeof(username) - 1); ++i) {
 		if (buf_getu8(decrypted, offset + i, decrypted_len,
 				(uint8_t *)&username[i]) == -1) {
-			assert(0);
 			return -1;
 		}
 		if (isspace((unsigned char)username[i])) {
@@ -1085,7 +1072,6 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 
 	if (server_has_player(name)) {
 		net_login_response(p, RESP_ACCOUNT_USED);
-		assert(0);
 		return -1;
 	}
 
