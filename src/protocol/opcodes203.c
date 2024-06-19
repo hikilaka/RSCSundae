@@ -96,8 +96,8 @@ init_opcodes_203(void)
 	opcodes_out_203[OP_SRV_INIT_PLANE] = 25;
 	opcodes_out_203[OP_SRV_HIDE_MULTI] = 252;
 	opcodes_out_203[OP_SRV_SHOW_MULTI] = 245;
-	/*opcodes_out_203[OP_SRV_NPC_APPEARANCE] = 104;
-	opcodes_out_203[OP_SRV_NPC_MOVEMENT] = 79;*/
+	opcodes_out_203[OP_SRV_NPC_APPEARANCE] = 104;
+	opcodes_out_203[OP_SRV_NPC_MOVEMENT] = 79;
 	opcodes_out_203[OP_SRV_BOUNDARIES] = 91;
 	opcodes_out_203[OP_SRV_PLAYER_APPEARANCE] = 234;
 	opcodes_out_203[OP_SRV_INVENTORY] = 53;
