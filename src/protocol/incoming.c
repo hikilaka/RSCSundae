@@ -1,3 +1,4 @@
+#include <sys/socket.h>
 #include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -109,10 +110,15 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			p->protocol_rev = 110;
 			p->last_packet = p->mob.server->tick_counter;
 		} else if (opcode == 32) {
+			uint8_t zero[4] = {0};
+
 			puts("using 203");
 			p->protocol_rev = 203;
 			p->login_stage = LOGIN_STAGE_SESSION;
 			p->last_packet = p->mob.server->tick_counter;
+
+			/* extra bytes for session id */
+			(void)send(p->sock, &zero, sizeof(zero), 0);
 			return;
 		} else {
 			return;
