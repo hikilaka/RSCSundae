@@ -29,7 +29,7 @@ static int
 process_login(struct player *, uint8_t *, size_t, size_t);
 
 static int
-process_login_legacy(struct player *, uint8_t *, size_t, size_t);
+process_login_isaac(struct player *, uint8_t *, size_t, size_t);
 
 int
 player_parse_incoming(struct player *p)
@@ -138,14 +138,14 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 
 			switch (p->protocol_rev) {
 			case 110:
-				if (process_login_legacy(p,
-				    data, offset, len) == -1) {
+				if (process_login(p, data, offset, len) == -1) {
 					p->logout_confirmed = true;
 					return;
 				}
 				break;
 			case 203:
-				if (process_login(p, data, offset, len) == -1) {
+				if (process_login_isaac(p,
+				    data, offset, len) == -1) {
 					p->logout_confirmed = true;
 					return;
 				}
@@ -894,7 +894,7 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 }
 
 static int
-process_login_legacy(struct player *p, uint8_t *data, size_t offset, size_t len)
+process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 {
 	char namestr[64];
 	char password[32];
@@ -967,7 +967,7 @@ process_login_legacy(struct player *p, uint8_t *data, size_t offset, size_t len)
 
 
 static int
-process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
+process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 {
 	uint8_t reconnecting;
 	uint8_t limit30;
