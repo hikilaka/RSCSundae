@@ -5,7 +5,6 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include "buffer.h"
 #include "server.h"
 #include "netio.h"
 
@@ -116,22 +115,6 @@ net_login_response(struct player *p, int response)
 	} else {
 		uint8_t b = response;
 
-		(void)send(p->sock, &b, sizeof(b), 0);
-	}
-}
-
-void
-net_send_session_id(struct player *p)
-{
-	if (p->protocol_rev < 196) {
-		uint8_t b[4];
-
-		(void)buf_putu32(b, 0, sizeof(b), p->session_id);
-		(void)send(p->sock, &b, sizeof(b), 0);
-	} else {
-		uint8_t b[8];
-
-		(void)buf_putu64(b, 0, sizeof(b), p->session_id);
 		(void)send(p->sock, &b, sizeof(b), 0);
 	}
 }

@@ -36,6 +36,12 @@ player_create(struct server *s, int sock)
 {
 	int slot = -1;
 
+	int32_t session_id = ranval(&s->ran);
+
+	/* this has to happen before a slot is selected. */
+
+	(void)send(sock, &session_id, sizeof(session_id), 0);
+
 	/* try to find space for the player */
 
 	for (int i = 0; i < MAXPLAYERS; ++i) {
@@ -64,7 +70,7 @@ player_create(struct server *s, int sock)
 	}
 
 	p->name = -1;
-	p->session_id = ranval(&s->ran);
+	p->session_id = session_id;
 	p->mob.id = (uint16_t)slot;
 	p->mob.server = s;
 
