@@ -60,7 +60,6 @@ username_sanitize(const char *name, char *out, size_t len)
 			out[i] = ' ';
 		}
 	}
-	out[len - 1] = '\0';
 }
 
 int64_t
@@ -76,6 +75,7 @@ mod37_nameenc(const char *name)
 	}
 
 	username_sanitize(name, sanitized, len);
+	sanitized[len + 1] = '\0';
 
 	for (size_t i = 0; i < len; i++) {
 		encoded *= 37;
