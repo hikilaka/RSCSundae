@@ -64,7 +64,7 @@ init_opcodes_203(void)
 	opcodes_in_203[247] = OP_CLI_ITEM_TAKE;
 	opcodes_in_203[187] = OP_CLI_WALK_TILE;
 
-	/*opcodes_out_203[OP_SRV_MESSAGE] = 131;
+	opcodes_out_203[OP_SRV_MESSAGE] = 131;
 	opcodes_out_203[OP_SRV_LOGOUT] = 4;
 	opcodes_out_203[OP_SRV_LOGOUT_REJECT] = 183;
 	opcodes_out_203[OP_SRV_INIT_FRIENDS] = 71;
@@ -96,32 +96,12 @@ init_opcodes_203(void)
 	opcodes_out_203[OP_SRV_INIT_PLANE] = 25;
 	opcodes_out_203[OP_SRV_HIDE_MULTI] = 252;
 	opcodes_out_203[OP_SRV_SHOW_MULTI] = 245;
-	opcodes_out_203[OP_SRV_NPC_APPEARANCE] = 104;
-	opcodes_out_203[OP_SRV_NPC_MOVEMENT] = 79;
+	/*opcodes_out_203[OP_SRV_NPC_APPEARANCE] = 104;
+	opcodes_out_203[OP_SRV_NPC_MOVEMENT] = 79;*/
 	opcodes_out_203[OP_SRV_BOUNDARIES] = 91;
 	opcodes_out_203[OP_SRV_PLAYER_APPEARANCE] = 234;
 	opcodes_out_203[OP_SRV_INVENTORY] = 53;
 	opcodes_out_203[OP_SRV_LOCS] = 48;
-	opcodes_out_203[OP_SRV_GROUND_ITEMS] = 99;
-	opcodes_out_203[OP_SRV_PLAYER_MOVEMENT] = 191;*/
-
-	opcodes_out_203[OP_SRV_MESSAGE] = 131;
-	//opcodes_out_203[OP_SRV_NPC_MOVEMENT] = 79;
-	opcodes_out_203[OP_SRV_INVENTORY] = 53;
-	opcodes_out_203[OP_SRV_CLIENT_SETTINGS] = 240;
-	opcodes_out_203[OP_SRV_PRIVACY_SETTINGS] = 51;
-	opcodes_out_203[OP_SRV_INIT_FRIENDS] = 71;
-	opcodes_out_203[OP_SRV_INIT_IGNORE] = 109;
-	opcodes_out_203[OP_SRV_EQUIP_BONUSES] = 153;
-	opcodes_out_203[OP_SRV_SHOW_DESIGN] = 59;
-	opcodes_out_203[OP_SRV_BOUNDARIES] = 91;
-	opcodes_out_203[OP_SRV_PLAYER_APPEARANCE] = 234;
-	opcodes_out_203[OP_SRV_LOCS] = 48;
-	opcodes_out_203[OP_SRV_INIT_STATS] = 156;
-	opcodes_out_203[OP_SRV_INIT_PLANE] = 25;
 	opcodes_out_203[OP_SRV_GROUND_ITEMS] = 99;
 	opcodes_out_203[OP_SRV_PLAYER_MOVEMENT] = 191;
-	opcodes_out_203[OP_SRV_INVENTORY_REMOVE] = 123;
-	opcodes_out_203[OP_SRV_INVENTORY_ITEM] = 90;
-	opcodes_out_203[OP_SRV_FRIEND_UPDATE] = 149;
 }
