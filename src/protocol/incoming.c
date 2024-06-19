@@ -777,12 +777,19 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				p->skin_colour = 0;
 			}
 
-			(void)buf_getu8(data, offset++, len, &p->rpg_class);
+			if (p->protocol_rev < 154) {
+				(void)buf_getu8(data, offset++, len, &p->rpg_class);
+				if (old_class == UINT8_MAX) {
+					player_init_class(p);
+				}
+			} else {
+				p->rpg_class = CLASS_ADVENTURER;
+				if (old_class == UINT8_MAX) {
+					player_init_adventurer(p);
+				}
+			}
 
 			player_recalculate_equip(p);
-			if (old_class == UINT8_MAX) {
-				player_init_class(p);
-			}
 			p->appearance_changed = true;
 			p->ui_design_open = false;
 

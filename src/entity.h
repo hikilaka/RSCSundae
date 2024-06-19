@@ -385,6 +385,7 @@ void player_shoot_pvm(struct player *, struct projectile_config *,
     struct npc *);
 void player_skull(struct player *, struct player *);
 void player_init_class(struct player *);
+void player_init_adventurer(struct player *);
 
 /* bank.c */
 void player_deposit(struct player *, uint16_t, uint32_t);
