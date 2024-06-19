@@ -1068,8 +1068,12 @@ player_send_init_friends(struct player *p)
 				return -1;
 			}
 		} else {
-			if (buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 1) == -1) {
-				return -1;
+			if (p->protocol_rev > 202) {
+				(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 255);
+			} else if (p->protocol_rev > 132) {
+				(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 99);
+			} else {
+				(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 10);
 			}
 		}
 	}
@@ -1115,7 +1119,14 @@ player_notify_friend_online(struct player *p, int64_t friend)
 		        OP_SRV_FRIEND_UPDATE);
 	(void)buf_putu64(p->tmpbuf, offset, PLAYER_BUFSIZE, friend);
 	offset += 8;
-	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 1);
+
+	if (p->protocol_rev > 202) {
+		(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 255);
+	} else if (p->protocol_rev > 132) {
+		(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 99);
+	} else {
+		(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE, 10);
+	}
 
 	return player_write_packet(p, p->tmpbuf, offset);
 }

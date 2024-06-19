@@ -123,4 +123,5 @@ init_opcodes_203(void)
 	opcodes_out_203[OP_SRV_PLAYER_MOVEMENT] = 191;
 	opcodes_out_203[OP_SRV_INVENTORY_REMOVE] = 123;
 	opcodes_out_203[OP_SRV_INVENTORY_ITEM] = 90;
+	opcodes_out_203[OP_SRV_FRIEND_UPDATE] = 149;
 }
