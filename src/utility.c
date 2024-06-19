@@ -8,7 +8,7 @@
 #include <time.h>
 #include "utility.h"
 
-static const char legacy_chartab[] = {
+static const char chartab[] = {
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
 	'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
 	'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3',
@@ -17,24 +17,24 @@ static const char legacy_chartab[] = {
 	'\0'
 };
 
-static int encode_char_legacy(char);
+static int encode_char(char);
 
 static int
-encode_char_legacy(char ch)
+encode_char(char ch)
 {
 	if (isalpha(ch)) {
 		ch = toupper(ch);
 	}
-	for (int i = 0; legacy_chartab[i] != '\0'; ++i) {
-		if (legacy_chartab[i] == ch) {
+	for (int i = 0; chartab[i] != '\0'; ++i) {
+		if (chartab[i] == ch) {
 			return i;
 		}
 	}
-	return encode_char_legacy(' ');
+	return encode_char(' ');
 }
 
 void
-encode_chat_legacy(const char *mes, uint8_t *out, size_t outlen)
+encode_chat(const char *mes, uint8_t *out, size_t outlen)
 {
 	size_t inlen = strlen(mes);
 
@@ -44,7 +44,7 @@ encode_chat_legacy(const char *mes, uint8_t *out, size_t outlen)
 	 * in current year.
 	 */
 	for (size_t i = 0; i < inlen && i < outlen; ++i) {
-		out[i] = (uint8_t)encode_char_legacy(mes[i]);
+		out[i] = (uint8_t)encode_char(mes[i]);
 	}
 }
 
