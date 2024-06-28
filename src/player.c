@@ -2178,7 +2178,5 @@ player_process_movement(struct player *p)
 
 	if (zone_new != NULL && zone_old != zone_new) {
 		zone_add_player(zone_new, p->mob.id);
-		printf("max npcs in new zone: %d\n", zone_new->npc_max);
-		printf("max players in new zone: %d\n", zone_new->player_max);
 	}
 }
