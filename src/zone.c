@@ -480,8 +480,9 @@ zone_find_npcs(struct zone *zone, struct server *s,
 		if (exclude_busy && (npc->busy || npc->mob.in_combat)) {
 			continue;
 		}
-		list[count++] = npc;
-		if (count >= max) {
+		if (count < max) {
+			list[count++] = npc;
+		} else {
 			break;
 		}
 	}
@@ -501,11 +502,10 @@ zone_find_players(struct zone *zone, struct server *s,
 		struct player *p = s->players[zone->players[i]];
 		if (p == NULL) {
 			zone->players[i] = UINT16_MAX;
-			continue;
-		}
-		if (p->name != -1) {
-			list[count++] = p;
-			if (count >= max) {
+		} else if (p->name != -1) {
+			if (count < max) {
+				list[count++] = p;
+			} else {
 				break;
 			}
 		}

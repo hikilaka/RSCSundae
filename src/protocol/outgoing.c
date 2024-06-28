@@ -32,10 +32,10 @@ static ssize_t player_send_projectile_pvp(struct player *, void *, size_t);
 static ssize_t player_send_projectile_pvm(struct player *, void *, size_t);
 static ssize_t player_send_chat(struct player *, struct mob *, size_t);
 static int player_write_packet(struct player *, void *, size_t);
-static bool within_update_radius(struct player *, int, int);
+static bool within_update_radius(struct player *, int, int, int);
 
 static bool
-within_update_radius(struct player *p, int x, int y)
+within_update_radius(struct player *p, int x, int y, int range)
 {
 	struct zone *origin, *zone;
 
@@ -45,8 +45,8 @@ within_update_radius(struct player *p, int x, int y)
 		if (origin->plane != zone->plane) {
 			return false;
 		}
-		if (abs(zone->x - (int)origin->x) > 3 ||
-		    abs(zone->y - (int)origin->y) > 3) {
+		if (abs(zone->x - (int)origin->x) > range ||
+		    abs(zone->y - (int)origin->y) > range) {
 			return false;
 		}
 	} else {
@@ -168,9 +168,8 @@ player_send_npc_movement(struct player *p)
 		known_npc = p->mob.server->npcs[p->known_npcs[i]];
 		if (known_npc == NULL ||
 		    !within_update_radius(p,
-			known_npc->mob.x, known_npc->mob.y) ||
+			known_npc->mob.x, known_npc->mob.y, 2) ||
 		    known_npc->respawn_time > 0) {
-			printf("remove known npc\n");
 			if (buf_putbits(p->tmpbuf, bitpos,
 					PLAYER_BUFSIZE, 4, 15) == -1) {
 				return -1;
@@ -243,8 +242,6 @@ player_send_npc_movement(struct player *p)
 		if (known) {
 			continue;
 		}
-
-		printf("add known npc, current count is %d\n", new_known_count);
 
 		if (p->protocol_rev < 155) {
 			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 11,
@@ -359,7 +356,7 @@ player_send_movement(struct player *p)
 		if (known_player == NULL ||
 		    known_player->logout_confirmed ||
 		    !within_update_radius(p,
-			known_player->mob.x, known_player->mob.y) ||
+			known_player->mob.x, known_player->mob.y, 2) ||
 		    known_player->teleported) {
 			if (buf_putbits(p->tmpbuf, bitpos,
 					PLAYER_BUFSIZE, 4, 15) == -1) {
@@ -1541,7 +1538,7 @@ player_send_ground_items(struct player *p)
 		    p->known_items[i].y, p->known_items[i].id);
 		item = &p->known_items[i];
 		if (global_item == NULL ||
-		    !within_update_radius(p, item->x, item->y) ||
+		    !within_update_radius(p, item->x, item->y, 3) ||
 		    !player_can_see_item(p, item)) {
 			/* remove the item from the player's view */
 			if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,

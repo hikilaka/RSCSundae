@@ -179,12 +179,13 @@ npc_process_movement(struct npc *npc)
 
 	zone_new = server_find_zone(npc->mob.x, npc->mob.y);
 
-	if (zone_old != NULL && zone_old != zone_new) {
-		zone_remove_npc(zone_old, npc->mob.id);
-	}
-
-	if (zone_new != NULL && zone_old != zone_new) {
-		zone_add_npc(zone_new, npc->mob.id);
+	if (zone_old != zone_new) {
+		if (zone_old != NULL) {
+			zone_remove_npc(zone_old, npc->mob.id);
+		}
+		if (zone_new != NULL) {
+			zone_add_npc(zone_new, npc->mob.id);
+		}
 	}
 }
 

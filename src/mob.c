@@ -129,18 +129,23 @@ size_t
 mob_get_nearby_npcs(struct mob *mob,
 		struct npc **list, size_t max, bool exclude_busy)
 {
+	struct npc *tmp[128];
 	struct zone *orig, *zone;
 	size_t count = 0;
+	size_t tmp_count;
 
 	orig = server_find_zone(mob->x, mob->y);
 	if (orig == NULL) {
 		return 0;
 	}
 
-	count += zone_find_npcs(orig, mob->server, list, max, exclude_busy);
+	tmp_count = zone_find_npcs(orig, mob->server, tmp, 128, exclude_busy);
+	for (size_t i = 0; i < tmp_count && count < max; ++i) {
+		list[count++] = tmp[i];
+	}
 
-	for (int x = -2; x < 3; ++x) {
-		for (int y = -2; y < 3; ++y) {
+	for (int x = -1; x < 2; ++x) {
+		for (int y = -1; y < 2; ++y) {
 			if (x == 0 && y == 0) {
 				continue;
 			}
@@ -152,8 +157,11 @@ mob_get_nearby_npcs(struct mob *mob,
 			if (count >= max) {
 				break;
 			}
-			count += zone_find_npcs(zone, mob->server,
-				list + count, max - count, exclude_busy);
+			tmp_count = zone_find_npcs(zone,
+			    mob->server, tmp, 128, exclude_busy);
+			for (size_t i = 0; i < tmp_count && count < max; ++i) {
+				list[count++] = tmp[i];
+			}
 		}
 	}
 
@@ -181,18 +189,23 @@ mob_find_nearby_npc(struct mob *mob, const char *name)
 size_t
 mob_get_nearby_players(struct mob *mob, struct player **list, size_t max)
 {
+	struct player *tmp[128];
 	struct zone *orig, *zone;
 	size_t count = 0;
+	size_t tmp_count = 0;
 
 	orig = server_find_zone(mob->x, mob->y);
 	if (orig == NULL) {
 		return 0;
 	}
 
-	count += zone_find_players(orig, mob->server, list, max);
+	tmp_count = zone_find_players(orig, mob->server, tmp, 128);
+	for (size_t i = 0; i < tmp_count && count < max; ++i) {
+		list[count++] = tmp[i];
+	}
 
-	for (int x = -2; x < 3; ++x) {
-		for (int y = -2; y < 3; ++y) {
+	for (int x = -1; x < 2; ++x) {
+		for (int y = -1; y < 2; ++y) {
 			if (x == 0 && y == 0) {
 				continue;
 			}
@@ -204,8 +217,11 @@ mob_get_nearby_players(struct mob *mob, struct player **list, size_t max)
 			if (count >= max) {
 				break;
 			}
-			count += zone_find_players(zone, mob->server,
-				list + count, max - count);
+			tmp_count = zone_find_players(zone,
+			    mob->server, tmp, 128);
+			for (size_t i = 0; i < tmp_count && count < max; ++i) {
+				list[count++] = tmp[i];
+			}
 		}
 	}
 
