@@ -363,6 +363,7 @@ struct npc *mob_find_nearby_npc(struct mob *, const char *);
 struct player *player_create(struct server *, int);
 int player_load(struct player *);
 void player_process_combat(struct player *);
+void player_process_movement(struct player *);
 void player_die(struct player *, struct player *p);
 void player_close_ui(struct player *);
 void player_destroy(struct player *);

@@ -105,4 +105,10 @@ void zone_remove_player(struct zone *, uint16_t);
 void zone_add_npc(struct zone *, uint16_t);
 void zone_remove_npc(struct zone *, uint16_t);
 
+size_t zone_find_npcs(struct zone *, struct server *,
+    struct npc **, size_t, bool);
+
+size_t zone_find_players(struct zone *, struct server *,
+    struct player **, size_t);
+
 #endif

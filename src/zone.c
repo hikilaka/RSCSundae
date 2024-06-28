@@ -461,3 +461,52 @@ zone_remove_npc(struct zone *zone, uint16_t npc_id)
 		}
 	}
 }
+
+size_t
+zone_find_npcs(struct zone *zone, struct server *s,
+    struct npc **list, size_t max, bool exclude_busy)
+{
+	size_t count = 0;
+
+	for (int i = 0; i < zone->npc_max; ++i) {
+		if (zone->npcs[i] == UINT16_MAX) {
+			continue;
+		}
+		struct npc *npc = s->npcs[zone->npcs[i]];
+		if (npc == NULL) {
+			zone->npcs[i] = UINT16_MAX;
+			continue;
+		}
+		if (exclude_busy && (npc->busy || npc->mob.in_combat)) {
+			continue;
+		}
+		list[count++] = npc;
+		if (count >= max) {
+			break;
+		}
+	}
+	return count;
+}
+
+size_t
+zone_find_players(struct zone *zone, struct server *s,
+    struct player **list, size_t max)
+{
+	size_t count = 0;
+
+	for (int i = 0; i < zone->player_max; ++i) {
+		if (zone->players[i] == UINT16_MAX) {
+			continue;
+		}
+		struct player *p = s->players[zone->players[i]];
+		if (p == NULL) {
+			zone->players[i] = UINT16_MAX;
+			continue;
+		}
+		list[count++] = p;
+		if (count >= max) {
+			break;
+		}
+	}
+	return count;
+}
