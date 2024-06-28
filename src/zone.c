@@ -419,10 +419,10 @@ zone_add_npc(struct zone *zone, uint16_t npc_id)
 		}
 	}
 
-	uint16_t new_max = zone->player_max;
+	uint16_t new_max = zone->npc_max;
 
 	if (new_max == 0) {
-		new_max = 8;
+		new_max = 2;
 	} else {
 		new_max *= 2;
 	}
