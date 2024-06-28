@@ -439,3 +439,25 @@ zone_add_npc(struct zone *zone, uint16_t npc_id)
 	}
 	zone->npc_max = new_max;
 }
+
+void
+zone_remove_player(struct zone *zone, uint16_t player_id)
+{
+	for (size_t i = 0; i < zone->player_max; ++i) {
+		if (zone->players[i] == player_id) {
+			zone->players[i] = UINT16_MAX;
+			return;
+		}
+	}
+}
+
+void
+zone_remove_npc(struct zone *zone, uint16_t npc_id)
+{
+	for (size_t i = 0; i < zone->npc_max; ++i) {
+		if (zone->npcs[i] == npc_id) {
+			zone->npcs[i] = UINT16_MAX;
+			return;
+		}
+	}
+}
