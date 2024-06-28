@@ -99,10 +99,10 @@ void server_add_bound(struct server *, struct bound *);
 struct ground_item *server_find_ground_item(struct player *, int, int, int);
 void server_add_item_respawn(struct ground_item *);
 
-void zone_add_player(int, int, uint16_t);
-void zone_remove_player(int, int, uint16_t);
+void zone_add_player(struct zone *, uint16_t);
+void zone_remove_player(struct zone *, uint16_t);
 
-void zone_add_npc(int, int, uint16_t);
-void zone_remove_npc(int, int, uint16_t);
+void zone_add_npc(struct zone *, uint16_t);
+void zone_remove_npc(struct zone *, uint16_t);
 
 #endif
