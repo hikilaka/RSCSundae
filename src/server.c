@@ -1050,6 +1050,7 @@ int
 server_add_npc(int id, int x, int y)
 {
 	struct npc *npc;
+	struct zone *zone;
 
 	for (size_t i = 0; i < MAXNPCS; ++i) {
 		if (s.npcs[i] != NULL) {
@@ -1079,6 +1080,10 @@ server_add_npc(int id, int x, int y)
 		npc->mob.cur_stats[SKILL_HITS] =
 		    npc->mob.base_stats[SKILL_HITS] = npc->config->hits;
 		s.npcs[i] = npc;
+		zone = server_find_zone(x, y);
+		if (zone != NULL) {
+			zone_add_npc(zone, i);
+		}
 		if (i > s.max_npc_id) {
 			s.max_npc_id = i + 1;
 		}

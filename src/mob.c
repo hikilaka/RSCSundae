@@ -126,37 +126,47 @@ mob_within_range(struct mob *mob, int x, int y, int range)
 }
 
 size_t
-get_nearby_npcs(struct mob *mob,
-		struct npc **list, size_t max, int radius, bool exclude_busy)
+mob_get_nearby_npcs(struct mob *mob,
+		struct npc **list, size_t max, bool exclude_busy)
 {
-	int max_id = mob->server->max_npc_id;
+	struct zone *orig, *zone;
 	size_t count = 0;
 
-	for (int i = 0; i < max_id; ++i) {
-		struct npc *npc = mob->server->npcs[i];
-		if (npc == NULL) {
-			continue;
-		}
-		if (count >= max) {
-			break;
-		}
-		if (exclude_busy && (npc->busy || npc->mob.in_combat)) {
-			continue;
-		}
-		if (mob_within_range(mob, npc->mob.x, npc->mob.y, radius)) {
-			list[count++] = npc;
+	orig = server_find_zone(mob->x, mob->y);
+	if (orig == NULL) {
+		return 0;
+	}
+
+	count += zone_find_npcs(orig, mob->server, list, max, exclude_busy);
+
+	for (int x = -2; x < 3; ++x) {
+		for (int y = -2; y < 3; ++y) {
+			if (x == 0 && y == 0) {
+				continue;
+			}
+			zone = server_get_zone(orig->x + x, orig->y + y,
+			    orig->plane);
+			if (zone == NULL) {
+				continue;
+			}
+			if (count >= max) {
+				break;
+			}
+			count += zone_find_npcs(zone, mob->server,
+				list + count, max - count, exclude_busy);
 		}
 	}
+
 	return count;
 }
 
 struct npc *
 mob_find_nearby_npc(struct mob *mob, const char *name)
 {
-	struct npc *npcs[16];
+	struct npc *npcs[8];
 	size_t n;
 
-	n = get_nearby_npcs(mob, npcs, 16, 16, true);
+	n = mob_get_nearby_npcs(mob, npcs, 8, true);
 
 	for (size_t i = 0; i < n; ++i) {
 		for (size_t j = 0; j < npcs[i]->config->name_count; ++j) {
@@ -169,27 +179,36 @@ mob_find_nearby_npc(struct mob *mob, const char *name)
 }
 
 size_t
-get_nearby_players(struct mob *mob,
-		   struct player **list, size_t max, int radius)
+mob_get_nearby_players(struct mob *mob, struct player **list, size_t max)
 {
-	int max_id = mob->server->max_player_id;
+	struct zone *orig, *zone;
 	size_t count = 0;
 
-	for (int i = 0; i < max_id; ++i) {
-		struct player *p2 = mob->server->players[i];
-		if (p2 == NULL) {
-			continue;
-		}
-		if (p2->name == -1) {
-			continue;
-		}
-		if (count >= max) {
-			break;
-		}
-		if (mob_within_range(mob, p2->mob.x, p2->mob.y, radius)) {
-			list[count++] = p2;
+	orig = server_find_zone(mob->x, mob->y);
+	if (orig == NULL) {
+		return 0;
+	}
+
+	count += zone_find_players(orig, mob->server, list, max);
+
+	for (int x = -2; x < 3; ++x) {
+		for (int y = -2; y < 3; ++y) {
+			if (x == 0 && y == 0) {
+				continue;
+			}
+			zone = server_get_zone(orig->x + x, orig->y + y,
+			    orig->plane);
+			if (zone == NULL) {
+				continue;
+			}
+			if (count >= max) {
+				break;
+			}
+			count += zone_find_players(zone, mob->server,
+				list + count, max - count);
 		}
 	}
+
 	return count;
 }
 

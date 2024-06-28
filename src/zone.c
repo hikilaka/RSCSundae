@@ -503,9 +503,11 @@ zone_find_players(struct zone *zone, struct server *s,
 			zone->players[i] = UINT16_MAX;
 			continue;
 		}
-		list[count++] = p;
-		if (count >= max) {
-			break;
+		if (p->name != -1) {
+			list[count++] = p;
+			if (count >= max) {
+				break;
+			}
 		}
 	}
 	return count;

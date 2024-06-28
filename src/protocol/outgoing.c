@@ -127,8 +127,8 @@ player_send_npc_movement(struct player *p)
 	size_t nearby_count = 0;
 	size_t new_known_count = 0;
 
-	nearby_count = get_nearby_npcs(&p->mob, nearby,
-	    MAX_KNOWN_NPCS, UPDATE_RADIUS, false);
+	nearby_count = mob_get_nearby_npcs(&p->mob, nearby,
+	    MAX_KNOWN_NPCS, false);
 
 	buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
 		  OP_SRV_NPC_MOVEMENT);
@@ -291,8 +291,8 @@ player_send_movement(struct player *p)
 	size_t nearby_count = 0;
 	size_t new_known_count = 0;
 
-	nearby_count = get_nearby_players(&p->mob, nearby,
-	    MAX_KNOWN_PLAYERS, UPDATE_RADIUS);
+	nearby_count = mob_get_nearby_players(&p->mob, nearby,
+	    MAX_KNOWN_PLAYERS);
 
 	buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
 		  OP_SRV_PLAYER_MOVEMENT);

@@ -129,8 +129,9 @@ player_load(struct player *p)
 
 	player_recalculate_combat_level(p);
 
-	p->mob.x = p->mob.server->start_tile_x;
-	p->mob.y = p->mob.server->start_tile_y;
+	player_teleport(p,
+	    p->mob.server->start_tile_x,
+	    p->mob.server->start_tile_y);
 	return 0;
 }
 
