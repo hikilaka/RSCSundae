@@ -169,7 +169,7 @@ net_set_flags(int s)
 	}
 #else
 	flags = 1;
-	if (ioctl(socket, FIONBIO, &flags) != 0) {
+	if (ioctl(s, FIONBIO, &flags) != 0) {
 		fprintf(stderr, "failed to set non-blocking\n");
 		return -1;
 	}
