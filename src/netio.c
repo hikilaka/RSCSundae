@@ -12,6 +12,7 @@
 
 #ifdef _WIN32
 #include "platform/win32_compat.h"
+static int winsock_startup = 0;
 #endif
 
 static int net_set_flags(int);
@@ -23,6 +24,20 @@ net_establish_listener(struct server *s, int *sockets)
 	struct addrinfo hints = {0};
 	struct addrinfo *ai = NULL, *ai0 = NULL;
 	char portstr[32];
+
+#ifdef WIN32
+	if (!winsock_startup) {
+		WSADATA wsa_data = {0};
+		int ret = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+
+		if (ret < 0) {
+			fprintf(stderr, "WSAStartup() error: %d\n",
+			    WSAGetLastError());
+			return -1;
+		}
+		winsock_startup = 1;
+	}
+#endif
 
 	(void)snprintf(portstr, sizeof(portstr), "%d", s->port);
 
