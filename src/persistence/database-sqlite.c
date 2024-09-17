@@ -627,7 +627,7 @@ database_init(struct database *database)
 
 	char save_query[2048] = "UPDATE `players` SET `rpg_class` = ?, "
 		"`play_time` = ?, `login_date` = ?, `ban_end_date` = ?, "
-		"`x` = ?, `y` = ?, `quest_points` = ?, "
+		"`x` = ?, `y` = ?, `quest_points` = ?, `login_ip` = ?, "
 		"`camera_auto` = ?, `one_mouse_button` = ?, `block_public` = ?, "
 		"`block_private` = ?, `block_trade` = ?, `block_duel` = ?, "
 		"`hair_colour` = ?, `top_colour` = ?, `leg_colour` = ?, "
@@ -988,6 +988,11 @@ database_save_player(struct database *database, struct player *player)
 
 	if (stmt_bind_int(database->db, database->save_player, bind_index++,
 			player->quest_points) == -1) {
+		return -1;
+	}
+
+	if (stmt_bind_text(database->db, database->save_player, bind_index++,
+			player->address) == -1) {
 		return -1;
 	}
 
