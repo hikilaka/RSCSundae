@@ -1,6 +1,7 @@
 #include <ev.h>
 #ifndef _WIN32
 #include <sys/socket.h>
+#include <netdb.h>
 #endif
 #include <errno.h>
 #include <fcntl.h>
@@ -36,6 +37,7 @@ server_sock_cb(EV_P_ ev_io *w, int revents)
 {
 	struct sockaddr_storage client_addr;
 	socklen_t client_len = sizeof(client_addr);
+	struct player *p;
 
 	(void)revents;
 
@@ -46,9 +48,16 @@ server_sock_cb(EV_P_ ev_io *w, int revents)
 			close(client_sock);
 			return;
 		}
-		if (player_create(serv, client_sock) == NULL) {
+		p = player_create(serv, client_sock);
+		if (p == NULL) {
 			close(client_sock);
+			return;
 		}
+		getnameinfo((struct sockaddr *)&client_addr,
+		    sizeof(client_addr),
+		    p->address, sizeof(p->address), NULL, 0,
+		    NI_NUMERICHOST);
+		printf("got connection from %s\n", p->address);
 	}
 }
 

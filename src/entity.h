@@ -260,6 +260,7 @@ struct player {
 	uint8_t tmpbuf[PLAYER_BUFSIZE]; /* used for packet construction */
 	uint8_t inbuf[PLAYER_BUFSIZE];
 	char password[32]; /* cleared after registration */
+	char address[64];
 	uint16_t inbuf_len;
 	uint16_t inbuf_processed;
 	uint8_t outbuf[PLAYER_BUFSIZE];
