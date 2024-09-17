@@ -1551,6 +1551,14 @@ player_clear_actions(struct player *p)
 bool
 player_can_see_item(struct player *p, struct ground_item *item)
 {
+	if (item->owner != p->mob.id) {
+		struct item_config *config;
+
+		config = server_item_config_by_id(item->id);
+		if (config != NULL && config->quest_item) {
+			return false;
+		}
+	}
 	if (item->respawn_time > p->mob.server->tick_counter) {
 		return false;
 	}

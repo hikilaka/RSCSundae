@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "../buffer.h"
 #include "config.h"
+#include "item.h"
 
 /* parser for the config46.jag txt format */
 
@@ -347,8 +348,45 @@ config_parse_items(char *buffer, size_t len, size_t *num_items,
 			goto err;
 		}
 		offset = tmp;
-		items[i].quest_item = tmpl;
+		items[i].quest_item = 0;
 	}
+
+	items[ITEM_GHOSTSPEAK].quest_item = 1;
+	items[ITEM_SILVKEY1].quest_item = 1;
+	items[ITEM_SILVKEY2].quest_item = 1;
+	items[ITEM_GHOSTSKULL].quest_item = 1;
+	items[ITEM_SILVKEY3].quest_item = 1;
+	items[ITEM_SILVERLIGH].quest_item = 1;
+	items[ITEM_CADAVA].quest_item = 1;
+	items[ITEM_GAGUE].quest_item = 1;
+	items[ITEM_FISHFOOD].quest_item = 1;
+	items[ITEM_FISHFOOD2].quest_item = 1;
+	items[ITEM_OIL_CAN].quest_item = 1;
+	items[ITEM_CLOSET_KEY].quest_item = 1;
+	items[ITEM_TUBE].quest_item = 1;
+	items[ITEM_STAKE].quest_item = 1;
+	items[ITEM_PASTE].quest_item = 1;
+	items[ITEM_PRINCEKEY].quest_item = 1;
+	items[ITEM_WIG].quest_item = 1;
+	items[ITEM_WIG2].quest_item = 1;
+	items[ITEM_KEYPRINT].quest_item = 1;
+	items[ITEM_PORTRAIT].quest_item = 1;
+	items[ITEM_FALSWORD].quest_item = 1;
+	items[ITEM_BLURITE].quest_item = 1;
+	items[ITEM_RAT_TAIL].quest_item = 1;
+	items[ITEM_SUPERCHIS].quest_item = 1;
+	items[ITEM_RUM].quest_item = 1;
+	items[ITEM_CHESTKEY].quest_item = 1;
+	items[ITEM_RED_KEY].quest_item = 1;
+	items[ITEM_ORANGE_KEY].quest_item = 1;
+	items[ITEM_YELLOW_KEY].quest_item = 1;
+	items[ITEM_BLUE_KEY].quest_item = 1;
+	items[ITEM_MAG_KEY].quest_item = 1;
+	items[ITEM_BLACK_KEY].quest_item = 1;
+	items[ITEM_MAP].quest_item = 1;
+	items[ITEM_MAP_PIECE1].quest_item = 1;
+	items[ITEM_MAP_PIECE2].quest_item = 1;
+	items[ITEM_MAP_PIECE3].quest_item = 1;
 
 	*num_items = max_items;
 	return items;
