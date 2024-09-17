@@ -55,12 +55,12 @@ player_trade_offer(struct player *p, uint16_t id, uint32_t amount)
 		return;
 	}
 	/*
-	 * XXX: allow this for now, 110 protocol has no way to notify
-	 * player their own stuff was removed from a trade
+	 * 110 protocol has no way to notify player their own stuff
+	 * was removed from a trade
 	 */
-	/*if (config->quest_item) {
+	if (p->mob.server->untradables && config->quest_item) {
 		return;
-	}*/
+	}
 	if (p->trade_state == TRADE_STATE_CONFIRMED ||
 	    partner->trade_state == TRADE_STATE_CONFIRMED) {
 		return;

@@ -41,6 +41,9 @@ server_parse_settings(void *user, const char *section,
 		} else if (strcmp(name, "movement_timer") == 0) {
 			s->movement_timer =
 			    (strtol(value, NULL, 10) != 0);
+		} else if (strcmp(name, "untradables") == 0) {
+			s->untradables =
+			    (strtol(value, NULL, 10) != 0);
 		} else {
 			return 0;
 		}
