@@ -6,6 +6,7 @@
 #include <poll.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,6 +29,7 @@ server_sock_cb(int fd)
 {
 	struct sockaddr_storage client_addr;
 	socklen_t client_len = sizeof(client_addr);
+	struct player *p;
 
 	int client_sock = accept(fd,
 	    (struct sockaddr *)&client_addr, &client_len);
@@ -36,9 +38,16 @@ server_sock_cb(int fd)
 			close(client_sock);
 			return;
 		}
-		if (player_create(serv, client_sock) == NULL) {
+		p = player_create(serv, client_sock);
+		if (p == NULL) {
 			close(client_sock);
+			return;
 		}
+		getnameinfo((struct sockaddr *)&client_addr,
+		    sizeof(client_addr),
+		    p->address, sizeof(p->address), NULL, 0,
+		    NI_NUMERICHOST);
+		printf("got connection from %s\n", p->address);
 	}
 }
 
