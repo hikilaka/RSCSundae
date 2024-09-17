@@ -2483,7 +2483,7 @@ script_onspellobj(lua_State *L, struct player *p,
 	config = server_item_config_by_id(item->id);
 	assert(config != NULL);
 
-	for (size_t i = 0; i < config->name_count; ++i) {
+	for (size_t i = config->name_count; i-- > 0 ;) {
 		lua_getglobal(L, "script_engine_spellobj");
 		if (!lua_isfunction(L, -1)) {
 			puts("script error: can't find essential function script_engine_spellobj");
