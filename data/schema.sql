@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS "players" (
 	"username"	TEXT NOT NULL UNIQUE,
 	"password"	TEXT NOT NULL,
 	"rpg_class"	INTEGER NOT NULL DEFAULT 255,
+	"xp_multiplier"	INTEGER NOT NULL DEFAULT 1,
 	"rank"	INTEGER NOT NULL DEFAULT 0,
 	"creation_ip"	TEXT NOT NULL DEFAULT '127.0.0.1',
 	"login_ip"	TEXT NOT NULL DEFAULT '',

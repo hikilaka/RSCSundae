@@ -105,6 +105,7 @@ stat_advance(struct player *player, int stat,
 	inc = base_xp + (proportion_xp * player->mob.base_stats[stat]);
 
 	inc *= player->mob.server->xp_multiplier;
+	inc *= player->xp_multiplier;
 
 	if ((MAX_EXPERIENCE - cur) > inc) {
 		player->experience[stat] = cur + inc;
