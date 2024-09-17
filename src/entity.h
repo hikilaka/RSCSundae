@@ -287,6 +287,7 @@ struct player {
 	uint8_t leg_colour;
 	uint8_t skin_colour;
 	uint8_t rpg_class;
+	uint8_t xp_multiplier;
 	uint8_t skulled;
 	uint16_t skull_timer;
 	uint64_t drain_counter;
