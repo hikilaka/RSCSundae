@@ -87,7 +87,7 @@ shop_sell(struct shop_config *shop, struct player *p, uint16_t id)
 		}
 	}
 	if (shop->item_count < MAX_SHOP_ITEMS) {
-		if (item->quest_item) {
+		if (p->mob.server->untradables && item->quest_item) {
 			return;
 		}
 		if (shop->pawn_limit == 0) {

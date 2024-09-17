@@ -84,6 +84,7 @@ struct server {
 	/* the 5 minute idle movement timer */
 	bool movement_timer;
 	bool log_packets;
+	bool untradables;
 	int xp_multiplier;
 	lua_State *lua;
 	struct rsa rsa;
