@@ -14,7 +14,6 @@ Planned features
 ----------------
 
 * No-trading and no-banking game modes
-* Customizable XP rate
 * Extra hiscores requiring more database
 
 Telegrab restrictions
