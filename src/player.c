@@ -40,7 +40,7 @@ static bool player_init_combat(struct player *, struct mob *);
 static void player_moved(struct player *, int, int);
 
 struct player *
-player_create(struct server *s, int sock)
+player_create(struct server *s, int sock, const char *address)
 {
 	int slot = -1;
 
@@ -71,9 +71,29 @@ player_create(struct server *s, int sock)
 
 	p->sock = sock;
 
+	snprintf(p->address, sizeof(p->address), "%s", address);
+
 	if (slot == -1) {
 		/* server is full */
 		net_login_response(p, RESP_FULL);
+		free(p);
+		return NULL;
+	}
+
+	int num_logins = 0;
+
+	for (int i = 0; i < s->max_player_id; ++i) {
+		if (s->players[i] == NULL) {
+			continue;
+		}
+		if (strcmp(s->players[i]->address, address) == 0) {
+			num_logins++;
+		}
+	}
+
+	if (num_logins >= s->max_per_ip) {
+		net_login_response(p, RESP_IP_USED);
+		free(p);
 		return NULL;
 	}
 

@@ -86,6 +86,7 @@ main(int argc, char **argv)
 	s.name = "RSC Sundae";
 	s.bind_addr = "127.0.0.1";
 	s.port = 43594;
+	s.max_per_ip = 3;
 
 #ifdef SIGPIPE
 	(void)signal(SIGPIPE, on_signal_do_nothing);

@@ -21,6 +21,8 @@ server_parse_settings(void *user, const char *section,
 			s->rsa_modulus = strdup(value);
 		} else if (strcmp(name, "log_packets") == 0) {
 			s->log_packets = (strtol(value, NULL, 10) != 0);
+		} else if (strcmp(name, "max_per_ip") == 0) {
+			s->max_per_ip = strtol(value, NULL, 10);
 		} else {
 			return 0;
 		}

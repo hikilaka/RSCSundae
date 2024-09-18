@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+#include "protocol/opcodes.h"
 #include "server.h"
 #include "netio.h"
 
@@ -191,6 +192,7 @@ net_set_flags(int s)
 int
 net_player_accept(struct server *serv, int from)
 {
+	char address[64];
 	struct sockaddr_storage client_addr;
 	socklen_t client_len = sizeof(client_addr);
 	struct player *p;
@@ -206,16 +208,17 @@ net_player_accept(struct server *serv, int from)
 		return -1;
 	}
 
-	p = player_create(serv, client_sock);
+	getnameinfo((struct sockaddr *)&client_addr,
+	    sizeof(client_addr),
+	    address, sizeof(address), NULL, 0,
+	    NI_NUMERICHOST);
+	printf("got connection from %s\n", address);
+
+	p = player_create(serv, client_sock, address);
 	if (p == NULL) {
 		close(client_sock);
 		return -1;
 	}
 
-	getnameinfo((struct sockaddr *)&client_addr,
-	    sizeof(client_addr),
-	    p->address, sizeof(p->address), NULL, 0,
-	    NI_NUMERICHOST);
-	printf("got connection from %s\n", p->address);
 	return 0;
 }
