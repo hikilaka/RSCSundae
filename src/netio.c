@@ -189,7 +189,33 @@ net_set_flags(int s)
 }
 
 int
-net_player_accept(int sock)
+net_player_accept(struct server *serv, int from)
 {
-	return net_set_flags(sock);
+	struct sockaddr_storage client_addr;
+	socklen_t client_len = sizeof(client_addr);
+	struct player *p;
+
+	int client_sock = accept(from,
+	    (struct sockaddr *)&client_addr, &client_len);
+	if (client_sock == -1) {
+		return -1;
+	}
+
+	if (net_set_flags(client_sock) == -1) {
+		close(client_sock);
+		return -1;
+	}
+
+	p = player_create(serv, client_sock);
+	if (p == NULL) {
+		close(client_sock);
+		return -1;
+	}
+
+	getnameinfo((struct sockaddr *)&client_addr,
+	    sizeof(client_addr),
+	    p->address, sizeof(p->address), NULL, 0,
+	    NI_NUMERICHOST);
+	printf("got connection from %s\n", p->address);
+	return 0;
 }
