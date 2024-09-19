@@ -26,7 +26,7 @@ net_establish_listener(struct server *s, int *sockets)
 	struct addrinfo *ai = NULL, *ai0 = NULL;
 	char portstr[32];
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (!winsock_startup) {
 		WSADATA wsa_data = {0};
 		int ret = WSAStartup(MAKEWORD(2, 2), &wsa_data);
