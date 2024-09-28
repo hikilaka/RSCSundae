@@ -16,6 +16,9 @@ player_trade_request(struct player *p, struct player *target)
 	assert(p != NULL);
 	assert(target != NULL);
 
+	if (p->restrict_trade) {
+		return;
+	}
 	if (player_is_blocked(target, p->name, target->block_trade)) {
 		return;
 	}

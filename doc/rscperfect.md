@@ -8,12 +8,12 @@ Features
 --------
 
 * Non-tradable quest items
+* No-trading and no-banking game modes
 * Telegrab area restrictions for player-hosted drop parties
 
 Planned features
 ----------------
 
-* No-trading and no-banking game modes
 * Extra hiscores requiring more database
 
 Telegrab restrictions

@@ -1558,6 +1558,10 @@ player_can_see_item(struct player *p, struct ground_item *item)
 		if (config != NULL && config->quest_item) {
 			return false;
 		}
+
+		if (p->restrict_trade) {
+			return false;
+		}
 	}
 	if (item->respawn_time > p->mob.server->tick_counter) {
 		return false;
