@@ -487,6 +487,7 @@ void
 player_die(struct player *p, struct player *victor)
 {
 	struct item_config *item;
+	uint32_t value_lost = 0;
 	int kept_max = 3;
 
 	mob_die(&p->mob);
@@ -535,12 +536,14 @@ player_die(struct player *p, struct player *victor)
 		}
 		item = server_item_config_by_id(p->inventory[slot].id);
 		if (item->weight == 0) {
+			value_lost += (item->value * p->inventory[slot].stack);
 			player_inv_remove_id(p, item->id,
 			    p->inventory[slot].stack);
 			server_add_temp_item(victor,
 			    p->mob.x, p->mob.y, item->id,
 				p->inventory[slot].stack);
 		} else {
+			value_lost += item->value;
 			player_inv_remove_id(p, item->id, 1);
 			server_add_temp_item(victor,
 			    p->mob.x, p->mob.y, item->id, 1);
@@ -566,6 +569,29 @@ player_die(struct player *p, struct player *victor)
 
 	if (victor != NULL) {
 		char name[32], msg[64];
+		const char *var_kills, *var_deaths;
+		int var;
+
+		int level = mob_wilderness_level(&victor->mob);
+		if (level < 15) {
+			var_kills = "kills_low";
+			var_deaths = "deaths_low";
+		} else if (level < 35) {
+			var_kills = "kills_med";
+			var_deaths = "deaths_med";
+		} else {
+			var_kills = "kills_high";
+			var_deaths = "deaths_high";
+		}
+
+		if (strcmp(p->address, victor->address) != 0 &&
+		    value_lost > 1000) {
+			var = player_variable_get(victor, var_kills);
+			player_variable_set(victor, var_kills, var + 1);
+		}
+
+		var = player_variable_get(p, var_deaths);
+		player_variable_set(p, var_deaths, var + 1);
 
 		mod37_namedec(p->name, name);
 		(void)snprintf(msg, sizeof(msg),
