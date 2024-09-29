@@ -45,6 +45,20 @@ player_parse_command(struct player *p, const char *cmd)
 		    "There are currently %d players on this world",
 		    p->mob.server->player_count);
 		player_send_message(p, mes);
+	} else if (strcmp(cmd, "onlinelist") == 0) {
+		char name[32];
+		char mes[2048];
+
+		mes[0] = '\0';
+		for (size_t i = 0; i < p->mob.server->max_player_id; ++i) {
+			struct player *target = p->mob.server->players[i];
+			if (target == NULL || target->name < 0) {
+				continue;
+			}
+			mod37_namedec(target->name, name);
+			snprintf(mes, sizeof(mes), "%s%s, ", mes, name);
+		}
+		player_send_mesbox(p, mes);
 	} else if (strcmp(cmd, "time") == 0) {
 		char time_str[64];
 		char mes[128];
