@@ -74,7 +74,7 @@ player_parse_command(struct player *p, const char *cmd)
 
 		mod37_namedec(p->name, name);
 		snprintf(mes, sizeof(mes),
-			"@que@@cya@[@whi@Yell@cya@] @yel@%s:", name);
+			"@que@@cya@[@whi@Global@cya@] @yel@%s:", name);
 
 		char *next = strtok(NULL, " ");
 
@@ -84,10 +84,14 @@ player_parse_command(struct player *p, const char *cmd)
 		} while (next != NULL);
 
 		for (size_t i = 0; i < p->mob.server->max_player_id; ++i) {
-			if (p->mob.server->players[i] == NULL) {
+			struct player *target = p->mob.server->players[i];
+			if (target == NULL) {
 				continue;
 			}
-			player_send_message(p->mob.server->players[i], mes);
+			if (player_has_ignore(target, p->name)) {
+				continue;
+			}
+			player_send_message(target, mes);
 		}
 
 		p->yell_timer = 10;
