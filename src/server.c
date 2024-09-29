@@ -462,8 +462,8 @@ server_tick(void)
 		if (s.players[i]->spell_timer > 0) {
 			s.players[i]->spell_timer--;
 		}
-		if (s.players[i]->global_chat_timer > 0) {
-			s.players[i]->global_chat_timer --;
+		if (s.players[i]->yell_timer > 0) {
+			s.players[i]->yell_timer--;
 		}
 		s.players[i]->chat_type = CHAT_TYPE_NONE;
 		s.players[i]->mob.chat_len = 0;

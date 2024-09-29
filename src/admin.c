@@ -38,24 +38,24 @@ player_parse_admin_command(struct player *p, char *str)
 void
 player_parse_command(struct player *p, const char *cmd)
 {
-	if (strcmp(cmd, "global_agree") == 0) {
+	if (strcmp(cmd, "yell_agree") == 0) {
 		player_send_message(p,
 			"You have agreed to the rules of global chat");
 		player_send_message(p,
-			"You may now send messages with e.g. ::g hello");
+			"You may now send messages with e.g. ::yell hello");
 		player_variable_set(p, "global_agree", 1);
 		return;
 	}
-	if (strcmp(cmd, "g") == 0) {
+	if (strcmp(cmd, "yell") == 0) {
 		if (player_variable_get(p, "global_agree") == 0) {
 			player_send_message(p,
-				"Please note that global chat is @red@UNENCRYPTED@whi@. Do not send content that may");
+				"Please note that yelling is @red@UNENCRYPTED@whi@. Do not send content that may");
 			player_send_message(p,
 				"violate local laws, it can be traced back to you.");
 			player_send_message(p,
 				"We reserve the right to remove privileges from users that post offensive");
 			player_send_message(p,
-				"or irritating content. Type ::global_agree to continue.");
+				"or irritating content. Type ::yell_agree to continue.");
 			return;
 		}
 
@@ -64,7 +64,7 @@ player_parse_command(struct player *p, const char *cmd)
 			return;
 		}
 
-		if (p->global_chat_timer > 0) {
+		if (p->yell_timer > 0) {
 			player_send_message(p, "You may not send more than one message every 5 seconds");
 			return;
 		}
@@ -74,7 +74,7 @@ player_parse_command(struct player *p, const char *cmd)
 
 		mod37_namedec(p->name, name);
 		snprintf(mes, sizeof(mes),
-			"@que@@cya@[@whi@Global@cya@] @yel@%s:", name);
+			"@que@@cya@[@whi@Yell@cya@] @yel@%s:", name);
 
 		char *next = strtok(NULL, " ");
 
@@ -90,7 +90,7 @@ player_parse_command(struct player *p, const char *cmd)
 			player_send_message(p->mob.server->players[i], mes);
 		}
 
-		p->global_chat_timer = 10;
+		p->yell_timer = 10;
 
 		return;
 	}

@@ -10,7 +10,7 @@ Features
 * Non-tradable quest items
 * No-trading and no-banking game modes
 * Telegrab area restrictions for player-hosted drop parties
-* Global chat with ::g
+* Global chat ("yelling") with ::yell
 
 Planned features
 ----------------
