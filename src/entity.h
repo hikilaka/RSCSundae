@@ -351,6 +351,7 @@ struct player {
 	uint16_t bubble_id;
 	uint8_t ranged_timer;
 	uint8_t spell_timer;
+	uint8_t global_chat_timer;
 	uint8_t teleported;
 	uint16_t bank_count;
 	struct bank_item bank[MAX_BANK_SIZE];
