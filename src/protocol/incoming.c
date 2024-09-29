@@ -22,11 +22,6 @@
 #include "../platform/win32_compat.h"
 #endif
 
-/*
- * TODO: packet logging is incomplete
- * - should not just output slot for inventory
- */
-
 /* roughly one packet per frame at 50fps */
 #define MAX_PACKETS_PER_TICK		(32)
 
@@ -722,9 +717,10 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			npc = p->mob.server->npcs[id];
-			if (npc != NULL) {
+			if (npc != NULL && slot < p->inv_count) {
 				packet_log(p, "OP_CLI_NPC_USEWITH %s %d\n",
-				    npc->config->names[0], slot);
+				    npc->config->names[0],
+				    p->inventory[slot].id);
 				p->action = ACTION_NPC_USEWITH;
 				p->action_npc = npc->mob.id;
 				p->action_slot = slot;
@@ -758,10 +754,11 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			if (buf_getu16(data, offset, len, &slot) == -1) {
 				return;
 			}
-			packet_log(p, "OP_CLI_INV_OP1 %d\n", slot);
 			if (slot < p->inv_count) {
 				p->action = ACTION_INV_OP1;
 				p->action_slot = slot;
+				packet_log(p, "OP_CLI_INV_OP1 %d\n",
+				    p->inventory[slot].id);
 			}
 		}
 		break;
@@ -773,8 +770,11 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			offset += 2;
-			packet_log(p, "OP_CLI_INV_WEAR %d\n", slot);
-			player_wear(p, slot);
+			if (slot < p->inv_count) {
+				packet_log(p, "OP_CLI_INV_WEAR %d\n",
+				    p->inventory[slot].id);
+				player_wear(p, slot);
+			}
 		}
 		break;
 	case OP_CLI_INV_UNWEAR:
@@ -785,8 +785,11 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			offset += 2;
-			packet_log(p, "OP_CLI_INV_UNWEAR %d\n", slot);
-			player_unwear(p, slot);
+			if (slot < p->inv_count) {
+				packet_log(p, "OP_CLI_INV_UNWEAR %d\n",
+				    p->inventory[slot].id);
+				player_unwear(p, slot);
+			}
 		}
 		break;
 	case OP_CLI_INV_DROP:
@@ -797,9 +800,12 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			offset += 2;
-			packet_log(p, "OP_CLI_INV_DROP %d\n", slot);
-			p->action = ACTION_INV_DROP;
-			p->action_slot = slot;
+			if (slot < p->inv_count) {
+				packet_log(p, "OP_CLI_INV_DROP %d\n",
+				    p->inventory[slot].id);
+				p->action = ACTION_INV_DROP;
+				p->action_slot = slot;
+			}
 		}
 		break;
 	case OP_CLI_ITEM_USEWITH:
@@ -856,6 +862,8 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				p->action = ACTION_ITEM_TAKE;
 				memcpy(&p->action_item, item,
 					sizeof(struct ground_item));
+				packet_log(p, "OP_CLI_ITEM_TAKE %d %d %d\n",
+				    x, y, id);
 			}
 		}
 		break;
@@ -1217,11 +1225,11 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			offset += 2;
-			packet_log(p,
-			    "OP_CLI_BOUND_USEWITH %d %d %d %d\n",
-			    x, y, dir, slot);
 			bound = server_find_bound(x, y, dir);
-			if (bound != NULL) {
+			if (bound != NULL && slot < p->inv_count) {
+				packet_log(p,
+				    "OP_CLI_BOUND_USEWITH %d %d %d %d\n",
+				    x, y, dir, p->inventory[slot].id);
 				p->action = ACTION_BOUND_USEWITH;
 				p->action_slot = slot;
 				memcpy(&p->action_bound, bound,
@@ -1241,11 +1249,14 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			offset += 2;
-			packet_log(p,
-			    "OP_CLI_INV_USEWITH %d %d\n", slot1, slot2);
-			p->action = ACTION_INV_USEWITH;
-			p->action_slot = slot1;
-			p->action_slot2 = slot2;
+			if (slot1 < p->inv_count && slot2 < p->inv_count) {
+				packet_log(p, "OP_CLI_INV_USEWITH %d %d\n",
+				    p->inventory[slot1].id,
+				    p->inventory[slot2].id);
+				p->action = ACTION_INV_USEWITH;
+				p->action_slot = slot1;
+				p->action_slot2 = slot2;
+			}
 		}
 		break;
 	case OP_CLI_LOC_USEWITH:
@@ -1265,10 +1276,10 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 			offset += 2;
-			packet_log(p,
-			    "OP_CLI_LOC_USEWITH %d %d %d\n", x, y, slot);
 			loc = server_find_loc(x, y);
-			if (loc != NULL) {
+			if (loc != NULL && slot < p->inv_count) {
+				packet_log(p, "OP_CLI_LOC_USEWITH %d %d %d\n",
+				    x, y, p->inventory[slot].id);
 				p->action = ACTION_LOC_USEWITH;
 				p->action_slot = slot;
 				memcpy(&p->action_loc, loc, sizeof(struct loc));

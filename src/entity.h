@@ -399,7 +399,7 @@ struct npc *mob_find_nearby_npc(struct mob *, const char *);
 bool mob_check_reachable(struct mob *, int, int, bool);
 
 /* player.c */
-struct player *player_create(struct server *, int);
+struct player *player_create(struct server *, int, const char *);
 int player_load(struct player *);
 void player_process_combat(struct player *);
 void player_process_movement(struct player *);

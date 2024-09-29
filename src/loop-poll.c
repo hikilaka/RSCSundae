@@ -27,28 +27,7 @@ static int timerfd = -1;
 static void
 server_sock_cb(int fd)
 {
-	struct sockaddr_storage client_addr;
-	socklen_t client_len = sizeof(client_addr);
-	struct player *p;
-
-	int client_sock = accept(fd,
-	    (struct sockaddr *)&client_addr, &client_len);
-	if (client_sock != -1) {
-		if (net_player_accept(client_sock) == -1) {
-			close(client_sock);
-			return;
-		}
-		p = player_create(serv, client_sock);
-		if (p == NULL) {
-			close(client_sock);
-			return;
-		}
-		getnameinfo((struct sockaddr *)&client_addr,
-		    sizeof(client_addr),
-		    p->address, sizeof(p->address), NULL, 0,
-		    NI_NUMERICHOST);
-		printf("got connection from %s\n", p->address);
-	}
+	net_player_accept(serv, fd);
 }
 
 int

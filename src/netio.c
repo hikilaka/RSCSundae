@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+#include "protocol/opcodes.h"
 #include "server.h"
 #include "netio.h"
 
@@ -25,7 +26,7 @@ net_establish_listener(struct server *s, int *sockets)
 	struct addrinfo *ai = NULL, *ai0 = NULL;
 	char portstr[32];
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (!winsock_startup) {
 		WSADATA wsa_data = {0};
 		int ret = WSAStartup(MAKEWORD(2, 2), &wsa_data);
@@ -189,7 +190,35 @@ net_set_flags(int s)
 }
 
 int
-net_player_accept(int sock)
+net_player_accept(struct server *serv, int from)
 {
-	return net_set_flags(sock);
+	char address[64];
+	struct sockaddr_storage client_addr;
+	socklen_t client_len = sizeof(client_addr);
+	struct player *p;
+
+	int client_sock = accept(from,
+	    (struct sockaddr *)&client_addr, &client_len);
+	if (client_sock == -1) {
+		return -1;
+	}
+
+	if (net_set_flags(client_sock) == -1) {
+		close(client_sock);
+		return -1;
+	}
+
+	getnameinfo((struct sockaddr *)&client_addr,
+	    sizeof(client_addr),
+	    address, sizeof(address), NULL, 0,
+	    NI_NUMERICHOST);
+	printf("got connection from %s\n", address);
+
+	p = player_create(serv, client_sock, address);
+	if (p == NULL) {
+		close(client_sock);
+		return -1;
+	}
+
+	return 0;
 }

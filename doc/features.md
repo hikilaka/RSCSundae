@@ -44,7 +44,6 @@ Engine
 - [ ] Login server
 - [x] Moderation features: player controls
 - [x] Moderation features: per-player action log
-- [ ] Moderation features: login throttle to prevent DoS and bruteforcing
 - [x] Protocol: 110
 - [x] Protocol: 110 (new player)
 - [ ] Protocol: 110 (password change)

@@ -86,6 +86,8 @@ struct server {
 	bool log_packets;
 	bool untradables;
 	int xp_multiplier;
+	/* maximum number of logins per IP address */
+	int max_per_ip;
 	lua_State *lua;
 	struct rsa rsa;
 	char *rsa_exponent;

@@ -29,6 +29,12 @@
 /* <MrAndrew> it's 40 cycles, which is about 25 seconds */
 #define MAX_IDLE_TICKS		(40)
 
+/*
+ * realistically it can get as high as 500ms before you start
+ * having real problems
+ */
+#define WARNING_DELAY_LIMIT	(250)
+
 struct server s = {0};
 
 static void on_signal_do_nothing(int);
@@ -86,6 +92,7 @@ main(int argc, char **argv)
 	s.name = "RSC Sundae";
 	s.bind_addr = "127.0.0.1";
 	s.port = 43594;
+	s.max_per_ip = 3;
 
 #ifdef SIGPIPE
 	(void)signal(SIGPIPE, on_signal_do_nothing);
@@ -538,7 +545,7 @@ server_tick(void)
 	}
 
 	s.last_tick = get_time_ms();
-	if ((s.last_tick - start_time) > 50) {
+	if ((s.last_tick - start_time) > WARNING_DELAY_LIMIT) {
 		printf("warning: server running slowly,");
 		printf(" processing took %llu milliseconds\n",
 		    (unsigned long long)(s.last_tick - start_time));
