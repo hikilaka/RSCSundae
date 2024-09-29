@@ -360,6 +360,7 @@ struct player {
 	uint8_t isaac_ready;
 	uint8_t script_active;
 	uint8_t restrict_trade;
+	uint8_t restrict_bank;
 	struct playervar *variables;
 	size_t variable_count;
 	size_t variable_max;

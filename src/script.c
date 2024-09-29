@@ -1295,6 +1295,11 @@ script_displaybalance(lua_State *L)
 		return 0;
 	}
 
+	if (p->restrict_bank) {
+		player_send_message(p, "You do not have any bank balance");
+		return 0;
+	}
+
 	player_send_show_bank(p);
 	return 0;
 }
