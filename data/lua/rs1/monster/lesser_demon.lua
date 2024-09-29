@@ -33,6 +33,10 @@ function killnpc_lesser_demon(player, npc, x, y)
 
 	local weight = 0
 
+	local count = getvar(player, "lesser_demon_kills")
+	count = count + 1
+	setvar(player, "lesser_demon_kills", count)
+
 	for _, drop in ipairs(drops) do
 		weight = weight + drop[3]
 

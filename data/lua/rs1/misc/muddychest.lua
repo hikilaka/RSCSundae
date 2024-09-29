@@ -6,6 +6,10 @@ function oploc1_shutgorkachest(player, x, y)
 end
 
 function useloc_shutgorkachest_gorkakey(player, x, y)
+	local count = getvar(player, "gorka_count")
+	count = count + 1
+	setvar(player, "gorka_count", 1)
+
 	-- no idea why the messages are so inconsistent
 	mes(player, "@que@you unlock the chest with your key")
 	delay(3)

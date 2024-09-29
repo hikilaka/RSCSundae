@@ -40,6 +40,10 @@ function killnpc_moss_giant(player, npc, x, y)
 
 	local weight = 0
 
+	local count = getvar(player, "moss_giant_kills")
+	count = count + 1
+	setvar(player, "moss_giant_kills", count)
+
 	for _, drop in ipairs(drops) do
 		weight = weight + drop[3]
 

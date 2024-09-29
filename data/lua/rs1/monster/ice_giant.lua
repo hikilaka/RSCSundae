@@ -40,6 +40,10 @@ function killnpc_ice_giant(player, npc, x, y)
 
 	local weight = 0
 
+	local count = getvar(player, "ice_giant_kills")
+	count = count + 1
+	setvar(player, "ice_giant_kills", count)
+
 	for _, drop in ipairs(drops) do
 		weight = weight + drop[3]
 
