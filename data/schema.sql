@@ -54,6 +54,8 @@ CREATE TABLE IF NOT EXISTS "players" (
 	"head_sprite"	INTEGER NOT NULL DEFAULT 1,
 	"body_sprite"	INTEGER NOT NULL DEFAULT 2,
 	"skull_timer"	INTEGER NOT NULL DEFAULT 0,
+	"restrict_trade"	INTEGER NOT NULL DEFAULT 0,
+	"restrict_bank"		INTEGER NOT NULL DEFAULT 0,
 	"attack_current"	INTEGER NOT NULL DEFAULT 1,
 	"defence_current"	INTEGER NOT NULL DEFAULT 1,
 	"strength_current"	INTEGER NOT NULL DEFAULT 1,

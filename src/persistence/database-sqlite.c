@@ -564,7 +564,8 @@ database_init(struct database *database)
 	    "`camera_auto`, `one_mouse_button`, `block_public`, "
 	    "`block_private`, `block_trade`, `block_duel`, "
 	    "`hair_colour`, `top_colour`, `leg_colour`, `skin_colour`, "
-	    "`head_sprite`, `body_sprite`, `skull_timer`, ";
+	    "`head_sprite`, `body_sprite`, `skull_timer`, "
+	    "`restrict_trade`, `restrict_bank`, ";
 
 	for (int i = 0; i < MAX_SKILL_ID; i++) {
 		int remaining = sizeof(get_query) - strlen(get_query);
@@ -893,6 +894,10 @@ database_load_player(struct database *database, struct player *player)
 		sqlite3_column_int(database->get_player, column_index++);
 	player->skull_timer =
 		sqlite3_column_int(database->get_player, column_index++);
+	player->restrict_trade =
+		sqlite3_column_int(database->get_player, column_index++) != 0;
+	player->restrict_bank=
+		sqlite3_column_int(database->get_player, column_index++) != 0;
 
 	for (int i = 0; i < MAX_SKILL_ID; i++) {
 		player->mob.cur_stats[i] =
