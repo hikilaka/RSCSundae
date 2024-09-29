@@ -475,6 +475,9 @@ server_tick(void)
 		if (s.players[i]->retreat_timer > 0) {
 			s.players[i]->retreat_timer--;
 		}
+		if (s.players[i]->yell_timer > 0) {
+			s.players[i]->yell_timer--;
+		}
 		s.players[i]->chat_type = CHAT_TYPE_NONE;
 		s.players[i]->mob.chat_len = 0;
 		s.players[i]->appearance_changed = false;

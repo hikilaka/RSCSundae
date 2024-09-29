@@ -351,6 +351,7 @@ struct player {
 	uint8_t ranged_timer;
 	uint8_t retreat_timer;
 	uint8_t spell_timer;
+	uint8_t yell_timer;
 	uint8_t teleported;
 	uint16_t bank_count;
 	struct bank_item bank[MAX_BANK_SIZE];

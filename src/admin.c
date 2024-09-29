@@ -43,6 +43,65 @@ player_parse_command(struct player *p, const char *cmd)
 		player_show_kd(p);
 		return;
 	}
+	if (strcmp(cmd, "yell_agree") == 0) {
+		player_send_message(p,
+			"You have agreed to the rules of global chat");
+		player_send_message(p,
+			"You may now send messages with e.g. ::yell hello");
+		player_variable_set(p, "global_agree", 1);
+		return;
+	}
+	if (strcmp(cmd, "yell") == 0) {
+		if (player_variable_get(p, "global_agree") == 0) {
+			player_send_message(p,
+				"Please note that yelling is @red@UNENCRYPTED@whi@. Do not send content that may");
+			player_send_message(p,
+				"violate local laws, it can be traced back to you.");
+			player_send_message(p,
+				"We reserve the right to remove privileges from users that post offensive");
+			player_send_message(p,
+				"or irritating content. Type ::yell_agree to continue.");
+			return;
+		}
+
+		if (player_variable_get(p, "global_mute") != 0) {
+			player_send_message(p, "You may not use global chat");
+			return;
+		}
+
+		if (p->yell_timer > 0) {
+			player_send_message(p, "You may not send more than one message every 5 seconds");
+			return;
+		}
+
+		char mes[256];
+		char name[32];
+
+		mod37_namedec(p->name, name);
+		snprintf(mes, sizeof(mes),
+			"@que@@cya@[@whi@Global@cya@] @yel@%s:", name);
+
+		char *next = strtok(NULL, " ");
+
+		do {
+			snprintf(mes, sizeof(mes), "%s %s", mes, next);
+			next = strtok(NULL, " ");
+		} while (next != NULL);
+
+		for (size_t i = 0; i < p->mob.server->max_player_id; ++i) {
+			struct player *target = p->mob.server->players[i];
+			if (target == NULL) {
+				continue;
+			}
+			if (player_has_ignore(target, p->name)) {
+				continue;
+			}
+			player_send_message(target, mes);
+		}
+
+		p->yell_timer = 10;
+		return;
+	}
 	if (strcmp(cmd, "online") == 0) {
 		char mes[128];
 
