@@ -1991,6 +1991,19 @@ script_tick(lua_State *L)
 }
 
 void
+script_shutdown(lua_State *L)
+{
+	assert(L != NULL);
+	lua_getglobal(L, "script_engine_shutdown");
+	if (!lua_isfunction(L, -1)) {
+		puts("script error: can't find essential function script_engine_shutdown");
+		return;
+	}
+	safe_call(L, 0, 0, -1);
+	lua_close(L);
+}
+
+void
 script_process(lua_State *L, struct player *p)
 {
 	assert(L != NULL);

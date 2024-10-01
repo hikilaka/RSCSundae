@@ -4,6 +4,7 @@
 #include <time.h>
 #include "entity.h"
 #include "inventory.h"
+#include "script.h"
 #include "server.h"
 #include "stat.h"
 #include "utility.h"
@@ -320,6 +321,16 @@ player_parse_mod_command(struct player *p, const char *cmd)
 			    ((64000 * 60) * 60);
 			player_send_logout(target);
 		}
+	} else if (strcmp(cmd, "reload") == 0) {
+		script_shutdown(p->mob.server->lua);
+		p->mob.server->lua = script_init(p->mob.server);
+		for (size_t i = 0; i < p->mob.server->max_player_id; ++i) {
+			struct player *target = p->mob.server->players[i];
+			if (target != NULL) {
+				target->script_active = false;
+			}
+		}
+		player_send_message(p, "@red@Script engine reloaded.");
 	}
 }
 
