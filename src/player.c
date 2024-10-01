@@ -160,7 +160,6 @@ player_load(struct player *p)
 	p->bonus_changed = true;
 	p->plane_changed = true;
 	p->inv_changed = true;
-	p->ui_design_open = true;
 	p->appearance_changed = true;
 
 	p->rpg_class = UINT8_MAX;
@@ -1707,7 +1706,7 @@ player_process_action(struct player *p)
 		return;
 	}
 
-	if (p->script_active) {
+	if (p->script_active || p->ui_design_open) {
 		p->action = ACTION_NONE;
 		return;
 	}
@@ -2510,11 +2509,7 @@ player_process_movement(struct player *p)
 void
 player_attempt_logout(struct player *p, bool requested)
 {
-	/*
-	 * ui_design sets script_active but we want to garbage collect
-	 * players who x-log in the design screen
-	 */
-	if (p->mob.in_combat || (p->script_active && !p->ui_design_open)) {
+	if (p->mob.in_combat || p->script_active) {
 		if (requested) {
 			player_send_logout_reject(p);
 		}

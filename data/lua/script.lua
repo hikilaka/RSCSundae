@@ -160,6 +160,8 @@ function register_useinv(item1, item2, callback)
 	useinv_scripts[item2][item1] = callback
 end
 
+-- process all global scripts that aren't owned by a specific
+-- player. mostly used to do things like reset doors
 function script_engine_tick()
 	for i=#paused_scripts,1,-1 do
 		local ps = paused_scripts[i]
@@ -198,6 +200,34 @@ function script_engine_tick()
 			coroutine.close(event.co)
 		end
 	end
+end
+
+-- this is kind of like script_engine_tick except it runs and finishes all
+-- pending non-player-owned global scripts immediately to prevent odd
+-- behaviours like stuff not respawning when the loaded scripts are reloaded
+function script_engine_shutdown()
+	for i=#paused_scripts,1,-1 do
+		local ps = paused_scripts[i]
+		local result, err = coroutine.resume(ps.co)
+		table.remove(paused_scripts, i)
+	end
+	paused_scripts = {}
+
+	-- regrow tree stumps, etc.
+	for i=#restore_locs,1,-1 do
+		local event = restore_locs[i]
+		_restoreloc(event.x, event.y)
+	end
+	restore_locs = {}
+
+	-- delete temporarily added locs
+	for i=#delete_locs,1,-1 do
+		local event = delete_locs[i]
+		local result, err = coroutine.resume(event.co)
+		_delloc(event.x, event.y)
+		coroutine.close(event.co)
+	end
+	delete_locs = {}
 end
 
 function script_engine_process(player)
