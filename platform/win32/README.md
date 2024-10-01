@@ -9,7 +9,7 @@ some of the downloads.
 Download DLL binaries
 ---------------------
 
-- Lua: https://luabinaries.sourceforge.net/download.html
+- Lua: https://sourceforge.net/projects/luabinaries/files/5.4.2/Windows%20Libraries/Dynamic/lua-5.4.2_Win32_dllw6_lib.zip/download
 - OpenSSL: https://kb.firedaemon.com/support/solutions/articles/4000121705#Download-OpenSSL
 
 Download library sources
