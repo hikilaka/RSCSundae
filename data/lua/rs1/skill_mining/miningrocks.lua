@@ -230,6 +230,9 @@ local function do_mine_runite(player, x, y)
 	if statatleast(player, STAT_MINING, 85) and
 	    statrandom(player, STAT_MINING, 1, 18) then
 		if not mine_random_jewel(player) then
+			local count = getvar(player, "runite_mined")
+			count = count + 1
+			setvar(player, "runite_mined", 1)
 			mes(player, "@que@You manage to obtain some runite ore")
 			give(player, "runite ore", 1)
 			advancestat(player, STAT_MINING, 500, 0)
