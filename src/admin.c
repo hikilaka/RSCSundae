@@ -328,9 +328,16 @@ player_parse_mod_command(struct player *p, const char *cmd)
 			struct player *target = p->mob.server->players[i];
 			if (target != NULL) {
 				target->script_active = false;
+				player_send_message(target,
+				    "@red@Script engine reloaded");
 			}
 		}
-		player_send_message(p, "@red@Script engine reloaded.");
+		for (size_t i = 0; i < p->mob.server->max_npc_id; ++i) {
+			struct npc *target = p->mob.server->npcs[i];
+			if (target != NULL) {
+				target->busy = false;
+			}
+		}
 	}
 }
 
