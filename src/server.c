@@ -1035,8 +1035,8 @@ load_maps_jag(void)
 	fclose(f);
 	f = NULL;
 	for (int plane = 0; plane < 4; ++plane) {
-		for (int x = 49; x < 64; ++x) {
-			for (int y = 40; y < 64; ++y) {
+		for (int x = 48; x < 64; ++x) {
+			for (int y = 39; y < 64; ++y) {
 				struct jag_map chunk;
 				char file[64];
 
