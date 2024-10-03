@@ -15,7 +15,6 @@ src/*.o
 autom4te.cache
 /autoscan.log
 /autoscan-*.log
-/aclocal.m4
 /config.cache
 /config.guess
 /config.log
