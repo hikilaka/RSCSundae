@@ -93,6 +93,8 @@ main(int argc, char **argv)
 	s.bind_addr = "127.0.0.1";
 	s.port = 43594;
 	s.max_per_ip = 3;
+	s.protocol110 = true;
+	s.protocol204 = true;
 
 #ifdef SIGPIPE
 	(void)signal(SIGPIPE, on_signal_do_nothing);

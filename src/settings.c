@@ -25,6 +25,12 @@ server_parse_settings(void *user, const char *section,
 			s->register_required = (strtol(value, NULL, 10) != 0);
 		} else if (strcmp(name, "max_per_ip") == 0) {
 			s->max_per_ip = strtol(value, NULL, 10);
+		} else if (strcmp(name, "protocol110") == 0) {
+			s->protocol110 =
+			    (strtol(value, NULL, 10) != 0);
+		} else if (strcmp(name, "protocol204") == 0) {
+			s->protocol204 =
+			    (strtol(value, NULL, 10) != 0);
 		} else {
 			return 0;
 		}

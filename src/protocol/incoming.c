@@ -1325,6 +1325,11 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 	uint16_t ver;
 	int64_t name;
 
+	if (!p->mob.server->protocol110) {
+		net_login_response(p, RESP_CLIENT_OUTDATED);
+		return -1;
+	}
+
 	if (p->name != -1) {
 		return -1;
 	}
@@ -1409,6 +1414,11 @@ process_login_isaac(struct player *p, uint8_t *data, size_t offset, size_t len)
 	char password[21];
 	int64_t name;
 	int decrypted_len;
+
+	if (!p->mob.server->protocol204) {
+		net_login_response(p, RESP_CLIENT_OUTDATED);
+		return -1;
+	}
 
 	if (buf_getu8(data, offset++, len, &reconnecting) == -1) {
 		return -1;
