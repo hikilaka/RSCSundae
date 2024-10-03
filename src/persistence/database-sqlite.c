@@ -823,8 +823,13 @@ database_load_player(struct database *database, struct player *player)
 
 	/* successful, but no user found */
 	if (res == SQLITE_DONE) {
-		ret = RESP_INVALID;
-		goto end;
+		if (player->mob.server->register_required) {
+			ret = RESP_INVALID;
+			goto end;
+		}
+		(void)stmt_reset(database->db, database->get_player);
+		(void)db_transaction(database->db, TRANSACTION_END);
+		return database_new_player(database, player);
 	}
 
 	/* no user and an error occurred */
