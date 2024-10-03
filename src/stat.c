@@ -122,7 +122,10 @@ stat_advance(struct player *player, int stat,
 		    level - player->mob.base_stats[stat],
 		    skill_names[stat]);
 		player_send_message(player, msg);
-		player->mob.cur_stats[stat] = level;
+		if (player->mob.cur_stats[stat] ==
+		    player->mob.base_stats[stat]) {
+			player->mob.cur_stats[stat] = level;
+		}
 		player->mob.base_stats[stat] = level;
 		player_send_stat(player, stat);
 
