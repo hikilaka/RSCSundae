@@ -86,6 +86,8 @@ struct server {
 	bool log_packets;
 	bool register_required;
 	bool untradables;
+	bool protocol110;
+	bool protocol204;
 	int xp_multiplier;
 	/* maximum number of logins per IP address */
 	int max_per_ip;
