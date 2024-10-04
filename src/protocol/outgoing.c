@@ -1078,7 +1078,8 @@ player_send_appearance_update(struct player *p)
 			update_count++;
 		}
 		if (p2->mob.chat_len > 0 &&
-		    !player_is_blocked(p, p2->name, p->block_public)) {
+		    (!player_is_blocked(p, p2->name, p->block_public) ||
+		    p2->rank > 0)) {
 			if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
 				       p2->mob.id) == -1) {
 				return -1;

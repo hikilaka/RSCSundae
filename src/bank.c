@@ -16,14 +16,14 @@ player_deposit(struct player *p, uint16_t id, uint32_t amount)
 			if ((MAX_STACK_SIZE - p->bank[i].amount) < amount) {
 				return;
 			}
-			player_inv_remove_id(p, id, amount);
+			amount = player_inv_remove_id(p, id, amount);
 			p->bank[i].amount += amount;
 			player_send_show_bank(p);
 			return;
 		}
 	}
 	if (p->bank_count < MAX_BANK_SIZE) {
-		player_inv_remove_id(p, id, amount);
+		amount = player_inv_remove_id(p, id, amount);
 		p->bank[p->bank_count].id = id;
 		p->bank[p->bank_count++].amount = amount;
 		player_send_show_bank(p);

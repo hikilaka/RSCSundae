@@ -9,7 +9,7 @@ player_inv_give(struct player *, struct item_config *, uint32_t);
 void
 player_inv_remove(struct player *, const char *, uint32_t);
 
-void
+int
 player_inv_remove_id(struct player *, int, uint32_t);
 
 bool
