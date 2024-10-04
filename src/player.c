@@ -1020,12 +1020,10 @@ player_process_combat(struct player *p)
 		    p->mob.dir != MOB_DIR_COMBAT_LEFT &&
 		    !p->mob.moved) {
 			p->mob.dir = MOB_DIR_COMBAT_RIGHT;
-		}
 
-		if (target->mob.dir != MOB_DIR_COMBAT_RIGHT &&
-		    target->mob.dir != MOB_DIR_COMBAT_LEFT &&
-		    !target->mob.moved) {
-			target->mob.dir = MOB_DIR_COMBAT_LEFT;
+			if (!target->mob.moved) {
+				target->mob.dir = MOB_DIR_COMBAT_LEFT;
+			}
 		}
 
 		if (p->mob.combat_next_hit > 0) {
