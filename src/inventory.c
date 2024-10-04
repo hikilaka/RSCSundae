@@ -112,7 +112,7 @@ player_inv_remove(struct player *p, const char *name, uint32_t count)
 		if (was_worn) {
 			player_recalculate_equip(p);
 		}
-		i = 0;
+		i--;
 	}
 }
 
@@ -164,7 +164,7 @@ player_inv_remove_id(struct player *p, int id, uint32_t count)
 		if (was_worn) {
 			player_recalculate_equip(p);
 		}
-		i = 0;
+		i--;
 	}
 	return quantity;
 }
