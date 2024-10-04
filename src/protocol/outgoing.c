@@ -1820,22 +1820,6 @@ player_send_trade_confirm(struct player *p)
 	 */
 
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		        p->offer_count);
-
-	for (int i = 0; i < p->offer_count; ++i) {
-		if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
-				p->trade_offer[i].id) == -1) {
-			return -1;
-		}
-		offset += 2;
-		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
-				p->trade_offer[i].stack) == -1) {
-			return -1;
-		}
-		offset += 4;
-	}
-
-	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
 		        partner->offer_count);
 
 	for (int i = 0; i < partner->offer_count; ++i) {
@@ -1846,6 +1830,22 @@ player_send_trade_confirm(struct player *p)
 		offset += 2;
 		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
 				partner->trade_offer[i].stack) == -1) {
+			return -1;
+		}
+		offset += 4;
+	}
+
+	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+		        p->offer_count);
+
+	for (int i = 0; i < p->offer_count; ++i) {
+		if (buf_putu16(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				p->trade_offer[i].id) == -1) {
+			return -1;
+		}
+		offset += 2;
+		if (buf_putu32(p->tmpbuf, offset, PLAYER_BUFSIZE,
+				p->trade_offer[i].stack) == -1) {
 			return -1;
 		}
 		offset += 4;
