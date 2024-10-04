@@ -117,11 +117,12 @@ player_inv_remove(struct player *p, const char *name, uint32_t count)
 }
 
 /* in-engine use only */
-void
+int
 player_inv_remove_id(struct player *p, int id, uint32_t count)
 {
 	struct item_config *item;
 	uint32_t removed = 0;
+	uint32_t quantity = 0;
 
 	assert(p != NULL);
 
@@ -136,7 +137,7 @@ player_inv_remove_id(struct player *p, int id, uint32_t count)
 			if (count < p->inventory[i].stack) {
 				p->inventory[i].stack -= count;
 				player_send_inv_slot(p, i);
-				return;
+				return count;
 			}
 			count = 1;
 			break;
@@ -145,6 +146,11 @@ player_inv_remove_id(struct player *p, int id, uint32_t count)
 	for (int i = 0; i < p->inv_count && removed < count; ++i) {
 		if (p->inventory[i].id != id) {
 			continue;
+		}
+		if (item->weight == 0) {
+			quantity = p->inventory[i].stack;
+		} else {
+			quantity++;
 		}
 		bool was_worn = p->inventory[i].worn;
 		p->inv_count--;
@@ -160,6 +166,7 @@ player_inv_remove_id(struct player *p, int id, uint32_t count)
 		}
 		i = 0;
 	}
+	return quantity;
 }
 
 /* corresponds to runescript ifheld() */
