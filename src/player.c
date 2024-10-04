@@ -1568,7 +1568,9 @@ player_clear_actions(struct player *p)
 bool
 player_can_see_item(struct player *p, struct ground_item *item)
 {
-	if (p->mob.server->untradables && item->owner != p->mob.id) {
+	if (p->mob.server->untradables &&
+	    item->owner != p->mob.id &&
+	    item->owner != UINT16_MAX) {
 		struct item_config *config;
 
 		config = server_item_config_by_id(item->id);
