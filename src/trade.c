@@ -7,6 +7,7 @@
 #include "utility.h"
 
 static void player_trade_finalize(struct player *);
+static int get_trade_amount(struct player *, uint16_t);
 
 void
 player_trade_request(struct player *p, struct player *target)
@@ -40,6 +41,19 @@ player_trade_request(struct player *p, struct player *target)
 		player_send_trade_open(p);
 		player_send_trade_open(target);
 	}
+}
+
+static int
+get_trade_amount(struct player *p, uint16_t id)
+{
+	int count = 0;
+
+	for (uint32_t i = 0; i < p->offer_count; ++i) {
+		if (p->trade_offer[i].id == id) {
+			count++;
+		}
+	}
+	return count;
 }
 
 void
@@ -97,7 +111,8 @@ player_trade_offer(struct player *p, uint16_t id, uint32_t amount)
 			break;
 		}
 	}
-	if (!player_inv_held_id(p, id, amount)) {
+	if (!player_inv_held_id(p, id,
+	    get_trade_amount(p, id) + amount)) {
 		return;
 	}
 	if (config->weight != 0) {
