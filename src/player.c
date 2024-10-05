@@ -959,7 +959,7 @@ player_process_combat(struct player *p)
 
 			player_close_ui(target);
 			player_clear_actions(target);
-			target->mob.combat_next_hit = 4;
+			target->mob.combat_next_hit = 3;
 
 			player_send_message(target, "You are under attack!");
 		} else if (p->mob.target_npc != -1) {
