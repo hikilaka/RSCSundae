@@ -383,7 +383,7 @@ local function make_shield(player, bar_type)
 	local resp = multi(player,
 		"Square Shield (2 bars)", "Kite Shield (3 bars)")
 	if resp == 1 then
-		make_item(player, "square shield", bar_type, 3)
+		make_item(player, "square shield", bar_type, 2)
 	elseif resp == 2 then
 		make_item(player, "kite shield", bar_type, 3)
 	end
@@ -413,7 +413,7 @@ local function make_axe(player, bar_type)
 	if resp == 1 then
 		make_item(player, "hatchet", bar_type, 1)
 	elseif resp == 2 then
-		make_item(player, "battle axe", bar_type, 1)
+		make_item(player, "battle axe", bar_type, 3)
 	end
 end
 
