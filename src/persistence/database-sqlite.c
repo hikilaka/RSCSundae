@@ -564,7 +564,7 @@ database_init(struct database *database)
 	    "`camera_auto`, `one_mouse_button`, `block_public`, "
 	    "`block_private`, `block_trade`, `block_duel`, "
 	    "`hair_colour`, `top_colour`, `leg_colour`, `skin_colour`, "
-	    "`head_sprite`, `body_sprite`, `skull_timer`, "
+	    "`gender`, `head_sprite`, `body_sprite`, `skull_timer`, "
 	    "`restrict_trade`, `restrict_bank`, ";
 
 	for (int i = 0; i < MAX_SKILL_ID; i++) {
@@ -632,8 +632,8 @@ database_init(struct database *database)
 		"`camera_auto` = ?, `one_mouse_button` = ?, `block_public` = ?, "
 		"`block_private` = ?, `block_trade` = ?, `block_duel` = ?, "
 		"`hair_colour` = ?, `top_colour` = ?, `leg_colour` = ?, "
-		"`skin_colour` = ?, `head_sprite` = ?, `body_sprite` = ?, "
-		"`skull_timer` = ?, ";
+		"`skin_colour` = ?, `gender` = ?, `head_sprite` = ?, "
+		"`body_sprite` = ?, `skull_timer` = ?, ";
 
 	for (int i = 0; i < MAX_SKILL_ID; i++) {
 		int remaining = sizeof(save_query) - strlen(save_query);
@@ -893,6 +893,8 @@ database_load_player(struct database *database, struct player *player)
 		sqlite3_column_int(database->get_player, column_index++);
 	player->skin_colour =
 		sqlite3_column_int(database->get_player, column_index++);
+	player->gender =
+		sqlite3_column_int(database->get_player, column_index++);
 	player->sprites_base[ANIM_SLOT_HEAD] =
 		sqlite3_column_int(database->get_player, column_index++);
 	player->sprites_base[ANIM_SLOT_BODY] =
@@ -1055,6 +1057,11 @@ database_save_player(struct database *database, struct player *player)
 
 	if (stmt_bind_int(database->db, database->save_player, bind_index++,
 			player->skin_colour) == -1) {
+		return -1;
+	}
+
+	if (stmt_bind_int(database->db, database->save_player, bind_index++,
+			player->gender) == -1) {
 		return -1;
 	}
 
