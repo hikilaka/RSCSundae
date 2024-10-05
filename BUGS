@@ -1,3 +1,4 @@
 - lua stack overflow when creating coroutines with massive number of
   active scripts
 - ::time gives incorrect stats
+- players lose each other travelling up white knight castle
