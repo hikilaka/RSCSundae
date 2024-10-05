@@ -116,16 +116,14 @@ stat_advance(struct player *player, int stat,
 	level = xp_to_level(player->experience[stat]);
 	if (level > player->mob.base_stats[stat]) {
 		char msg[64];
+		int gained;
 
+		gained = level - player->mob.base_stats[stat];
 		(void)snprintf(msg, sizeof(msg),
 		    "@gre@You just advanced %d %s level!",
-		    level - player->mob.base_stats[stat],
-		    skill_names[stat]);
+		    gained, skill_names[stat]);
 		player_send_message(player, msg);
-		if (player->mob.cur_stats[stat] ==
-		    player->mob.base_stats[stat]) {
-			player->mob.cur_stats[stat] = level;
-		}
+		player->mob.cur_stats[stat] += gained;
 		player->mob.base_stats[stat] = level;
 		player_send_stat(player, stat);
 
