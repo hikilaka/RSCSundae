@@ -60,7 +60,7 @@ Between RSC Sundae and OpenRSC (RSC Preservation)
   were added after Fatigue was released. However, there are more trees
   as a result.
 * The Dwarven Mines have two entrances instead of three -
-  one near Falador's eastern bank, and one north of Falador.
+  one through the mining guild, and one north of Falador.
   
 
 Between RSC Sundae and 2001scape
