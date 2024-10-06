@@ -4,13 +4,12 @@ Differences
 Between RSC Sundae and modern RuneScape
 ---------------------------------------
 
-* Trading is harder (you need to meet other players in person), so...
-** Most items are easier to obtain by making them yourself or buying them
-   from a NPC.
-** Trading with other players is mostly done for bulk items.
-* The experience reward from quest scales with level, so...
-** It is better to do quests with monetary rewards early on, and
-   quests with experience rewards later.
+* Trading is harder (you need to meet other players in person), so
+  most items are easier to obtain by making them yourself or buying them
+  from a NPC. Trading with other players is mostly done for bulk items.
+* The experience reward from quest scales with level, so
+  it's better to do quests with monetary rewards early on, and
+  quests with experience rewards later.
 * Some of the best items can only be obtained through high-level crafting
   and smithing (or trading with a player who has created them).
 * High level runes are rare.  Anything other than the most basic low level
@@ -43,7 +42,7 @@ Between RSC Sundae and OpenRSC (RSC Preservation)
   rates in Sundae have been audited, so there are no leftover guessed
   rates.
 * Pay-to-play content is not implemented.
-* There are no discontinued items.
+* There are no wearable discontinued items.
 * Shop prices use the original formula from before 2009, when the game
   was at its peak in popularity.
 * NPC spawns and behaviour are modelled accurately as they were in the
@@ -58,8 +57,8 @@ Between RSC Sundae and OpenRSC (RSC Preservation)
 * Some mines contain different types of rocks, since the mines were
   rebalanced after Fatigue was released.
 * There are slightly fewer buildings with beds in the game, since more
-  were added after Fatigue was released.
-** However, there are more trees as a result.
+  were added after Fatigue was released. However, there are more trees
+  as a result.
 * The Dwarven Mines have two entrances instead of three -
   one near Falador's eastern bank, and one north of Falador.
   
@@ -70,7 +69,7 @@ Between RSC Sundae and 2001scape
 * Item banking and trading certificates are available.
 * The Fishing skill is implemented.
 * The Magic and Prayer skills are fully complete.
-** You are able to cast magic spells during melee combat.
+  You are able to cast magic spells during melee combat.
 * Leather crafting is implemented - cows are attackable.
 * Rune items and the Dragon Slayer quest are available.
 * The Wilderness and Karamja are accessible.
