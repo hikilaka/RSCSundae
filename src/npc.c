@@ -515,6 +515,10 @@ npc_process_combat(struct npc *npc)
 		return;
 	}
 
+	if (target->prayers[PRAY_PARALYZE_MONSTER]) {
+		return;
+	}
+
 	roll = npc_combat_roll(npc, target);
 	player_damage(target, NULL, roll);
 	npc->mob.combat_rounds++;
