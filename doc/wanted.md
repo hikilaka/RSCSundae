@@ -5,7 +5,7 @@ In case the official server is ever available again, the following
 recordings would be very useful for RSC Sundae:
 
 * Drinking bad wine
-* Drinking half full wine jug
+* Drinking half full wine jug (heal is still unknown)
 * Casting Bones to Bananas
 * Smithing a woodcutting axe (does it say 'axe' or 'hatchet'?)
 * Trying to cut webs with staves, bows, and other objects
