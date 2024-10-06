@@ -25,6 +25,13 @@ Java mudclient110 from December 2001), and the 204 protocol
 (the final version of RSC before "Retro Revival" in 2009, used
 by RSC-C, and STS).
 
+RSC Sundae has a few special features as well:
+
+* Live script reloading, allowing game updates without a restart
+* Extremely low system requirements (under 32 MB RAM usage)
+* 1:1 replication of NPC behaviour
+* Per-player packet logging
+
 RSC Sundae will never support:
 
 * Multiple threads
