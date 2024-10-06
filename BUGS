@@ -1,3 +1,5 @@
+- Need to investigate how (if at all) item spawn stacks are encoded
+  in the data files
 - lua stack overflow when creating coroutines with massive number of
   active scripts
 - ::time gives incorrect stats
