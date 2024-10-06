@@ -85,7 +85,7 @@ function skillplayer_curse(player, target)
 	end
 end
 
-register_skillnpc("_", "curse", function(player, npc)
+register_skillnpc("_", "curse", function(player, target)
 	if npcstatdown(target, STAT_DEFENSE) then
 		mes(player, "Your opponent already has weakened defence")
 	else
