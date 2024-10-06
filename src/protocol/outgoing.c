@@ -2023,7 +2023,15 @@ player_send_quests(struct player *p)
 			}
 		} else if (strcmp(p->variables[i].name, "dragon_stage") == 0) {
 			if (p->variables[i].value >= 4) {
+				int level;
+
 				quests_complete[16] = true;
+
+				level = player_variable_get(p, "dragon_level");
+				if (level == 0) {
+					player_variable_set(p,
+					    "dragon_level", p->combat_level);
+				}
 			}
 		}
 	}
