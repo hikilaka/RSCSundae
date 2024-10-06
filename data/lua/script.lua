@@ -438,11 +438,9 @@ function script_engine_skillnpc(player, name, npc, spell)
 			script(player, npc)
 			if not ps.paused then
 				player_scripts[player] = nil
-				playerunbusy(player)
 			end
 		end)
 		player_scripts[player] = ps
-		playerbusy(player)
 		return true
 	end
 	return false
@@ -577,11 +575,9 @@ function script_engine_skillplayer(player, target, name)
 			script(player, target)
 			if not ps.paused then
 				player_scripts[player] = nil
-				playerunbusy(player)
 			end
 		end)
 		player_scripts[player] = ps
-		playerbusy(player)
 		return true
 	end
 	return false
