@@ -71,11 +71,11 @@ function talknpc_wyson_the_gardener(player, npc)
 		local resp = multi(player,
 			"I'm looking for woad leaves",
 			"Not right now thanks")
-		wyson_buy(player, npc)
 		if resp == 1 then
 			say(player, "I'm looking for woad leaves")
 			npcsay(npc, "Well luckily for you I may have some around here somewhere")
 			say(player, "Can I buy one please?")
+			wyson_buy(player, npc)
 		elseif resp == 2 then
 			say(player, "Not right now thanks")
 		end
