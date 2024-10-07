@@ -12,6 +12,9 @@ player_inv_remove(struct player *, const char *, uint32_t);
 int
 player_inv_remove_id(struct player *, int, uint32_t);
 
+void
+player_inv_remove_slot(struct player *, int);
+
 bool
 player_inv_held(struct player *, const char *, uint32_t);
 

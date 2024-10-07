@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include "config/config.h"
+#include "inventory.h"
 #include "entity.h"
 #include "server.h"
 
@@ -97,22 +98,32 @@ player_inv_remove(struct player *p, const char *name, uint32_t count)
 		}
 	}
 	for (int i = 0; i < p->inv_count && removed < count; ++i) {
-		if (!name_match(p->inventory[i].id, name)) {
-			continue;
+		if (name_match(p->inventory[i].id, name)) {
+			player_inv_remove_slot(p, i);
+			removed++;
+			i--;
 		}
-		bool was_worn = p->inventory[i].worn;
-		p->inv_count--;
-		for (int j = i; j < p->inv_count; ++j) {
-			p->inventory[j].id = p->inventory[j + 1].id;
-			p->inventory[j].stack = p->inventory[j + 1].stack;
-			p->inventory[j].worn = p->inventory[j + 1].worn;
-		}
-		removed++;
-		player_send_inv_remove(p, i);
-		if (was_worn) {
-			player_recalculate_equip(p);
-		}
-		i--;
+	}
+}
+
+/* in-engine use only */
+void
+player_inv_remove_slot(struct player *p, int slot)
+{
+	assert(slot < p->inv_count);
+
+	bool was_worn = p->inventory[slot].worn;
+
+	p->inv_count--;
+	for (int i = slot; i < p->inv_count; ++i) {
+		p->inventory[i].id = p->inventory[i + 1].id;
+		p->inventory[i].stack = p->inventory[i + 1].stack;
+		p->inventory[i].worn = p->inventory[i + 1].worn;
+	}
+	player_send_inv_remove(p, slot);
+
+	if (was_worn) {
+		player_recalculate_equip(p);
 	}
 }
 
@@ -152,18 +163,8 @@ player_inv_remove_id(struct player *p, int id, uint32_t count)
 		} else {
 			quantity++;
 		}
-		bool was_worn = p->inventory[i].worn;
-		p->inv_count--;
-		for (int j = i; j < p->inv_count; ++j) {
-			p->inventory[j].id = p->inventory[j + 1].id;
-			p->inventory[j].stack = p->inventory[j + 1].stack;
-			p->inventory[j].worn = p->inventory[j + 1].worn;
-		}
+		player_inv_remove_slot(p, i);
 		removed++;
-		player_send_inv_remove(p, i);
-		if (was_worn) {
-			player_recalculate_equip(p);
-		}
 		i--;
 	}
 	return quantity;
