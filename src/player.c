@@ -2230,7 +2230,7 @@ player_can_cast(struct player *p, struct spell_config *spell)
 	 * https://classic.runescape.wiki/w/User:Stormykins/Magic_research
 	 */
 	magic_level = p->mob.cur_stats[SKILL_MAGIC];
-	if ((magic_level - spell->level) < 10) {
+	if ((magic_level - spell->level) < 9) {
 		double r1 = server_random();
 		double r2 = server_random();
 		double roll_spell = spell->level * r1;
