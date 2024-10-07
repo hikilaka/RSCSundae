@@ -1406,6 +1406,7 @@ script_changelevelup(lua_State *L)
 {
 	lua_Integer player_id;
 	struct player *p;
+	int y;
 
 	player_id = script_checkinteger(L, 1);
 
@@ -1416,14 +1417,15 @@ script_changelevelup(lua_State *L)
 		return 0;
 	}
 
+	y = p->mob.y;
+
 	if (p->mob.y < (PLANE_LEVEL_INC * 3)) {
-		p->mob.y += PLANE_LEVEL_INC;
+		y += PLANE_LEVEL_INC;
 	} else {
-		p->mob.y -= (PLANE_LEVEL_INC * 3);
+		y -= (PLANE_LEVEL_INC * 3);
 	}
 
-	p->teleported = true;
-	player_send_plane_init(p);
+	player_teleport(p, p->mob.x, y);
 	return 0;
 }
 
