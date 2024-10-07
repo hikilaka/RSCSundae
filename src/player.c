@@ -1102,7 +1102,7 @@ player_retreat(struct player *p)
 	struct player *p2;
 	struct npc *npc;
 
-	if (p->mob.combat_rounds < 3) {
+	if (p->mob.combat_rounds < 4) {
 		player_send_message(p,
 		    "You can't retreat during the first 3 rounds of combat");
 		return -1;
