@@ -503,7 +503,7 @@ npc_process_combat(struct npc *npc)
 	 * rsc-preservation.xyz/Combat/Chickens [Feather Gathering] pt1
 	 * for some recordings of retreating from low hits
 	 */
-	if (npc->mob.combat_rounds >= 3 &&
+	if (npc->mob.combat_rounds > 3 &&
 	    npc->config->bravery > 0 &&
 	    npc->mob.cur_stats[SKILL_HITS] <= npc->config->bravery) {
 		npc_retreat(npc);
