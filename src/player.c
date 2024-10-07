@@ -2489,10 +2489,11 @@ player_teleport(struct player *p, int x, int y)
 
 	mob_combat_reset(&p->mob);
 
-	player_moved(p, orig_x, orig_y);
-
 	p->teleported = true;
+	p->known_player_count = 0;
+	p->known_npc_count = 0;
 	player_send_plane_init(p);
+	player_moved(p, orig_x, orig_y);
 }
 
 void
