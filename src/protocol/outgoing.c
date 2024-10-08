@@ -49,27 +49,16 @@ encode_loc_id(struct player *p, int id)
 	if (p->protocol_rev < 159) {
 		/* "mined" rocks stay normal */
 		switch (id) {
-		case LOC_PLAINROCK2:
 		case LOC_PLAINROCK3:
-		case LOC_COPPERROCK2:
 		case LOC_COPPERROCK3:
-		case LOC_TINROCK2:
 		case LOC_TINROCK3:
-		case LOC_IRONROCK2:
 		case LOC_IRONROCK3:
-		case LOC_MITHRILROCK2:
 		case LOC_MITHRILROCK3:
-		case LOC_ADAMANTITEROCK2:
 		case LOC_ADAMANTITEROCK3:
-		case LOC_RUNITEROCK2:
 		case LOC_RUNITEROCK3:
-		case LOC_COALROCK2:
 		case LOC_COALROCK3:
-		case LOC_CLAYROCK2:
 		case LOC_CLAYROCK3:
-		case LOC_SILVERROCK2:
 		case LOC_SILVERROCK3:
-		case LOC_GOLDROCK2:
 		case LOC_GOLDROCK3:
 			return LOC_PLAINROCK1;
 		}
