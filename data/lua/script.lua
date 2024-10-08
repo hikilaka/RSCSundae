@@ -244,7 +244,7 @@ function script_engine_process(player)
 		ps.delay = ps.delay - 1
 	end
 	if ps.option_count > 0 then
-		if os.time() >= (ps.last_active + 10) then
+		if os.time() >= (ps.last_active + 15) then
 			print("script cancelled due to inactivity")
 			script_engine_cancel(player)
 		end
