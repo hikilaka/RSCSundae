@@ -843,33 +843,43 @@ load_map_tile(struct jag_map *chunk,
 		 * "always mined
 		 */
 		switch (loc.id) {
+		case LOC_TINROCK2:
 		case LOC_TINROCK3:
 			loc.id = loc.orig_id = LOC_TINROCK1;
 			break;
+		case LOC_COPPERROCK2:
 		case LOC_COPPERROCK3:
 			loc.id = loc.orig_id = LOC_COPPERROCK1;
 			break;
+		case LOC_IRONROCK2:
 		case LOC_IRONROCK3:
 			loc.id = loc.orig_id = LOC_IRONROCK1;
 			break;
+		case LOC_GOLDROCK2:
 		case LOC_GOLDROCK3:
 			loc.id = loc.orig_id = LOC_GOLDROCK1;
 			break;
+		case LOC_CLAYROCK2:
 		case LOC_CLAYROCK3:
 			loc.id = loc.orig_id = LOC_CLAYROCK1;
 			break;
+		case LOC_SILVERROCK2:
 		case LOC_SILVERROCK3:
 			loc.id = loc.orig_id = LOC_SILVERROCK1;
 			break;
+		case LOC_COALROCK2:
 		case LOC_COALROCK3:
 			loc.id = loc.orig_id = LOC_COALROCK1;
 			break;
+		case LOC_MITHRILROCK2:
 		case LOC_MITHRILROCK3:
 			loc.id = loc.orig_id = LOC_MITHRILROCK1;
 			break;
+		case LOC_ADAMANTITEROCK2:
 		case LOC_ADAMANTITEROCK3:
 			loc.id = loc.orig_id = LOC_ADAMANTITEROCK1;
 			break;
+		case LOC_RUNITEROCK2:
 		case LOC_RUNITEROCK3:
 			loc.id = loc.orig_id = LOC_RUNITEROCK1;
 			break;
