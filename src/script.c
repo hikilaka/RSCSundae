@@ -610,6 +610,7 @@ script_nearnpc(lua_State *L)
 
 	npc = mob_find_nearby_npc(&p->mob, name);
 	if (npc != NULL) {
+		npc->talk_target = p->mob.id;
 		lua_pushinteger(L, npc->mob.id);
 		return 1;
 	}
