@@ -1234,6 +1234,7 @@ script_sellinv(lua_State *L)
 	struct player *p;
 	struct item_config *item, *coins;
 	double value;
+	int item_idx = -1;
 
 	player_id = script_checkinteger(L, 1);
 	item_name = script_checkstring(L, 2);
@@ -1249,9 +1250,38 @@ script_sellinv(lua_State *L)
 	coins = server_find_item_config("coins");
 	assert(coins != NULL);
 
-	item = server_find_item_config(item_name);
-	if (item == NULL) {
-		printf("script warning: item %s is undefined\n", item_name);
+	if (p->action_slot > 0 && p->action_slot < p->inv_count) {
+		int id = p->inventory[p->action_slot].id;
+
+		item = server_item_config_by_id(id);
+		assert(item != NULL);
+		for (int i = 0; i < item->name_count; ++i) {
+			if (strcasecmp(item->names[i], item_name) == 0) {
+				item_idx = p->action_slot;
+				break;
+			}
+		}
+	}
+
+	if (item_idx == -1) {
+		for (int i = (p->inv_count - 1); i >= 0; --i) {
+			item = server_item_config_by_id(p->inventory[i].id);
+			assert(item != NULL);
+			for (int j = 0; j < item->name_count; ++j) {
+				if (strcasecmp(item->names[j],
+				    item_name) == 0) {
+					item_idx = i;
+					break;
+				}
+			}
+			if (item_idx != -1) {
+				break;
+			}
+		}
+	}
+
+	if (item_idx == -1) {
+		printf("script warning: player does not hold %s\n", item_name);
 		script_cancel(L, player_id);
 		return 0;
 	}
@@ -1262,21 +1292,12 @@ script_sellinv(lua_State *L)
 	 * packet order verified, see replay:
 	 * Logg/Tylerbeg/06-13-2018 20.09.59 high alch from 55 to 60 and I got a dmed lol
 	 */
+	int stack = p->inventory[item_idx].stack;
+	player_inv_remove_slot(p, item_idx);
 	if (item->weight > 0) {
-		if (player_inv_held_id(p, item->id, 1)) {
-			player_inv_remove_id(p, item->id, 1);
-			player_inv_give(p, coins, value);
-		}
+		player_inv_give(p, coins, value);
 	} else {
-		for (int i = 0; i < p->inv_count; ++i) {
-			if (p->inventory[i].id == item->id) {
-				player_inv_remove_id(p, item->id,
-				    p->inventory[i].stack);
-				player_inv_give(p, coins,
-				    p->inventory[i].stack * value);
-				break;
-			}
-		}
+		player_inv_give(p, coins, stack * value);
 	}
 	return 0;
 }
