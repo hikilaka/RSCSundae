@@ -85,6 +85,7 @@ struct server {
 	bool movement_timer;
 	bool log_packets;
 	bool register_required;
+	bool client_registration;
 	bool untradables;
 	bool protocol110;
 	bool protocol204;

@@ -148,20 +148,15 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 				return;
 			}
 
-			switch (p->protocol_rev) {
-			case 110:
-				if (process_login(p, data, offset, len) == -1) {
-					p->logout_confirmed = true;
-					return;
-				}
-				break;
-			case 203:
-				if (process_login_isaac(p,
-					data, offset, len) == -1) {
-					p->logout_confirmed = true;
-					return;
-				}
-				break;
+			if (!p->mob.server->client_registration) {
+				net_login_response(p, RESP_CLIENT_OUTDATED);
+				p->logout_confirmed = true;
+				return;
+			}
+
+			if (process_login(p, data, offset, len) == -1) {
+				p->logout_confirmed = true;
+				return;
 			}
 
 			p->login_stage = LOGIN_STAGE_GOT_LOGIN;
@@ -179,6 +174,7 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 
 			if (res == -1) {
 				net_login_response(p, RESP_INVALID);
+				p->logout_confirmed = true;
 				return;
 			}
 
