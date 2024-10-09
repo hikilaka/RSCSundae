@@ -95,6 +95,7 @@ main(int argc, char **argv)
 	s.max_per_ip = 3;
 	s.protocol110 = true;
 	s.protocol204 = true;
+	s.client_registration = true;
 
 #ifdef SIGPIPE
 	(void)signal(SIGPIPE, on_signal_do_nothing);
