@@ -3,7 +3,7 @@
 local drops = {
 	-- weapons and armour
 	{ "iron mace", 1, 3 },
-	{ "crossbow", 1, 2 },
+	{ "normal crossbow", 1, 2 },
 	{ "iron dagger", 1, 2 },
 	{ "bronze kite shield", 1, 1 },
 

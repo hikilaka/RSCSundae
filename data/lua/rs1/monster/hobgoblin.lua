@@ -7,7 +7,7 @@ local drops = {
 	{ "steel dagger", 1, 3 },
 	{ "iron spear", 1, 2 },
 	{ "steel spear", 1, 2 },
-	{ "crossbow", 1, 1 },
+	{ "normal crossbow", 1, 1 },
 	{ "steel long sword", 1, 1 },
 
 	-- ammunition
