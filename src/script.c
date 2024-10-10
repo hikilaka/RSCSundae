@@ -448,7 +448,9 @@ script_npcattack(lua_State *L)
 		return 0;
 	}
 
-	npc->mob.target_player = player_id;
+	if (!npc->mob.in_combat) {
+		npc->mob.target_player = player_id;
+	}
 	return 0;
 }
 
