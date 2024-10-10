@@ -16,7 +16,7 @@ end)
 
 register_useinv("incomplete pizza", "cheese", function(player)
 	mes(player, "@que@You add the cheese to the pizza")
-	remove(player, "pizza base", 1)
+	remove(player, "incomplete pizza", 1)
 	remove(player, "cheese", 1)
 	give(player, "uncooked pizza", 1)
 end)
