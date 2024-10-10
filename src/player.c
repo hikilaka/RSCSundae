@@ -1988,8 +1988,10 @@ player_process_action(struct player *p)
 		    npc->mob.x, npc->mob.y, 4)) {
 			return;
 		}
-		p->mob.walk_queue_len = 0;
-		p->mob.walk_queue_pos = 0;
+		if (!p->mob.in_combat) {
+			p->mob.walk_queue_len = 0;
+			p->mob.walk_queue_pos = 0;
+		}
 		p->action = ACTION_NONE;
 		if (npc->config->aggression == 0) {
 			player_send_message(p, "I can't attack that");
@@ -2046,8 +2048,10 @@ player_process_action(struct player *p)
 		    target->mob.x, target->mob.y, 4)) {
 			return;
 		}
-		p->mob.walk_queue_len = 0;
-		p->mob.walk_queue_pos = 0;
+		if (!p->mob.in_combat) {
+			p->mob.walk_queue_len = 0;
+			p->mob.walk_queue_pos = 0;
+		}
 		p->action = ACTION_NONE;
 		if (!player_wilderness_check(p, target) ||
 		    !player_can_cast(p, p->spell)) {
