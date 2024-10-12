@@ -325,7 +325,7 @@ npc_process_movement(struct npc *npc)
 			 * spiders on hazelmere's island
 			 */
 			if (mob_distance(&p->mob,
-			    npc->spawn_x, npc->spawn_y) > 32) {
+			    npc->spawn_x, npc->spawn_y) > 16) {
 				p->chased_by_npc = UINT16_MAX;
 				npc->mob.following_player = -1;
 				npc->mob.target_player = -1;
