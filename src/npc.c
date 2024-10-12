@@ -253,8 +253,8 @@ npc_hunt_target(struct npc *npc)
 			continue;
 		}
 
-		if (mob_distance(&p->mob, npc->mob.x, npc->mob.y) >
-		    (npc->config->hunt_range + 1)) {
+		if (!mob_within_range(&npc->mob, p->mob.x, p->mob.y,
+		    npc->config->hunt_range + 2)) {
 			continue;
 		}
 
@@ -266,7 +266,8 @@ npc_hunt_target(struct npc *npc)
 			struct npc *npc2;
 
 			npc2 = p->mob.server->npcs[p->chased_by_npc];
-			if (npc2 != NULL && npc2->mob.movement_timer < 4 &&
+			if (npc2 != NULL &&
+			    npc2->mob.target_player == p->mob.id &&
 			    mob_distance(&p->mob, npc2->mob.x, npc2->mob.y) <=
 			    mob_distance(&p->mob, npc->mob.x, npc->mob.y)) {
 				continue;
@@ -280,6 +281,7 @@ npc_hunt_target(struct npc *npc)
 
 		p->chased_by_npc = npc->mob.id;
 		npc->mob.target_player = p->mob.id;
+		npc->mob.following_player = p->mob.id;
 		return;
 	}
 }
@@ -329,6 +331,7 @@ npc_process_movement(struct npc *npc)
 				npc->mob.target_player = -1;
 				return;
 			}
+			npc->mob.action_walk = true;
 			goto walk;
 		} else if (npc->config->aggression > 2) {
 			npc_hunt_target(npc);
