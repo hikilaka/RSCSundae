@@ -266,7 +266,7 @@ npc_hunt_target(struct npc *npc)
 			struct npc *npc2;
 
 			npc2 = p->mob.server->npcs[p->chased_by_npc];
-			if (npc2 != NULL && npc->mob.movement_timer < 4 &&
+			if (npc2 != NULL && npc2->mob.movement_timer < 4 &&
 			    mob_distance(&p->mob, npc2->mob.x, npc2->mob.y) <=
 			    mob_distance(&p->mob, npc->mob.x, npc->mob.y)) {
 				continue;
