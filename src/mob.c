@@ -438,12 +438,10 @@ mob_process_walk_queue(struct mob *mob)
 		if (mob_within_range(mob, following->x, following->y, 2)) {
 			return;
 		}
-		if (!mob_within_range(mob, following->x, following->y, 3)) {
-			mob->walk_queue_x[0] = following->x;
-			mob->walk_queue_y[0] = following->y;
-			mob->walk_queue_pos = 0;
-			mob->walk_queue_len = 1;
-		}
+		mob->walk_queue_x[0] = following->x;
+		mob->walk_queue_y[0] = following->y;
+		mob->walk_queue_pos = 0;
+		mob->walk_queue_len = 1;
 	}
 
 	for (int tmp_y = mob->y; tmp_y >= PLANE_LEVEL_INC; plane++) {
