@@ -253,8 +253,8 @@ npc_hunt_target(struct npc *npc)
 			continue;
 		}
 
-		if (!mob_within_range(&p->mob, npc->mob.x, npc->mob.y,
-		    npc->config->hunt_range + 2)) {
+		if (mob_distance(&p->mob, npc->mob.x, npc->mob.y) >
+		    (npc->config->hunt_range + 1)) {
 			continue;
 		}
 
@@ -266,7 +266,7 @@ npc_hunt_target(struct npc *npc)
 			struct npc *npc2;
 
 			npc2 = p->mob.server->npcs[p->chased_by_npc];
-			if (npc2 != NULL &&
+			if (npc2 != NULL && npc->mob.movement_timer < 4 &&
 			    mob_distance(&p->mob, npc2->mob.x, npc2->mob.y) <=
 			    mob_distance(&p->mob, npc->mob.x, npc->mob.y)) {
 				continue;
@@ -321,12 +321,9 @@ npc_process_movement(struct npc *npc)
 			 * aggressive NPCs used to be able to get stuck outside
 			 * of their range, see various replays of jungle
 			 * spiders on hazelmere's island
-			 *
-			 * TODO maybe should check visibility too
 			 */
-			if (!mob_within_range(&p->mob,
-			    npc->spawn_x, npc->spawn_y,
-			    npc->config->wander_range * 2)) {
+			if (mob_distance(&p->mob,
+			    npc->spawn_x, npc->spawn_y) > 32) {
 				p->chased_by_npc = UINT16_MAX;
 				npc->mob.following_player = -1;
 				npc->mob.target_player = -1;
