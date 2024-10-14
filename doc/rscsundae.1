@@ -1,0 +1,43 @@
+.Dd September 14, 2024
+.Dt RSCSUNDAE 1
+.Os
+.Sh NAME
+.Nm rscsundae
+.Nd RS Classic server emulator
+.Sh SYNOPSIS
+.Nm rscsundae
+.Op Fl b Ar basedir
+.Op Fl d
+.Op Fl f Ar conffile
+.Sh DESCRIPTION
+.Nm
+is a server emulator for the 10 December 2001 revision of RS Classic.
+.Pp
+The following options are available:
+.Bl -tag -width indent
+.It Fl d Ar basedir
+Used to specify a directory where the SQLite database
+and game data files are stored.
+Usually this defaults to
+.Pa ./data .
+.It Fl d
+Used to daemonize the server process so that it no longer runs
+in the foreground.
+.It Fl f
+Used to specify a configuration file for the current instance
+of the server.
+Usually this defaults to
+.Pa ./data/settings.ini .
+.El
+.El
+.Sh HISTORY
+RSC Sundae was developed between May and September 2024
+and is the result of 20 years of combined effort researching
+RS Classic.
+.Sh AUTHORS
+.Nm
+was written primarily by
+.An -nosplit
+.An Stormy ,
+.An frogdoubler ,
+.An Hikilaka .
