@@ -5704,6 +5704,42 @@ fi
 
 fi
 
+
+
+
+	result=yes
+	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether ${CC} accepts -Wno-format-truncation" >&5
+printf %s "checking whether ${CC} accepts -Wno-format-truncation... " >&6; }
+	old_cflags="$CFLAGS"
+	CFLAGS="$CFLAGS -Werror -Wno-format-truncation"
+	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+
+else case e in #(
+  e) result=no ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+	echo $result
+	if test "X$result" = "Xyes"; then
+		CFLAGS="$old_cflags -Wno-format-truncation"
+	else
+		CFLAGS="$old_cflags"
+	fi
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
