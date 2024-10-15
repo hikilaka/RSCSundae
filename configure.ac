@@ -79,4 +79,20 @@ AS_IF([test "x$with_libev" = xyes],
 			[--with-libev was given, but test for libev failed])],
 	)])
 
+AC_DEFUN([GCC_W_NO_FORMAT_TRUNC],[
+	result=yes
+	AC_MSG_CHECKING([whether ${CC} accepts -Wno-format-truncation])
+	old_cflags="$CFLAGS"
+	CFLAGS="$CFLAGS -Werror -Wno-format-truncation"
+	AC_LINK_IFELSE([AC_LANG_PROGRAM([],[])],[],[result=no])
+	echo $result
+	if test "X$result" = "Xyes"; then
+		CFLAGS="$old_cflags -Wno-format-truncation"
+	else
+		CFLAGS="$old_cflags"
+	fi
+])
+
+GCC_W_NO_FORMAT_TRUNC
+
 AC_OUTPUT
