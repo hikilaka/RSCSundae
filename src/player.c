@@ -1078,14 +1078,11 @@ player_retreat(struct player *p)
 	struct player *p2;
 	struct npc *npc;
 
-	if (p->mob.combat_rounds < 4) {
-		player_send_message(p,
-		    "You can't retreat during the first 3 rounds of combat");
-		return -1;
-	}
-
 	if (p->mob.target_player != -1) {
 		p2 = p->mob.server->players[p->mob.target_player];
+		if (p2->mob.combat_rounds < 4) {
+			goto fail;
+		}
 		if (p2 != NULL) {
 			player_send_message(p2,
 			    "Your opponent is retreating!");
@@ -1097,6 +1094,9 @@ player_retreat(struct player *p)
 
 	if (p->mob.target_npc != -1) {
 		npc = p->mob.server->npcs[p->mob.target_npc];
+		if (npc->mob.combat_rounds < 4) {
+			goto fail;
+		}
 		if (npc != NULL) {
 			npc->mob.walk_queue_len = 0;
 			npc->mob.walk_queue_pos = 0;
@@ -1106,6 +1106,10 @@ player_retreat(struct player *p)
 
 	mob_combat_reset(&p->mob);
 	return 0;
+fail:
+	player_send_message(p,
+	    "You can't retreat during the first 3 rounds of combat");
+	return -1;
 }
 
 void
