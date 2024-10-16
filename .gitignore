@@ -1,4 +1,10 @@
-src/*.o
+*.o
+data/*.jag
+data/rsc.sqlite*
+*.core
+*.orig
+*.patch
+*.diff
 
 # http://www.gnu.org/software/automake
 

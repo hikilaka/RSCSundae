@@ -4414,7 +4414,7 @@ fi
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile doc/Makefile"
 
 
 
@@ -5704,6 +5704,42 @@ fi
 
 fi
 
+
+
+
+	result=yes
+	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether ${CC} accepts -Wno-format-truncation" >&5
+printf %s "checking whether ${CC} accepts -Wno-format-truncation... " >&6; }
+	old_cflags="$CFLAGS"
+	CFLAGS="$CFLAGS -Werror -Wno-format-truncation"
+	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main (void)
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+
+else case e in #(
+  e) result=no ;;
+esac
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+	echo $result
+	if test "X$result" = "Xyes"; then
+		CFLAGS="$old_cflags -Wno-format-truncation"
+	else
+		CFLAGS="$old_cflags"
+	fi
+
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -6459,6 +6495,7 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: '$ac_config_target'" "$LINENO" 5;;
   esac
