@@ -18,7 +18,7 @@ local drops = {
 	{ "burntmeat", 1, 4 },
 	{ "bread dough", 1, 2 },
 	{ "cabbage", 1, 2 },
-	{ "flour", 1, 2 },
+	{ "flourpot", 1, 2 },
 	{ "bread", 1, 1 },
 	{ "cookedmeat", 1, 1 },
 

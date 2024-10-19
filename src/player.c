@@ -1230,7 +1230,7 @@ player_wear(struct player *p, int slot)
 {
 	struct item_config *type, *type2;
 
-	if (slot < 0 || slot >= p->inv_count) {
+	if (slot < 0 || slot >= p->inv_count || p->script_active) {
 		return -1;
 	}
 	type = server_item_config_by_id(p->inventory[slot].id);
@@ -1265,7 +1265,7 @@ player_unwear(struct player *p, int slot)
 {
 	struct item_config *type;
 
-	if (slot < 0 || slot >= p->inv_count) {
+	if (slot < 0 || slot >= p->inv_count || p->script_active) {
 		return -1;
 	}
 	/* XXX should be delayed by tick */
