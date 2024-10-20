@@ -278,6 +278,13 @@ player_parse_mod_command(struct player *p, const char *cmd)
 				target->busy = false;
 			}
 		}
+	} else if (strcmp(cmd, "saveall") == 0) {
+		for (size_t i = 0; i < p->mob.server->max_player_id; ++i) {
+			struct player *target = p->mob.server->players[i];
+			if (target != NULL) {
+				player_save(target);
+			}
+		}
 	}
 }
 
