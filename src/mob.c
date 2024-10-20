@@ -178,6 +178,10 @@ mob_find_nearby_npc(struct mob *mob, const char *name)
 	n = mob_get_nearby_npcs(mob, npcs, 16, true);
 
 	for (size_t i = 0; i < n; ++i) {
+		if (!mob_within_range(mob,
+		    npcs[i]->mob.x, npcs[i]->mob.y, 8)) {
+			continue;
+		}
 		for (size_t j = 0; j < npcs[i]->config->name_count; ++j) {
 			if (strcasecmp(name, npcs[i]->config->names[j]) == 0) {
 				return npcs[i];
