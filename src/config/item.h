@@ -7,6 +7,7 @@
 #define	ITEM_AIR_RUNE	(33)
 #define	ITEM_EARTH_RUNE	(34)
 #define ITEM_PICKAXE	(156)
+#define ITEM_SILK	(200)
 
 #define ITEM_GHOSTSPEAK	(24)
 #define ITEM_SILVKEY1	(25)
