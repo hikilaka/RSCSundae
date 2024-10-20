@@ -51,7 +51,7 @@ Engine
 - [ ] Protocol: 201
 - [x] Protocol: 204
 - [x] Five minute movement timer (should be optional)
-- [ ] Al Kharid general store should reject silk
+- [x] Al Kharid general store should reject silk
 
 Content
 -------

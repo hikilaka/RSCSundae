@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <limits.h>
+#include <string.h>
 #include "config/config.h"
 #include "config/item.h"
 #include "entity.h"
@@ -69,6 +70,16 @@ shop_sell(struct shop_config *shop, struct player *p, uint16_t id)
 	item = server_item_config_by_id(id);
 	if (p->shop == NULL || item == NULL ||
 	    !player_inv_held_id(p, id, 1)) {
+		return;
+	}
+
+	/*
+	 * see /Logg/Loggykins/08-04-2018 14.01.18
+	 * seems silly but likely really was an engine-level restriction
+	 */
+	if (id == ITEM_SILK && strcmp(shop->name, "generalshop3") == 0) {
+		player_send_message(p,
+		    "You can't sell silk here, try selling it in Varrock or Lumbridge");
 		return;
 	}
 	for (size_t i = 0; i < shop->item_count; ++i) {
