@@ -1,3 +1,13 @@
+RSC Sundae 1.1.1
+----------------
+
+* Added ::saveall admin command to save all players to the
+  database (useful before shutdown).
+* Implemented silk selling restriction in Al Kharid general store.
+* Disallow equipping items during active player scripts (thanks Logg).
+* Imps drop flourpot, not flourheap (thanks Logg).
+* Tighter distance limit on nearvisnpc.
+
 RSC Sundae 1.1.0
 ----------------
 
