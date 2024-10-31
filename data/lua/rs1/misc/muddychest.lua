@@ -8,7 +8,7 @@ end
 function useloc_shutgorkachest_gorkakey(player, x, y)
 	local count = getvar(player, "gorka_count")
 	count = count + 1
-	setvar(player, "gorka_count", 1)
+	setvar(player, "gorka_count", count)
 
 	-- no idea why the messages are so inconsistent
 	mes(player, "@que@you unlock the chest with your key")
