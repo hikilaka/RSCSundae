@@ -458,6 +458,7 @@ npc_init_combat(struct npc *npc, struct player *target)
 	target->mob.target_npc = npc->mob.id;
 	target->mob.in_combat = true;
 	target->mob.combat_rounds = 0;
+	target->mob.combat_next_hit = 3;
 	target->mob.dir = MOB_DIR_COMBAT_RIGHT;
 	return true;
 }
