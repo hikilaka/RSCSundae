@@ -202,7 +202,6 @@ void
 player_save(struct player *p)
 {
 	if (p->login_date != 0) {
-		p->play_time += (time(NULL) - p->login_date);
 		(void)database_save_player(&p->mob.server->database, p);
 	}
 }
@@ -2535,5 +2534,8 @@ player_attempt_logout(struct player *p, bool requested)
 		}
 	}
 
+	if (p->login_date != 0) {
+		p->play_time += (time(NULL) - p->login_date);
+	}
 	player_send_logout(p);
 }
