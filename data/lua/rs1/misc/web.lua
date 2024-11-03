@@ -19,4 +19,5 @@ register_usebound("web", "dagger", usebound_web_knife)
 register_usebound("web", "sword", usebound_web_knife)
 register_usebound("web", "mace", usebound_web_knife)
 register_usebound("web", "axe", usebound_web_knife)
+register_usebound("web", "battle axe", usebound_web_knife)
 
