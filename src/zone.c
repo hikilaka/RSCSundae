@@ -404,6 +404,38 @@ server_find_ground_item(struct player *p, int x, int y, int id)
 	return NULL;
 }
 
+struct ground_item *
+server_get_ground_item(struct player *p, uint64_t unique_id, int x, int y)
+{
+	struct zone *zone;
+
+	zone = server_find_zone(x, y);
+	if (zone != NULL) {
+		for (int i = 0; i < zone->item_count; ++i) {
+			if (!player_can_see_item(p, &zone->items[i])) {
+				continue;
+			}
+			if (zone->items[i].unique_id == unique_id) {
+				return &zone->items[i];
+			}
+		}
+	}
+
+	for (size_t i = 0; i < p->mob.server->temp_item_count; ++i) {
+		struct ground_item *item;
+
+		item = &p->mob.server->temp_items[i];
+		if (!player_can_see_item(p, item)) {
+			continue;
+		}
+		if (item->unique_id == unique_id) {
+			return &p->mob.server->temp_items[i];
+		}
+	}
+
+	return NULL;
+}
+
 void
 server_add_item_respawn(struct ground_item *item)
 {

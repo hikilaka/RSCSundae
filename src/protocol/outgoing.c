@@ -1606,8 +1606,9 @@ player_send_ground_items(struct player *p)
 		if (new_known_count >= MAX_NEARBY_ITEMS) {
 			break;
 		}
-		global_item = server_find_ground_item(p, p->known_items[i].x,
-		    p->known_items[i].y, p->known_items[i].id);
+		global_item = server_get_ground_item(p,
+		    p->known_items[i].unique_id,
+		    p->known_items[i].x, p->known_items[i].y);
 		item = &p->known_items[i];
 		if ((global_item == NULL ||
 		    !within_update_radius(p, item->x, item->y, 3) ||
