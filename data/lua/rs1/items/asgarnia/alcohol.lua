@@ -43,4 +43,4 @@ function opinv_asgarnian_ale(player)
 	addstat(player, STAT_STRENGTH, 2, 0)
 end
 
-register_opinv("wizard's mind bomb", drink_mindbomb)
+register_opinv("wizard's mind bomb", opinv_wizards_mind_bomb)
