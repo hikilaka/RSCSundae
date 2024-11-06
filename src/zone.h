@@ -100,6 +100,7 @@ void server_add_loc(struct server *, struct loc *);
 void server_del_loc(int, int);
 struct bound *server_find_bound(int, int, int);
 void server_add_bound(struct server *, struct bound *);
+struct ground_item *server_get_ground_item(struct player *, uint64_t, int, int);
 struct ground_item *server_find_ground_item(struct player *, int, int, int);
 void server_add_item_respawn(struct ground_item *);
 
