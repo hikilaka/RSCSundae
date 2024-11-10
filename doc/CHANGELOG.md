@@ -1,3 +1,13 @@
+RSC Sundae 1.1.2
+----------------
+
+* Fixed play_time recording for proper functioning of ::time.
+* Fixed "should be able to cut web with battle axe".
+* Fixed "duplicate ground items not visibly removed".
+* Fixed wizard's mind bomb.
+* Eliminate compiler warnings in ::onlinelist implementation.
+* Various fixes for subtle combat bugs.
+
 RSC Sundae 1.1.1
 ----------------
 
