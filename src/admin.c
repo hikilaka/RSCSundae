@@ -49,15 +49,30 @@ player_parse_command(struct player *p, const char *cmd)
 	} else if (strcmp(cmd, "onlinelist") == 0) {
 		char name[32];
 		char mes[2048];
+		size_t mes_len = 0, name_len;
 
 		mes[0] = '\0';
 		for (size_t i = 0; i < p->mob.server->max_player_id; ++i) {
-			struct player *target = p->mob.server->players[i];
+			struct player *target;
+
+			target = p->mob.server->players[i];
 			if (target == NULL || target->name < 0) {
 				continue;
 			}
 			mod37_namedec(target->name, name);
-			snprintf(mes, sizeof(mes), "%s%s, ", mes, name);
+			name_len = strlen(name);
+			/* format like name1, name2, name3... */
+			if ((sizeof(mes) - mes_len) >= (name_len + 3)) {
+				memcpy(mes + mes_len, name, name_len);
+				mes[mes_len + name_len] = ',';
+				mes[mes_len + name_len + 1] = ' ';
+				mes[mes_len + name_len + 2] = '\0';
+				mes_len += (name_len + 2);
+			}
+		}
+		/* remove the comma after the last entry */
+		if (mes_len >= 3) {
+			mes[mes_len - 2] = '\0';
 		}
 		player_send_mesbox(p, mes);
 	} else if (strcmp(cmd, "time") == 0) {
