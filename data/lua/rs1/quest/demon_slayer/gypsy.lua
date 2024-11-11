@@ -299,6 +299,12 @@ function talknpc_gypsy(player, npc)
 			gypsy_nonbeliever(player, npc)
 		end
 	elseif stage == 1 then
+		if held(player, "silverlight", 1) then
+			npcsay(npc, "How goes the quest?")
+			say(player, "I have the sword, now. I just need to kill the demon I think")
+			npcsay(npc, "Yep, that's right")
+			return
+		end
 		npcsay(npc, "Greetings how goes thy quest?")
 		say(player, "I'm still working on it")
 		npcsay(npc, "Well if you need my advice I'm always here young one")
