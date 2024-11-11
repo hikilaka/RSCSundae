@@ -356,7 +356,6 @@ config_parse_items(char *buffer, size_t len, size_t *num_items,
 	items[ITEM_SILVKEY2].quest_item = 1;
 	items[ITEM_GHOSTSKULL].quest_item = 1;
 	items[ITEM_SILVKEY3].quest_item = 1;
-	items[ITEM_SILVERLIGH].quest_item = 1;
 	items[ITEM_CADAVA].quest_item = 1;
 	items[ITEM_GAGUE].quest_item = 1;
 	items[ITEM_FISHFOOD].quest_item = 1;
