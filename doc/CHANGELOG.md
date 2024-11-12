@@ -5,6 +5,7 @@ RSC Sundae 1.1.2
 * Fixed "should be able to cut web with battle axe".
 * Fixed "duplicate ground items not visibly removed".
 * Fixed wizard's mind bomb.
+* Added missing gypsy dialogue.
 * Eliminate compiler warnings in ::onlinelist implementation.
 * Various fixes for subtle combat bugs.
 
