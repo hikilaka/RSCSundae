@@ -209,7 +209,16 @@ player_save(struct player *p)
 void
 player_destroy(struct player *p)
 {
+	struct zone *zone;
+
 	player_save(p);
+
+	zone = server_find_zone(p->mob.x, p->mob.y);
+
+	if (zone != NULL) {
+		zone_remove_player(zone, p->mob.id);
+	}
+
 	if (p->sock != -1) {
 		close(p->sock);
 		p->sock = -1;
