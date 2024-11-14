@@ -940,8 +940,6 @@ player_init_combat(struct player *p, struct mob *target)
 void
 player_process_combat(struct player *p)
 {
-	assert(!(!p->mob.in_combat && (p->mob.dir == MOB_DIR_COMBAT_LEFT ||
-	    p->mob.dir == MOB_DIR_COMBAT_RIGHT)));
 	if (!p->mob.in_combat) {
 		if (p->mob.target_player != -1) {
 			struct player *target;
