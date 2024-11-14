@@ -121,6 +121,7 @@ function talknpc_straven(player, npc)
 			npcsay(npc, "We don't want that falling into the wrong hands")
 			npcsay(npc, "Ah well")
 			npcsay(npc, "Have this spare")
+			give(player, "phoenixkey2", 1)
 			return
 		end
 		local resp = multi(player,
