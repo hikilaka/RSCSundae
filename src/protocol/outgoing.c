@@ -1715,9 +1715,14 @@ player_send_partner_trade_offer(struct player *p)
 	size_t offset = 0;
 	struct player *partner;
 
-	assert(p->trading_player != -1);
+	if (p->trading_player == -1) {
+		return -1;
+	}
+
 	partner = p->mob.server->players[p->trading_player];
-	assert(partner != NULL);
+	if (partner == NULL) {
+		return -1;
+	}
 
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
 		        OP_SRV_UPDATE_TRADE_OFFER);
