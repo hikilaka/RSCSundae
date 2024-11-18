@@ -948,7 +948,7 @@ load_map_tile(struct jag_map *chunk,
 		}
 		item.respawn = true;
 		item.stack = 1;
-		item.owner = UINT16_MAX;
+		item.owner = INT64_MAX;
 		item.creation_time = 0;
 		item.respawn_time = 0;
 		server_add_item_respawn(&item);
@@ -1287,7 +1287,7 @@ server_add_temp_item(struct player *owner, int x, int y, int id, uint32_t stack)
 	item.x = x;
 	item.y = y;
 	item.stack = stack;
-	item.owner = owner != NULL ? owner->mob.id : UINT16_MAX;
+	item.owner = owner != NULL ? owner->name : INT64_MAX;
 	item.creation_time = s.tick_counter;
 	item.unique_id = s.ground_item_counter++;
 

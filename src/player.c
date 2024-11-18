@@ -1607,8 +1607,7 @@ bool
 player_can_see_item(struct player *p, struct ground_item *item)
 {
 	if (p->mob.server->untradables &&
-	    item->owner != p->mob.id &&
-	    item->owner != UINT16_MAX) {
+	    item->owner != p->name && item->owner != INT64_MAX) {
 		struct item_config *config;
 
 		config = server_item_config_by_id(item->id);
@@ -1627,7 +1626,7 @@ player_can_see_item(struct player *p, struct ground_item *item)
 	if (p->mob.server->tick_counter > (item->creation_time + 100)) {
 		return true;
 	}
-	return item->owner == p->mob.id || item->owner == UINT16_MAX;
+	return item->owner == p->name || item->owner == INT64_MAX;
 }
 
 bool
