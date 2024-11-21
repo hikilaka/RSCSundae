@@ -736,11 +736,11 @@ player_shoot_pvm(struct player *p, struct projectile_config *projectile,
 	if (!mob_check_reachable(&p->mob,
 	    target->mob.x, target->mob.y, true)) {
 		player_send_message(p, "I can't get a clear shot from here");
-		return;
+		goto fail;
 	}
 
 	if (!player_consume_ammo(p, projectile, &target->mob)) {
-		return;
+		goto fail;
 	}
 
 	if (projectile->type != PROJECTILE_TYPE_MAGIC) {
@@ -759,6 +759,11 @@ player_shoot_pvm(struct player *p, struct projectile_config *projectile,
 	p->projectile_sprite = projectile->sprite;
 	p->projectile_target_npc = target->mob.id;
 	p->projectile_target_player = UINT16_MAX;
+	return;
+fail:
+	p->mob.walk_queue_pos = 0;
+	p->mob.walk_queue_len = 0;
+	mob_combat_reset(&p->mob);
 }
 
 void
@@ -804,11 +809,11 @@ player_shoot_pvp(struct player *p, struct projectile_config *projectile,
 	if (!mob_check_reachable(&p->mob,
 	    target->mob.x, target->mob.y, true)) {
 		player_send_message(p, "I can't get a clear shot from here");
-		return;
+		goto fail;
 	}
 
 	if (!player_consume_ammo(p, projectile, &target->mob)) {
-		return;
+		goto fail;
 	}
 
 	player_skull(p, target);
@@ -834,6 +839,11 @@ player_shoot_pvp(struct player *p, struct projectile_config *projectile,
 	(void)snprintf(message, sizeof(message),
 	    "Warning! %s is shooting at you!", name);
 	player_send_message(target, message);
+	return;
+fail:
+	p->mob.walk_queue_pos = 0;
+	p->mob.walk_queue_len = 0;
+	mob_combat_reset(&p->mob);
 }
 
 static bool
