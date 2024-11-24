@@ -516,12 +516,10 @@ npc_process_combat(struct npc *npc)
 		return;
 	}
 
-	if (target->prayers[PRAY_PARALYZE_MONSTER]) {
-		return;
+	if (!target->prayers[PRAY_PARALYZE_MONSTER]) {
+		roll = npc_combat_roll(npc, target);
+		player_damage(target, NULL, roll);
 	}
-
-	roll = npc_combat_roll(npc, target);
-	player_damage(target, NULL, roll);
 	npc->mob.combat_rounds++;
 	npc->mob.combat_next_hit = 3;
 	target->mob.combat_timer = npc->mob.server->tick_counter;
