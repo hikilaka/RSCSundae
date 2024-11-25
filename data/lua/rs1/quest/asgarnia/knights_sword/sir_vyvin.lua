@@ -22,7 +22,7 @@ end
 
 function oploc1_vyvincupboardopen(player, x, y)
 	local npc = nearvisnpc(player, "sir vyvin")
-	if npc and not npcbusy(npc) then
+	if npc then
 		-- RSC 2001/replays master archive/NPC (dialogue, notes)/Sir Vyvin/Cupboard attempt 100%  + No distract Falador White Knights Castle- Sir Vyvin-
 		npcsay(npc, "Hey what are you doing?")
 		npcsay(npc, "That's my cupboard")
