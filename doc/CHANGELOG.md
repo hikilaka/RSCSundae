@@ -1,3 +1,13 @@
+RSC Sundae 1.1.3
+----------------
+
+* Stricter validation of ground item ownership to not
+  have PID bugs.
+* Cancel future ranged events when target is unreachable
+  to prevent "I can't get a clear shot" message looping.
+* Fixed Paralyze Monster freezing the combat round counter.
+* Fixed Sir Vyvin getting stuck in a busy state.
+
 RSC Sundae 1.1.2
 ----------------
 
