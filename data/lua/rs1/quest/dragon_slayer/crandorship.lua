@@ -27,9 +27,7 @@ function oploc1_crandorship(player, x, y)
 		local klarense = nearnpc(player, "klarense")
 
 		if klarense then
-			npcbusy(klarense)
 			talknpc_klarense(player, klarense)
-			npcunbusy(klarense)
 		else
 			mes(player, "You must talk to the owner about this.")
 		end

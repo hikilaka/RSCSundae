@@ -14,10 +14,12 @@ function oploc1_monasteryladder(player, x, y)
 	end
 	npcbusy(npc)
 	npcsay(npc, "Only members of our order can go up there")
+	npcunbusy(npc)
 	local resp = multi(player,
 		"Well can i join your order?",
 		"Oh sorry")
 	if resp == 1 then
+		npcbusy(npc)
 		say(player, "Well can I join your order?")
 		if statatleast(player, STAT_PRAYER, 31) then
 			npcsay(npc, "Ok I see you are someone suitable for our order")
@@ -27,8 +29,8 @@ function oploc1_monasteryladder(player, x, y)
 			npcsay(npc, "No I feel you are not devout enough")
 			mes(player, "You need a prayer level of 31")
 		end
+		npcunbusy(npc)
 	elseif resp == 2 then
 		say(player, "Oh Sorry")
 	end
-	npcunbusy(npc)
 end
