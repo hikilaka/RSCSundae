@@ -35,20 +35,26 @@ function opbound1_fortressdoor(player, x, y, dir)
 	npcbusy(guard)
 	npcsay(guard, "Heh you can't come in here")
 	npcsay(guard, "This is a high security military installation")
+	npcunbusy(guard)
 	local resp = multi(player,
 		"Yes but I work here",
 		"Oh sorry",
 		"So who does it belong to?")
 	if resp == 1 then
+		npcbusy(guard)
 		guard_workhere(player, guard)
+		npcunbusy(guard)
 	elseif resp == 2 then
+		npcbusy(guard)
 		say(player, "Oh sorry")
 		npcsay(guard, "Don't let it happen again")
+		npcunbusy(guard)
 	elseif resp == 3 then
+		npcbusy(guard)
 		say(player, "So who does it belong to?")
 		npcsay(guard, "This fortress belongs to the order of black knights known as the Kinshra")
+		npcunbusy(guard)
 	end
-	npcunbusy(guard)
 end
 
 local function enter_meeting_room(player, x, y, dir)

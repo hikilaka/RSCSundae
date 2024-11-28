@@ -5,15 +5,19 @@ local function sail_karamja(player, npc)
 	npcbusy(npc)
 	npcsay(npc, "Do you want to go on a trip to Karamja?")
 	npcsay(npc, "The trip will cost you 30 gold")
+	npcunbusy(npc)
 	local resp = multi(player,
 		"I'd rather go to Crandor Isle",
 		"Yes please",
 		"No thankyou")
 	if resp == 1 then
+		npcbusy(npc)
 		say(player, "I'd rather go to Crandor Isle")
 		npcsay(npc, "No I need to stay alive")
 		npcsay(npc, "I have a wife and family to support")
+		npcunbusy(npc)
 	elseif resp == 2 then
+		npcbusy(npc)
 		say(player, "Yes please")
 		if not held(player, "coins", 30) then
 			say(player, "Oh dear I don't seem to have enough money")
@@ -28,10 +32,10 @@ local function sail_karamja(player, npc)
 			delay(3)
 			mes(player, "The ship arrives at Karamja")
 		end
+		npcunbusy(npc)
 	elseif resp == 3 then
 		say(player, "No thankyou")
 	end
-	npcunbusy(npc)
 end
 
 function talknpc_captain_tobias(player, npc)
