@@ -7,6 +7,8 @@ RSC Sundae 1.1.3
   to prevent "I can't get a clear shot" message looping.
 * Fixed Paralyze Monster freezing the combat round counter.
 * Fixed Sir Vyvin getting stuck in a busy state.
+* Fixed certain NPCs being stuck in busy state when menu
+  times out during oploc.
 
 RSC Sundae 1.1.2
 ----------------
