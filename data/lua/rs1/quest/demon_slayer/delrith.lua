@@ -61,3 +61,42 @@ function killnpc_delrith(player, npc, x, y)
 		giveqp(player, 3)
 	end
 end
+
+-- XXX: magic behaviour is unknown
+-- but this is necessary to prevent a stall bug
+
+register_skillnpc("delrith", "wind strike", function(player, target)
+end)
+
+register_skillnpc("delrith", "water strike", function(player, target)
+end)
+
+register_skillnpc("delrith", "earth strike", function(player, target)
+end)
+
+register_skillnpc("delrith", "fire strike", function(player, target)
+end)
+
+register_skillnpc("delrith", "wind bolt", function(player, target)
+end)
+
+register_skillnpc("delrith", "water bolt", function(player, target)
+end)
+
+register_skillnpc("delrith", "earth bolt", function(player, target)
+end)
+
+register_skillnpc("delrith", "fire bolt", function(player, target)
+end)
+
+register_skillnpc("delrith", "wind blast", function(player, target)
+end)
+
+register_skillnpc("delrith", "water blast", function(player, target)
+end)
+
+register_skillnpc("delrith", "earth blast", function(player, target)
+end)
+
+register_skillnpc("delrith", "fire blast", function(player, target)
+end)

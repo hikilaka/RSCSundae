@@ -1,3 +1,9 @@
+RSC Sundae 1.1.4
+----------------
+
+* Prevent players from getting themselves stuck by
+  casting spells on Delrith.
+
 RSC Sundae 1.1.3
 ----------------
 
