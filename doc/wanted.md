@@ -25,3 +25,4 @@ recordings would be very useful for RSC Sundae:
 * Talking to Joe with exactly 2 beers before he's drunk
 * Talking to Osman after Leela has said the 3 beer plan should work
 * Talking to wartface while Bentnoze is busy
+* Various Delrith behaviours: attempting ranged attacks, magic attacks...
