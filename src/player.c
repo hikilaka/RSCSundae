@@ -515,7 +515,8 @@ player_die(struct player *p, struct player *victor)
 
 	item = server_find_item_config("bones");
 	assert(item != NULL);
-	server_add_temp_item(victor, p->mob.x, p->mob.y, item->id, 1);
+	server_add_temp_item(victor != NULL ? victor : p,
+	    p->mob.x, p->mob.y, item->id, 1);
 
 	if (p->skulled) {
 		kept_max = 0;
@@ -544,12 +545,14 @@ player_die(struct player *p, struct player *victor)
 		if (item->weight == 0) {
 			player_inv_remove_id(p, item->id,
 			    p->inventory[slot].stack);
-			server_add_temp_item(victor,
+			server_add_temp_item(victor != NULL ?
+			    victor : p,
 			    p->mob.x, p->mob.y, item->id,
 				p->inventory[slot].stack);
 		} else {
 			player_inv_remove_id(p, item->id, 1);
-			server_add_temp_item(victor,
+			server_add_temp_item(victor != NULL ?
+			    victor : p,
 			    p->mob.x, p->mob.y, item->id, 1);
 		}
 	}
