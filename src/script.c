@@ -163,6 +163,11 @@ script_blocked(lua_State *L)
 		plane++;
 	}
 
+	if (x >= ZONE_MAX_X || y >= ZONE_MAX_Y) {
+		lua_pushboolean(L, true);
+		return 1;
+	}
+
 	if (serv->adjacency[plane][x][y] != 0) {
 		lua_pushboolean(L, true);
 		return 1;
@@ -217,28 +222,30 @@ script_delloc(lua_State *L)
 static int
 script_addobject(lua_State *L)
 {
-	lua_Integer id, amount, x, y;
+	lua_Integer amount, x, y;
 	const char *name;
 	struct item_config *config;
-	struct player *p;
+	struct player *p = NULL;
 
-	id = script_checkinteger(L, 1);
+	if (!lua_isnil(L, 1)) {
+		lua_Integer id = script_checkinteger(L, 1);
+		p = id_to_player(id);
+		if (p == NULL) {
+			printf("script warning: player %lld is undefined\n",
+			    id);
+			script_cancel(L, id);
+			return 0;
+		}
+	}
+
 	name = script_checkstring(L, 2);
 	amount = script_checkinteger(L, 3);
 	x = script_checkinteger(L, 4);
 	y = script_checkinteger(L, 5);
 
-	p = id_to_player(id);
-	if (p == NULL) {
-		printf("script warning: player %lld is undefined\n", id);
-		script_cancel(L, id);
-		return 0;
-	}
-
 	config = server_find_item_config(name);
 	if (config == NULL) {
 		printf("script warning: item %s is undefined\n", name);
-		script_cancel(L, id);
 		return 0;
 	}
 
