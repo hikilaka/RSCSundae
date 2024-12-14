@@ -494,10 +494,13 @@ local function check_doric(player)
 		return true
 	end
 
-	-- https://classic.runescape.wiki/w/Transcript:Doric
 	local npc = nearnpc(player, "doric")
 	if npc then
+		-- https://classic.runescape.wiki/w/Transcript:Doric
 		npcsay(npc, "Heh who said you could use that?")
+	else
+		-- https://i.imgur.com/tSe5u.png
+		say(player, "I'd better ask Doric if I can use this first")
 	end
 
 	return false
