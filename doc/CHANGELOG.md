@@ -8,6 +8,7 @@ RSC Sundae 1.1.4
 * Prevent players from getting themselves stuck by
   casting spells on Delrith.
 * When no victor in player death, items are owned by self.
+* Added missing chaos-rune drop to darkerwiz.
 * Made holiday drops unowned.
 
 RSC Sundae 1.1.3
