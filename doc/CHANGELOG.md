@@ -1,8 +1,14 @@
 RSC Sundae 1.1.4
 ----------------
 
+* Implemented basic functionality for disk of returning.
+* Implemented half full wine jug after finding footage.
+* Implemented Doric anvil busy messasge after finding
+  screenshot.
 * Prevent players from getting themselves stuck by
   casting spells on Delrith.
+* When no victor in player death, items are owned by self.
+* Made holiday drops unowned.
 
 RSC Sundae 1.1.3
 ----------------
