@@ -11,8 +11,6 @@ local drops = {
 	{ "earth-rune", 12, 2 },
 	{ "earth-rune", 24, 4 },
 	{ "nature-rune", 3, 6 },
-	{ "nature-rune", 3, 6 },
-	{ "chaos-rune", 3, 6 },
 	{ "chaos-rune", 3, 6 },
 	{ "air-rune", 7, 3 },
 	{ "air-rune", 12, 2 },

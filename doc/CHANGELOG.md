@@ -5,6 +5,7 @@ RSC Sundae 1.1.4
 * Implemented half full wine jug after finding footage.
 * Implemented Doric anvil busy messasge after finding
   screenshot.
+* Allow 100% successful casts with 32 magic bonus.
 * Prevent players from getting themselves stuck by
   casting spells on Delrith.
 * When no victor in player death, items are owned by self.
