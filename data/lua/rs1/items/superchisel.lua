@@ -164,20 +164,24 @@ end
 local function superchisel_event(player)
 	local resp = multi(player,
 		"Spawn pumpkins",
+		"Spawn disk of returning",
 		"Spawn cabbages",
 		"Spawn cake")
 	if resp == 1 then
 		item = "pumpkin"
 	elseif resp == 2 then
-		item = "magic cabbage"
+		item = "disk of returning"
 	elseif resp == 3 then
+		item = "magic cabbage"
+	elseif resp == 4 then
 		item = "slice of cake"
 	end
-	for x=50,400,4 do
-		for y=100,740,4 do
-			if not blocked(x, y) then
-				addobject(player, item, 1,
-					x + randomvar(8), y + randomvar(8))
+	for x=50,400,6 do
+		for y=100,740,6 do
+			local new_x = x + randomvar(6)
+			local new_y = y + randomvar(6)
+			if not blocked(new_x, new_y) then
+				addobject(nil, item, 1, new_x, new_y)
 			end
 		end
 	end
