@@ -332,7 +332,6 @@ mob_die(struct mob *mob)
 		}
 	}
 
-	mob->combat_timer = 0;
 	mob->damage_timer = 0;
 
 	mob_combat_reset(mob);

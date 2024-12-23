@@ -465,6 +465,9 @@ server_tick(void)
 		if (s.players[i]->spell_timer > 0) {
 			s.players[i]->spell_timer--;
 		}
+		if (s.players[i]->retreat_timer > 0) {
+			s.players[i]->retreat_timer--;
+		}
 		if (s.players[i]->yell_timer > 0) {
 			s.players[i]->yell_timer--;
 		}
