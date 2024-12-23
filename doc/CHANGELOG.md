@@ -1,6 +1,10 @@
 RSC Sundae 1.1.4
 ----------------
 
+* Rework the way retreating affects aggression...
+* implement so-called "cast spell to get caught instantly" "bug"
+* implement aggression==2 NPCs re-attacking players who retreat
+* implement retreating gives a grace period from aggressive NPCs
 * Implemented basic functionality for disk of returning.
 * Implemented half full wine jug after finding footage.
 * Implemented Doric anvil busy messasge after finding
