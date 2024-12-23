@@ -337,14 +337,15 @@ npc_process_movement(struct npc *npc)
 			npc_hunt_target(npc);
 		}
 
-		if (npc->random_walk_timer == 0 &&
-		    npc->mob.following_player == -1) {
-			double r = ranval(&npc->mob.server->ran) /
-			    (double)UINT32_MAX;
+		if (npc->random_walk_timer == 0) {
+			if (npc->mob.following_player == -1) {
+				double r = ranval(&npc->mob.server->ran) /
+				    (double)UINT32_MAX;
 
-			/* XXX: needs verifying */
-			npc->random_walk_timer = 1 + (int)(r * 30);
-			npc_random_walk(npc);
+				/* XXX: needs verifying */
+				npc->random_walk_timer = 1 + (int)(r * 30);
+				npc_random_walk(npc);
+			}
 		} else {
 			npc->random_walk_timer--;
 		}
