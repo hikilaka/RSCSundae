@@ -1,4 +1,4 @@
-RSC Sundae 1.1.4
+RSC Sundae 1.2.0
 ----------------
 
 * Rework the way retreating affects aggression...
