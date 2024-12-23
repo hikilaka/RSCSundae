@@ -221,14 +221,6 @@ npc_hunt_target(struct npc *npc)
 	bool restrict_hunt = false;
 	size_t n;
 
-	/*
-	 * like players, NPCs appear to be stunned slightly after combat, see
-	 * RSC 2001/replays master archive/Walk around/Misthalin- Lumbridge/walkaround- lumbridge road to varrock- road up to wheatfield digsite- dark mage aggressive - lvl 1-1-1
-	 */
-	if (npc->mob.server->tick_counter < (npc->mob.combat_timer + 6)) {
-		return;
-	}
-
 	if (npc->mob.cur_stats[SKILL_HITS] <= npc->config->bravery) {
 		return;
 	}
@@ -244,7 +236,7 @@ npc_hunt_target(struct npc *npc)
 	for (size_t i = 0; i < n; ++i) {
 		p = players[i];
 
-		if (p->mob.in_combat) {
+		if (p->mob.in_combat || p->retreat_timer > 0) {
 			continue;
 		}
 
@@ -320,6 +312,14 @@ npc_process_movement(struct npc *npc)
 			}
 
 			/*
+			 * NPCs appear to be stunned slightly after retreat, see
+			 * RSC 2001/replays master archive/Walk around/Misthalin- Lumbridge/walkaround- lumbridge road to varrock- road up to wheatfield digsite- dark mage aggressive - lvl 1-1-1
+			 */
+			if (p->retreat_timer > 0) {
+				return;
+			}
+
+			/*
 			 * aggressive NPCs used to be able to get stuck outside
 			 * of their range, see various replays of jungle
 			 * spiders on hazelmere's island
@@ -337,20 +337,14 @@ npc_process_movement(struct npc *npc)
 			npc_hunt_target(npc);
 		}
 
-		if (npc->random_walk_timer == 0) {
-			/*
-			 * like players, NPCs appear to be stunned slightly after combat, see
-			 * RSC 2001/replays master archive/Walk around/Misthalin- Lumbridge/walkaround- lumbridge road to varrock- road up to wheatfield digsite- dark mage aggressive - lvl 1-1-1
-			 */
-			if (npc->mob.following_player == -1 &&
-			    npc->mob.server->tick_counter >= (npc->mob.combat_timer + 6)) {
-				double r = ranval(&npc->mob.server->ran) /
-				    (double)UINT32_MAX;
+		if (npc->random_walk_timer == 0 &&
+		    npc->mob.following_player == -1) {
+			double r = ranval(&npc->mob.server->ran) /
+			    (double)UINT32_MAX;
 
-				/* XXX: needs verifying */
-				npc->random_walk_timer = 1 + (int)(r * 30);
-				npc_random_walk(npc);
-			}
+			/* XXX: needs verifying */
+			npc->random_walk_timer = 1 + (int)(r * 30);
+			npc_random_walk(npc);
 		} else {
 			npc->random_walk_timer--;
 		}
@@ -481,7 +475,13 @@ npc_process_combat(struct npc *npc)
 	}
 
 	if (!npc->mob.in_combat) {
-		npc_init_combat(npc, target);
+		/*
+		 * NPCs appear to be stunned slightly after retreat, see
+		 * RSC 2001/replays master archive/Walk around/Misthalin- Lumbridge/walkaround- lumbridge road to varrock- road up to wheatfield digsite- dark mage aggressive - lvl 1-1-1
+		 */
+		if (target->retreat_timer == 0) {
+			npc_init_combat(npc, target);
+		}
 		return;
 	}
 
@@ -522,5 +522,4 @@ npc_process_combat(struct npc *npc)
 	}
 	npc->mob.combat_rounds++;
 	npc->mob.combat_next_hit = 3;
-	target->mob.combat_timer = npc->mob.server->tick_counter;
 }

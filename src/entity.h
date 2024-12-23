@@ -181,7 +181,6 @@ struct mob {
 	uint8_t in_combat;
 	uint8_t damage;
 	uint32_t combat_rounds;
-	uint64_t combat_timer;
 	uint64_t damage_timer;
 	uint8_t combat_next_hit;
 	uint8_t cur_stats[MAX_SKILL_ID];
@@ -350,6 +349,7 @@ struct player {
 	struct loc action_loc;
 	uint16_t bubble_id;
 	uint8_t ranged_timer;
+	uint8_t retreat_timer;
 	uint8_t spell_timer;
 	uint8_t teleported;
 	uint16_t bank_count;

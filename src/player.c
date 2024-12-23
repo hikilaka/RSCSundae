@@ -688,6 +688,7 @@ player_shoot_pvm(struct player *p, struct projectile_config *projectile,
 {
 	int roll = 0;
 
+	p->retreat_timer = 0;
 	p->mob.walk_queue_len = 0;
 	p->mob.walk_queue_pos = 0;
 	p->mob.following_player = -1;
@@ -754,6 +755,7 @@ player_shoot_pvp(struct player *p, struct projectile_config *projectile,
 	assert(target != NULL);
 	assert(projectile != NULL);
 
+	p->retreat_timer = 0;
 	p->mob.walk_queue_len = 0;
 	p->mob.walk_queue_pos = 0;
 	p->mob.following_player = -1;
@@ -947,12 +949,7 @@ player_process_combat(struct player *p)
 				return;
 			}
 
-			if (p->mob.server->tick_counter <
-			    (target->mob.combat_timer + 6)) {
-				/*
-				 * hp bar in client takes roughly 4 seconds
-				 * to be gone
-				 */
+			if (target->retreat_timer > 0) {
 				p->mob.walk_queue_pos = 0;
 				p->mob.walk_queue_len = 0;
 				mob_combat_reset(&p->mob);
@@ -1052,7 +1049,7 @@ player_process_combat(struct player *p)
 
 		roll = player_pvp_roll(p, target);
 		player_damage(target, p, roll);
-		target->mob.combat_timer = p->mob.server->tick_counter;
+		p->retreat_timer = 0;
 		p->mob.combat_rounds++;
 		p->mob.combat_next_hit = 3;
 	} else if (p->mob.target_npc != -1) {
@@ -1085,7 +1082,7 @@ player_process_combat(struct player *p)
 
 		roll = player_pvm_roll(p, target);
 		npc_damage(target, p, roll);
-		target->mob.combat_timer = p->mob.server->tick_counter;
+		p->retreat_timer = 0;
 		p->mob.combat_rounds++;
 		p->mob.combat_next_hit = 3;
 	}
@@ -1120,9 +1117,20 @@ player_retreat(struct player *p)
 			npc->mob.walk_queue_len = 0;
 			npc->mob.walk_queue_pos = 0;
 			mob_combat_reset(&npc->mob);
+
+			if (npc->config->aggression > 1 &&
+			    npc->mob.cur_stats[SKILL_HITS] > npc->config->bravery) {
+				npc->mob.following_player = p->mob.id;
+				npc->mob.target_player = p->mob.id;
+				p->chased_by_npc = npc->mob.id;
+			}
 		}
 	}
 
+	/*
+	 * hp bar in client takes roughly 4 seconds to be gone
+	 */
+	p->retreat_timer = 6;
 	mob_combat_reset(&p->mob);
 	return 0;
 fail:
