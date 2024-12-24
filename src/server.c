@@ -945,6 +945,7 @@ load_map_tile(struct jag_map *chunk,
 			if (loc_config->surface_height > 0) {
 				item.y = global_y - 1;
 				item.on_surface = true;
+				/* authentic bug, see mind rune in lum castle */
 				object_dir = l->dir;
 			}
 		}
