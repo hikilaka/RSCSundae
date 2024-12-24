@@ -764,6 +764,7 @@ load_map_tile(struct jag_map *chunk,
 	struct bound_config *bound_config;
 	struct floor_config *floor_config;
 	struct ground_item item;
+	struct item_config *item_config;
 	uint32_t object_type;
 	uint16_t object_dir;
 	int world_x, world_y;
@@ -947,10 +948,16 @@ load_map_tile(struct jag_map *chunk,
 			if (loc_config->surface_height > 0) {
 				item.y = global_y - 1;
 				item.on_surface = true;
+				object_dir = l->dir;
 			}
 		}
+		item_config = server_item_config_by_id(item.id);
 		item.respawn = true;
-		item.stack = 1;
+		if (object_dir > 0 && item_config->weight == 0) {
+			item.stack = object_dir;
+		} else {
+			item.stack = 1;
+		}
 		item.owner = INT64_MAX;
 		item.creation_time = 0;
 		item.respawn_time = 0;
