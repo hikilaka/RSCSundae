@@ -14,6 +14,7 @@ RSC Sundae 1.2.0
   casting spells on Delrith.
 * When no victor in player death, items are owned by self.
 * Added missing chaos-rune drop to darkerwiz.
+* Added "already made of gold" message to alchemy spells.
 * Made holiday drops unowned.
 
 RSC Sundae 1.1.3
