@@ -20,6 +20,14 @@ register_spellinv("_", "high level alchemy", function(player, item)
 	remove(player, "nature-rune", 1)
 end)
 
+register_spellinv("coins", "low level alchemy", function(player, item)
+	mes(player, "@que@That's already made of gold!")
+end)
+
+register_spellinv("coins", "high level alchemy", function(player, item)
+	mes(player, "@que@That's already made of gold!")
+end)
+
 register_spellobj("_", "low level alchemy", function(player, item, x, y)
 	mes(player, "You must be holding the object to use this spell")
 end)
