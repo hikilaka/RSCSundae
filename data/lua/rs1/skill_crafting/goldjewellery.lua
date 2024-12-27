@@ -22,7 +22,7 @@ local function make_gem_amulet(player)
 		remove(player, "gold bar", 1)
 		remove(player, "sapphire", 1)
 		give(player, "nostringsaph", 1)
-		advancestat(player, STAT_CRAFTING, 52, 0)
+		advancestat(player, STAT_CRAFTING, 260, 0)
 	elseif resp == 2 then
 		if not statatleast(player, STAT_CRAFTING, 30) then
 			mes(player, "@que@You need a crafting skill of level 30 to make this")

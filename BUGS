@@ -1,8 +1,5 @@
-- Need to investigate how (if at all) item spawn stacks are encoded
-  in the data files
 - lua stack overflow when creating coroutines with massive number of
   active scripts
-- ::time gives incorrect stats
-- can climb ladders through walls (weapons store key)
-- black knight's fortress: going through black knight guarded door too hard
+- can climb ladders through walls (weapons store key) when they are blocked
+  authentic in some cases, e.g. tai bwo wannai... not all though.
 - rock at al kharid mine gives nothing interesting happens on prospect
