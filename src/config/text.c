@@ -387,6 +387,13 @@ config_parse_items(char *buffer, size_t len, size_t *num_items,
 	items[ITEM_MAP_PIECE2].quest_item = 1;
 	items[ITEM_MAP_PIECE3].quest_item = 1;
 
+
+	/*
+	 * fix an authentic oversight that leads to a money exploit
+	 * make it the same as the male version
+	 */
+	items[ITEM_ADAM_TOP].value = 12800;
+
 	*num_items = max_items;
 	return items;
 

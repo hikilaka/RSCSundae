@@ -33,6 +33,7 @@
 #define ITEM_BLURITE	(266)
 #define ITEM_RAT_TAIL	(271)
 #define ITEM_SUPERCHIS	(306)
+#define ITEM_ADAM_TOP	(311)
 #define ITEM_RUM	(318)
 #define ITEM_CHESTKEY	(382)
 #define ITEM_RED_KEY	(390)
