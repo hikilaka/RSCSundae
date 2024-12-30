@@ -44,10 +44,18 @@ npc_die(struct npc *npc, struct player *p)
 			if (item_config->weight == 0) {
 				server_add_temp_item(p, npc->mob.x, npc->mob.y,
 				    id, npc->config->drops[i].amount);
-				continue;
-			}
-
-			for (int j = 0; j < npc->config->drops[i].amount; ++j) {
+			} else {
+				/*
+				 * possibly an authentic bug - the config file
+				 * lists skeletons as dropping two bones but
+				 * appear to drop one bone in all replays.
+				 *
+				 * tip.it's archives don't mention a double
+				 * bone drop, so this probably never happened.
+				 *
+				 * they would have mentioned a good way to
+				 * train prayer since big bones didn't exist.
+				 */
 				server_add_temp_item(p, npc->mob.x, npc->mob.y,
 				    id, 1);
 			}
