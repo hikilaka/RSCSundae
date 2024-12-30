@@ -40,8 +40,17 @@ npc_die(struct npc *npc, struct player *p)
 			id = npc->config->drops[i].id;
 			item_config = server_item_config_by_id(id);
 			assert(item_config != NULL);
-			server_add_temp_item(p, npc->mob.x, npc->mob.y,
-			    id, npc->config->drops[i].amount);
+
+			if (item_config->weight == 0) {
+				server_add_temp_item(p, npc->mob.x, npc->mob.y,
+				    id, npc->config->drops[i].amount);
+				continue;
+			}
+
+			for (int j = 0; j < npc->config->drops[i].amount; ++j) {
+				server_add_temp_item(p, npc->mob.x, npc->mob.y,
+				    id, 1);
+			}
 		}
 
 		if (p->script_active || p->ui_multi_open) {
