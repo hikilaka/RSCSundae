@@ -132,8 +132,8 @@ shop_remove(struct shop_config *shop, struct player *p, uint16_t id)
 			return -1;
 		}
 		if (p != NULL) {
-			if (p->restrict_trade &&
-			    shop->items[i].removal_timer > 0) {
+			if (p->restrict_trade && (shop->items[i].quantity == 0 ||
+			    shop->items[i].restock == 0)) {
 				return -1;
 			}
 			price = shop_price(shop, &shop->items[i], true);
