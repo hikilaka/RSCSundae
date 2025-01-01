@@ -1,3 +1,4 @@
+AC_PREREQ([2.65])
 AC_INIT([rscsundae], [0.0.1], [stormy@mailfence.com])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CC
@@ -8,6 +9,7 @@ AC_CONFIG_FILES([
  doc/Makefile
 ])
 
+AM_MAINTAINER_MODE([disable])
 
 CFLAGS="$CFLAGS -Wall"
 CFLAGS="$CFLAGS -Wextra"
