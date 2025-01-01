@@ -62,13 +62,16 @@ Dependencies:
 
 On Debian Linux and derivatives, install the following:
 
-	build-essential pkgconf libbz2-dev liblua5.4-dev libinih-dev libssl-dev libsqlite3-dev libargon2-dev
+	build-essential pkgconf libbz2-dev liblua5.4-dev libinih-dev libssl-dev libsqlite3-dev libargon2-dev autoconf automake
 
 On Alpine Linux, install the following:
 
-	build-base pkgconf bzip2-dev lua5.4-dev inih-dev openssl-dev sqlite-dev argon2-dev
+	build-base pkgconf bzip2-dev lua5.4-dev inih-dev openssl-dev sqlite-dev argon2-dev autoconf automake
+
+To regenerate the build files, run `autoreconf -fi`.
 
 Run `./configure && make -j2` to build the server.
+You only need to run `./configure` once.
 
 Contributing
 ------------
