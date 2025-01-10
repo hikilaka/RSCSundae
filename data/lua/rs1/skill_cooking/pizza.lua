@@ -72,6 +72,8 @@ local function cook_pizza(player)
 		mes(player, "@que@You remove the pizza from the oven")
 		give(player, "plain pizza", 1)
 		advancestat(player, STAT_COOKING, 440, 0)
+		setvar(player, "items_baked",
+		    getvar(player, "items_baked") + 1)
 	else
 		mes(player, "@que@You accidentally burn the pizza")
 		give(player, "burnt pizza", 1)

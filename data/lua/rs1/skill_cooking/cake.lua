@@ -41,6 +41,8 @@ function cook_cake(player)
 		mes(player, "@que@You remove the cake from the oven")
 		give(player, "cake", 1)
 		advancestat(player, STAT_COOKING, 480, 0)
+		setvar(player, "items_baked",
+		    getvar(player, "items_baked") + 1)
 	else
 		mes(player, "@que@You accidentally burn the cake")
 		give(player, "burnt cake", 1)

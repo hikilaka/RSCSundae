@@ -68,6 +68,8 @@ local function cook_pie(player, raw, cooked, xp, low, high)
 		mes(player, "@que@You remove the pie from the oven")
 		give(player, cooked, 1)
 		advancestat(player, STAT_COOKING, xp, 0)
+		setvar(player, "items_baked",
+		    getvar(player, "items_baked") + 1)
 	else
 		mes(player, "@que@You accidentally burn the pie")
 		give(player, "burntpie", 1)
