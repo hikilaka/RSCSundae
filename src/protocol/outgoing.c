@@ -317,19 +317,18 @@ player_send_npc_movement(struct player *p)
 		}
 		bitpos += 4;
 
-		if (p->protocol_rev < 159) {
-			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 8,
-					nearby[i]->config->id) == -1) {
-				return -1;
-			}
-			bitpos += 8;
-		} else {
-			if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, 10,
-					nearby[i]->config->id) == -1) {
-				return -1;
-			}
-			bitpos += 10;
+		int numbits = 10;
+		if (p->protocol_rev < 119) {
+			numbits = 8;
+		} else if (p->protocol_rev < 159) {
+			numbits = 9;
 		}
+
+		if (buf_putbits(p->tmpbuf, bitpos, PLAYER_BUFSIZE, numbits,
+				nearby[i]->config->id) == -1) {
+			return -1;
+		}
+		bitpos += numbits;
 
 		new_known[new_known_count++] = nearby[i]->mob.id;
 	}

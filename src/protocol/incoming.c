@@ -1333,6 +1333,8 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 		return -1;
 	}
 	offset += 2;
+
+	p->protocol_rev = ver;
 	printf("got version number: %d\n", ver);
 
 	if (buf_gets64(data, offset, len, &name) == -1) {
