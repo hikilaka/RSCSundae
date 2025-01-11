@@ -38,7 +38,11 @@ server_parse_settings(void *user, const char *section,
 			return 0;
 		}
 	} else if (strcmp(section, "gameplay") == 0) {
-		if (strcmp(name, "start_tile_x") == 0) {
+		if (strcmp(name, "maps_revision") == 0) {
+			s->maps_rev = strtol(value, NULL, 10);
+		} else if (strcmp(name, "maps_revision") == 0) {
+			s->config_rev = strtol(value, NULL, 10);
+		} else if (strcmp(name, "start_tile_x") == 0) {
 			s->start_tile_x = strtol(value, NULL, 10);
 		} else if (strcmp(name, "start_tile_y") == 0) {
 			s->start_tile_y = strtol(value, NULL, 10);

@@ -92,6 +92,8 @@ struct server {
 	int xp_multiplier;
 	/* maximum number of logins per IP address */
 	int max_per_ip;
+	int maps_rev;
+	int config_rev;
 	lua_State *lua;
 	struct rsa rsa;
 	char *rsa_exponent;
