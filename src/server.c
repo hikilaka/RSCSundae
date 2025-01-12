@@ -95,6 +95,8 @@ main(int argc, char **argv)
 	s.max_per_ip = 3;
 	s.protocol110 = true;
 	s.protocol204 = true;
+	s.maps_rev = 27;
+	s.config_rev = 46;
 	s.client_registration = true;
 
 #ifdef SIGPIPE
@@ -576,8 +578,10 @@ load_config_jag(void)
 	struct jag_archive archive = {0};
 	struct jag_entry entry = {0};
 	FILE *f = NULL;
+	char path[16];
 
-	f = fopen("./config46.jag", "rb");
+	(void)snprintf(path, sizeof(path), "./config%d.jag", s.config_rev);
+	f = fopen(path, "rb");
 	if (f == NULL) {
 		goto err;
 	}
@@ -1049,8 +1053,10 @@ load_maps_jag(void)
 	struct jag_archive archive = {0};
 	struct jag_entry entry = {0};
 	FILE *f = NULL;
+	char path[16];
 
-	f = fopen("./maps27.jag", "rb");
+	(void)snprintf(path, sizeof(path), "./maps%d.jag", s.maps_rev);
+	f = fopen(path, "rb");
 	if (f == NULL) {
 		goto err;
 	}

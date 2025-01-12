@@ -15,6 +15,8 @@ RSC Sundae 1.2.0
 * When no victor in player death, items are owned by self.
 * Added missing chaos-rune drop to darkerwiz.
 * Added "already made of gold" message to alchemy spells.
+* Fixed selling gold amulets to Grum with the authentic
+  messed up config
 * Read item spawn stack sizes from loc direction chunk of landscape.
 * Made holiday drops unowned.
 
