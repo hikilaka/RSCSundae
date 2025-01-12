@@ -32,7 +32,7 @@ local drops = {
 	{ "cadavaberries", 1, 4 },
 	{ "clay", 1, 4 },
 	{ "shears", 1, 4 },
-	{ "chefshat", 1, 2 },
+	{ "chef's hat", 1, 2 },
 	{ "flier", 1, 2 },
 	{ "jug", 1, 2 },
 	{ "pot", 1, 2 },
