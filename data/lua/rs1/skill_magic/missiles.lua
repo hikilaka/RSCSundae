@@ -141,7 +141,7 @@ function skillplayer_wind_strike(player, target)
 end
 
 register_skillnpc("_", "wind strike", function(player, target)
-	shootnpc(player, target, "missile01")
+	shootnpc(player, target, "monmissile01")
 	finalize_wind_strike(player)
 end)
 
@@ -151,7 +151,7 @@ function skillplayer_water_strike(player, target)
 end
 
 register_skillnpc("_", "water strike", function(player, target)
-	shootnpc(player, target, "missile02")
+	shootnpc(player, target, "monmissile02")
 	finalize_water_strike(player)
 end)
 
@@ -161,7 +161,7 @@ function skillplayer_earth_strike(player, target)
 end
 
 register_skillnpc("_", "earth strike", function(player, target)
-	shootnpc(player, target, "missile03")
+	shootnpc(player, target, "monmissile03")
 	finalize_earth_strike(player)
 end)
 
@@ -171,7 +171,7 @@ function skillplayer_fire_strike(player, target)
 end
 
 register_skillnpc("_", "fire strike", function(player, target)
-	shootnpc(player, target, "missile04")
+	shootnpc(player, target, "monmissile04")
 	finalize_fire_strike(player)
 end)
 
@@ -181,7 +181,7 @@ function skillplayer_wind_bolt(player, target)
 end
 
 register_skillnpc("_", "wind bolt", function(player, target)
-	shootnpc(player, target, "missile05")
+	shootnpc(player, target, "monmissile05")
 	finalize_wind_bolt(player)
 end)
 
@@ -191,7 +191,7 @@ function skillplayer_water_bolt(player, target)
 end
 
 register_skillnpc("_", "water bolt", function(player, target)
-	shootnpc(player, target, "missile06")
+	shootnpc(player, target, "monmissile06")
 	finalize_water_bolt(player)
 end)
 
@@ -201,7 +201,7 @@ function skillplayer_earth_bolt(player, target)
 end
 
 register_skillnpc("_", "earth bolt", function(player, target)
-	shootnpc(player, target, "missile07")
+	shootnpc(player, target, "monmissile07")
 	finalize_earth_bolt(player)
 end)
 
@@ -211,7 +211,7 @@ function skillplayer_fire_bolt(player, target)
 end
 
 register_skillnpc("_", "fire bolt", function(player, target)
-	shootnpc(player, target, "missile08")
+	shootnpc(player, target, "monmissile08")
 	finalize_fire_bolt(player)
 end)
 
@@ -221,7 +221,7 @@ function skillplayer_wind_blast(player, target)
 end
 
 register_skillnpc("_", "wind blast", function(player, target)
-	shootnpc(player, target, "missile09")
+	shootnpc(player, target, "monmissile09")
 	finalize_wind_blast(player)
 end)
 
@@ -231,7 +231,7 @@ function skillplayer_water_blast(player, target)
 end
 
 register_skillnpc("_", "water blast", function(player, target)
-	shootnpc(player, target, "missile10")
+	shootnpc(player, target, "monmissile10")
 	finalize_water_blast(player)
 end)
 
@@ -241,7 +241,7 @@ function skillplayer_earth_blast(player, target)
 end
 
 register_skillnpc("_", "earth blast", function(player, target)
-	shootnpc(player, target, "missile11")
+	shootnpc(player, target, "monmissile11")
 	finalize_earth_blast(player)
 end)
 
@@ -251,6 +251,6 @@ function skillplayer_fire_blast(player, target)
 end
 
 register_skillnpc("_", "fire blast", function(player, target)
-	shootnpc(player, target, "missile12")
+	shootnpc(player, target, "monmissile12")
 	finalize_fire_blast(player)
 end)

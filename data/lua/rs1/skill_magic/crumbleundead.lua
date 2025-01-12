@@ -8,7 +8,7 @@ function skillnpc_crumble_undead(player, target)
 		remove(player, "earth-rune", 2)
 	end
 	remove(player, "chaos-rune", 1)
-	shootnpc(player, target, "missile12")
+	shootnpc(player, target, "monmissile12")
 end
 
 register_skillnpc("skeleton", "crumble undead", skillnpc_crumble_undead)
