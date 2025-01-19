@@ -2,6 +2,9 @@
 -- 1e_Luis/Quests/Dragon Slayer.pcap
 -- Revisionism/06-16-2018 01.57.46-dragon-slayer.pcap
 -- ShaunDreclin/06-08-2018 23.16.26 dragon slayer.pcap
+--
+-- Shaun's replay shows clearly that the player gets fire breathed
+-- before each successful spell cast.
 
 function attacknpc_questdragon(player, npc)
 	mes(player, "@que@The dragon breathes fire at you")
@@ -30,3 +33,75 @@ function killnpc_questdragon(player, npc, x, y)
 		advancestat(player, STAT_DEFENSE, 2600, 1200)
 	end
 end
+
+register_skillnpc("questdragon", "wind strike", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile01")
+	finalize_wind_strike(player)
+end)
+
+register_skillnpc("questdragon", "water strike", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile02")
+	finalize_water_strike(player)
+end)
+
+register_skillnpc("questdragon", "earth strike", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile03")
+	finalize_earth_strike(player)
+end)
+
+register_skillnpc("questdragon", "fire strike", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile04")
+	finalize_fire_strike(player)
+end)
+
+register_skillnpc("questdragon", "wind bolt", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile05")
+	finalize_wind_bolt(player)
+end)
+
+register_skillnpc("questdragon", "water bolt", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile06")
+	finalize_water_bolt(player)
+end)
+
+register_skillnpc("questdragon", "earth bolt", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile07")
+	finalize_earth_bolt(player)
+end)
+
+register_skillnpc("questdragon", "fire bolt", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile08")
+	finalize_fire_bolt(player)
+end)
+
+register_skillnpc("questdragon", "wind blast", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile09")
+	finalize_wind_blast(player)
+end)
+
+register_skillnpc("questdragon", "water blast", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile10")
+	finalize_water_blast(player)
+end)
+
+register_skillnpc("questdragon", "earth blast", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile11")
+	finalize_earth_blast(player)
+end)
+
+register_skillnpc("questdragon", "fire blast", function(player, target)
+	attacknpc_questdragon(player, target)
+	shootnpc(player, target, "monmissile12")
+	finalize_fire_blast(player)
+end)

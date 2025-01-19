@@ -429,9 +429,6 @@ function script_engine_skillnpc(player, name, npc, spell)
 		return false
 	end
 	script = skillnpc_scripts[spell][name]
-	if not script then
-		script = skillnpc_scripts[spell]["_"]
-	end
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
