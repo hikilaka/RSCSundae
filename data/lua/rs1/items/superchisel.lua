@@ -78,13 +78,16 @@ local function superchisel_tele_dungeon(player)
 	local resp = multi(player,
 		"Asgarnia Ice Dungeon (Pirates)",
 		"Edgeville Dungeon (Giants)",
-		"Varrock Sewers (Moss Giants)")
+		"Varrock Sewers (Moss Giants)",
+		"Karamja Dungeon (Dragon)")
 	if resp == 1 then
 		teleport(player, 279, 3525)
 	elseif resp == 2 then
 		teleport(player, 208, 3319)
 	elseif resp == 3 then
 		teleport(player, 159, 3297)
+	elseif resp == 4 then
+		teleport(player, 413, 3480)
 	end
 end
 
