@@ -27,3 +27,4 @@ recordings would be very useful for RSC Sundae:
 * Talking to Osman after Leela has said the 3 beer plan should work
 * Talking to wartface while Bentnoze is busy
 * Various Delrith behaviours: attempting ranged attacks, magic attacks...
+* Attempting ranged attacks on Elvarg
