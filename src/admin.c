@@ -178,6 +178,8 @@ player_parse_command(struct player *p, const char *cmd)
 		if (!p->script_active && !p->mob.in_combat) {
 			player_send_design_ui(p);
 		}
+	} else if (strcmp(cmd, "skull") == 0) {
+		player_skull(p, NULL);
 	}
 }
 
@@ -400,6 +402,9 @@ player_parse_dev_command(struct player *p, const char *cmd)
 			return;
 		}
 		player_inv_give(p, item_config, amount);
+	} else if (strcmp(cmd, "empty") == 0) {
+		p->inv_count = 0;
+		player_send_inv(p);
 	} else if (strcmp(cmd, "advancestat") == 0) {
 		char *stat_str;
 		char *xp_str;

@@ -664,35 +664,35 @@ player_skull(struct player *p, struct player *target)
 {
 	int oldest = 0;
 
-	assert(target != NULL);
-
-	for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
-		if (p->player_targets_time[i] <
-		    p->player_targets_time[oldest]) {
-			oldest = i;
+	if (target != NULL) {
+		for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
+			if (p->player_targets_time[i] <
+			    p->player_targets_time[oldest]) {
+				oldest = i;
+			}
 		}
-	}
-	p->player_targets[oldest] = target->mob.id;
-	p->player_targets_time[oldest] = p->mob.server->tick_counter;
+		p->player_targets[oldest] = target->mob.id;
+		p->player_targets_time[oldest] = p->mob.server->tick_counter;
 
-	oldest = 0;
+		oldest = 0;
 
-	for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
-		if (target->player_aggressors_time[i] <
-		    target->player_aggressors_time[oldest]) {
-			oldest = i;
+		for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
+			if (target->player_aggressors_time[i] <
+			    target->player_aggressors_time[oldest]) {
+				oldest = i;
+			}
 		}
-	}
-	target->player_aggressors[oldest] = p->mob.id;
-	target->player_aggressors_time[oldest] =
-	    p->mob.server->tick_counter;
+		target->player_aggressors[oldest] = p->mob.id;
+		target->player_aggressors_time[oldest] =
+		    p->mob.server->tick_counter;
 
-	for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
-		if (p->player_aggressors[i] == target->mob.id) {
-			return;
-		}
-		if (target->player_targets[i] == p->mob.id) {
-			return;
+		for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
+			if (p->player_aggressors[i] == target->mob.id) {
+				return;
+			}
+			if (target->player_targets[i] == p->mob.id) {
+				return;
+			}
 		}
 	}
 

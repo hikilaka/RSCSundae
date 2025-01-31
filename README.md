@@ -21,10 +21,12 @@ game's unmodified free data files.  By using the same API and data
 sources as the original game, the hope is that it is more difficult to
 implement content inaccurately.
 
-For clients, RSC Sundae supports the 110 protocol (the original
-Java mudclient110 from December 2001), and the 204 protocol
-(the final version of RSC before "Retro Revival" in 2009, used
-by RSC-C, and STS).
+For clients, RSC Sundae supports:
+
+* 110 protocol (original Java mudclient110 from December 2001)
+* 135 protocol (used by Runebot, RuneScape's first ever bot)
+* 204 protocol (the final version of RSC before "Retro Revival" in 2009,
+used by RSC-C, and STS)
 
 RSC Sundae has a few special features as well:
 

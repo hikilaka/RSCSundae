@@ -1,3 +1,12 @@
+RSC Sundae 1.3.0
+----------------
+
+* dragon: Breathe fire when spells are used.
+* magic: Use monster-specific missiles per bluerose's report.
+* settings: Add an option instead of hardcoding config/maps revs.
+* imp: Fixed chef's hat drop.
+* protocol: Add support for client version 135 (used by Runebot).
+
 RSC Sundae 1.2.0
 ----------------
 
