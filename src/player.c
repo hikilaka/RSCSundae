@@ -1820,13 +1820,14 @@ player_process_action(struct player *p)
 			}
 			return;
 		}
+		p->action = ACTION_NONE;
+		p->mob.following_npc = -1;
 		p->mob.walk_queue_len = 0;
 		p->mob.walk_queue_pos = 0;
 		id = p->inventory[p->action_slot].id;
 		item_config = server_item_config_by_id(id);
 		assert(item_config != NULL);
 		script_onusenpc(p->mob.server->lua, p, npc, item_config);
-		p->action = ACTION_NONE;
 		break;
 	case ACTION_NPC_TALK:
 		npc = p->mob.server->npcs[p->action_npc];
@@ -1849,6 +1850,7 @@ player_process_action(struct player *p)
 			return;
 		}
 		p->action = ACTION_NONE;
+		p->mob.following_npc = -1;
 		p->mob.walk_queue_len = 0;
 		p->mob.walk_queue_pos = 0;
 		if (npc->busy) {
