@@ -465,7 +465,7 @@ function script_engine_spellself(player, spell)
 	end
 end
 
-function script_engine_spellinv(player, name, spell)
+function script_engine_spellinv(player, name, item, spell)
 	local script = player_scripts[player]
 	if script then
 		return true
@@ -482,7 +482,7 @@ function script_engine_spellinv(player, name, spell)
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
-			script(player, name)
+			script(player, item)
 			if not ps.paused then
 				player_scripts[player] = nil
 				playerunbusy(player)

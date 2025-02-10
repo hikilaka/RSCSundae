@@ -2184,8 +2184,9 @@ script_onspellinv(lua_State *L, struct player *p,
 		}
 		lua_pushnumber(L, p->mob.id);
 		lua_pushstring(L, item->names[i]);
+		lua_pushstring(L, item->names[0]);
 		lua_pushstring(L, p->spell->name);
-		safe_call(L, 3, 1, p->mob.id);
+		safe_call(L, 4, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
 		if (result != 0) {
 			return;
