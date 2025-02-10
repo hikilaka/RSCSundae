@@ -495,6 +495,7 @@ player_die(struct player *p, struct player *victor)
 {
 	struct item_config *item;
 	int kept_max = 3;
+	int stack;
 
 	mob_die(&p->mob);
 
@@ -533,7 +534,7 @@ player_die(struct player *p, struct player *victor)
 
 		for (int i = 0; i < p->inv_count; ++i) {
 			item = server_item_config_by_id(p->inventory[i].id);
-			if (item->value < lowest_value) {
+			if (item->weight == 0 || item->value < lowest_value) {
 				slot = i;
 				lowest_value = item->value;
 			}
@@ -542,28 +543,16 @@ player_die(struct player *p, struct player *victor)
 			break;
 		}
 		item = server_item_config_by_id(p->inventory[slot].id);
-		if (item->weight == 0) {
-			player_inv_remove_id(p, item->id,
-			    p->inventory[slot].stack);
+		stack = p->inventory[slot].stack;
+		player_inv_remove_id(p, item->id, p->inventory[slot].stack);
+		if (item->weight > 0) {
 			server_add_temp_item(victor != NULL ?
-			    victor : p,
-			    p->mob.x, p->mob.y, item->id,
-				p->inventory[slot].stack);
+			    victor : p, p->mob.x, p->mob.y,
+			    item->id, 1);
 		} else {
-			player_inv_remove_id(p, item->id, 1);
 			server_add_temp_item(victor != NULL ?
-			    victor : p,
-			    p->mob.x, p->mob.y, item->id, 1);
-		}
-	}
-
-	for (int i = 0; i < p->inv_count; ++i) {
-		struct item_config *item =
-		    server_item_config_by_id(p->inventory[i].id);
-		assert(item != NULL);
-		if (item->weight == 0 && p->inventory[i].stack > 1) {
-			player_inv_remove_id(p, item->id,
-			    p->inventory[i].stack - 1);
+			    victor : p, p->mob.x, p->mob.y,
+			    item->id, stack);
 		}
 	}
 
