@@ -547,6 +547,9 @@ player_die(struct player *p, struct player *victor)
 			value_lost += (item->value * p->inventory[slot].stack);
 			player_inv_remove_id(p, item->id,
 			    p->inventory[slot].stack);
+			if (victor != NULL && victor->restrict_trade) {
+				continue;
+			}
 			server_add_temp_item(victor != NULL ?
 			    victor : p,
 			    p->mob.x, p->mob.y, item->id,
@@ -554,6 +557,9 @@ player_die(struct player *p, struct player *victor)
 		} else {
 			value_lost += item->value;
 			player_inv_remove_id(p, item->id, 1);
+			if (victor != NULL && victor->restrict_trade) {
+				continue;
+			}
 			server_add_temp_item(victor != NULL ?
 			    victor : p,
 			    p->mob.x, p->mob.y, item->id, 1);
