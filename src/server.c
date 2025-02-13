@@ -1053,6 +1053,11 @@ extract_map_chunk(struct jag_archive *archive, int plane, int x, int y)
 	struct jag_map chunk = {0};
 	char file[64], file_full[128];
 
+	if (y > 46 || plane > 2) {
+		f = NULL;
+		goto fail;
+	}
+
 	(void)snprintf(file, sizeof(file),
 	    "m%d%d%d%d%d.jm", plane,
 	    x / 10, x % 10, y / 10, y % 10);
