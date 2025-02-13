@@ -15,6 +15,7 @@ local function hetty_tower(player, npc)
 	npcsay(npc, "I thought my talents could be put to better use on the frontier")
 	npcsay(npc, "And the tower means nobody's out of sight")
 	mes(player, "Hetty cackles ominously")
+	delay(1)
 	local resp = multi(player,
 		"Show me your instruments of the dark arts",
 		"I have to go now")
