@@ -713,7 +713,9 @@ player_shoot_pvm(struct player *p, struct projectile_config *projectile,
 	if (projectile->type != PROJECTILE_TYPE_MAGIC) {
 		roll = player_pvm_ranged_roll(p, target);
 		if (roll > 0) {
-			stat_advance(p, SKILL_RANGED, roll * 16, 0);
+#if 0
+			stat_advance(p, SKILL_RANGED, roll * 16, 0);z
+#endif
 		}
 	} else if (projectile->power > 0) {
 		roll = player_magic_damage_roll(projectile->power);
@@ -789,7 +791,9 @@ player_shoot_pvp(struct player *p, struct projectile_config *projectile,
 	if (projectile->type != PROJECTILE_TYPE_MAGIC) {
 		roll = player_pvp_ranged_roll(p, target);
 		if (roll > 0) {
+#if 0
 			stat_advance(p, SKILL_RANGED, roll * 16, 0);
+#endif
 		}
 	} else if (projectile->power > 0) {
 		roll = player_magic_damage_roll(projectile->power);
@@ -1304,6 +1308,7 @@ player_award_combat_xp(struct player *p, struct mob *target)
 
 	assert(target != NULL);
 
+#if 0
 	xp = mob_combat_xp(target);
 	switch (p->combat_style) {
 	case COMBAT_STYLE_CONTROLLED:
@@ -1325,6 +1330,7 @@ player_award_combat_xp(struct player *p, struct mob *target)
 
 	/* it's been verified that hits is given last */
 	stat_advance(p, SKILL_HITS, xp, 0);
+#endif
 }
 
 static void
@@ -2280,6 +2286,7 @@ player_init_class(struct player *p)
 
 	/* XXX the experience rewards here are pretty much guessed */
 
+#if 0
 	switch (p->rpg_class) {
 	case CLASS_ADVENTURER:
 		item = server_find_item_config("bronze axe");
@@ -2361,6 +2368,7 @@ player_init_class(struct player *p)
 		stat_advance(p, SKILL_MINING, 2600, 0);
 		break;
 	}
+#endif
 
 	player_send_init_stats(p);
 }

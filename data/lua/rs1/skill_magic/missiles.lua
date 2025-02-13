@@ -2,7 +2,7 @@
 
 function finalize_wind_strike(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 88, 0)
+	--advancestat(player, STAT_MAGIC, 88, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 1)
 	end
@@ -11,7 +11,7 @@ end
 
 function finalize_water_strike(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 120, 0)
+	--advancestat(player, STAT_MAGIC, 120, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 1)
 	end
@@ -23,7 +23,7 @@ end
 
 function finalize_earth_strike(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 152, 0)
+	--advancestat(player, STAT_MAGIC, 152, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 1)
 	end
@@ -35,7 +35,7 @@ end
 
 function finalize_fire_strike(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 184, 0)
+	--advancestat(player, STAT_MAGIC, 184, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 2)
 	end
@@ -47,7 +47,7 @@ end
 
 function finalize_wind_bolt(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 216, 0)
+	--advancestat(player, STAT_MAGIC, 216, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 2)
 	end
@@ -56,7 +56,7 @@ end
 
 function finalize_water_bolt(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 264, 0)
+	--advancestat(player, STAT_MAGIC, 264, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 2)
 	end
@@ -68,7 +68,7 @@ end
 
 function finalize_earth_bolt(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 312, 0)
+	--advancestat(player, STAT_MAGIC, 312, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 2)
 	end
@@ -80,7 +80,7 @@ end
 
 function finalize_fire_bolt(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 360, 0)
+	--advancestat(player, STAT_MAGIC, 360, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 3)
 	end
@@ -92,7 +92,7 @@ end
 
 function finalize_wind_blast(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 408, 0)
+	--advancestat(player, STAT_MAGIC, 408, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 3)
 	end
@@ -101,7 +101,7 @@ end
 
 function finalize_water_blast(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 456, 0)
+	--advancestat(player, STAT_MAGIC, 456, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 3)
 	end
@@ -113,7 +113,7 @@ end
 
 function finalize_earth_blast(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 504, 0)
+	--advancestat(player, STAT_MAGIC, 504, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 3)
 	end
@@ -125,7 +125,7 @@ end
 
 function finalize_fire_blast(player)
 	mes(player, "@que@Cast spell successfully")
-	advancestat(player, STAT_MAGIC, 552, 0)
+	--advancestat(player, STAT_MAGIC, 552, 0)
 	if not worn(player, "staff of air") then
 		remove(player, "air-rune", 4)
 	end
