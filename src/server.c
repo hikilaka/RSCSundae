@@ -39,6 +39,7 @@ struct server s = {0};
 
 static void on_signal_do_nothing(int);
 static int load_config_jag(void);
+static void extract_map_chunk(struct jag_archive *, int, int, int);
 static void load_map_chunk(struct jag_map *, int, int, int);
 static void load_map_tile(struct jag_map *, int, int, int, int, int);
 static void fill_map_chunk(int, int, int);
@@ -1047,11 +1048,64 @@ fill_map_chunk(int chunk_x, int chunk_y, int plane)
 	}
 }
 
+static void
+extract_map_chunk(struct jag_archive *archive, int plane, int x, int y)
+{
+	FILE *f;
+	struct jag_entry entry = {0};
+	struct jag_map chunk = {0};
+	char file[64], file_full[128];
+
+	(void)snprintf(file, sizeof(file),
+	    "m%d%d%d%d%d.jm", plane,
+	    x / 10, x % 10, y / 10, y % 10);
+
+	/* support local overrides for maps in the archive */
+	(void)snprintf(file_full, sizeof(file_full),
+	    "./%s", file);
+
+	f = fopen(file_full, "rb");
+	if (f != NULL) {
+		entry.unpacked_len = 20736;
+		entry.data = malloc(entry.unpacked_len);
+		if (entry.data == NULL) {
+			goto fail;
+		}
+		entry.must_free = true;
+		fread(entry.data, 1, entry.unpacked_len, f);
+		fclose(f);
+		f = NULL;
+	} else {
+		if (jag_find_entry(archive,
+			file, &entry) == -1 ||
+		    jag_unpack_entry(&entry) == -1) {
+			goto fail;
+		}
+	}
+
+	if (jag_map_read_jm(&chunk,
+	    entry.data, entry.unpacked_len) != -1) {
+		load_map_chunk(&chunk, x, y, plane);
+	}
+
+	if (entry.must_free) {
+		free(entry.data);
+		entry.data = NULL;
+	}
+
+	return;
+fail:
+	if (f != NULL) {
+		fclose(f);
+		f = NULL;
+	}
+	fill_map_chunk(x, y, plane);
+}
+
 static int
 load_maps_jag(void)
 {
 	struct jag_archive archive = {0};
-	struct jag_entry entry = {0};
 	FILE *f = NULL;
 	char path[16];
 
@@ -1068,28 +1122,7 @@ load_maps_jag(void)
 	for (int plane = 0; plane < 4; ++plane) {
 		for (int x = 48; x < 64; ++x) {
 			for (int y = 39; y < 64; ++y) {
-				struct jag_map chunk;
-				char file[64];
-
-				(void)snprintf(file, sizeof(file),
-				    "m%d%d%d%d%d.jm", plane,
-				    x / 10, x % 10, y / 10, y % 10);
-				if (jag_find_entry(&archive,
-					file, &entry) == -1 ||
-				    jag_unpack_entry(&entry) == -1) {
-					fill_map_chunk(x, y, plane);
-					continue;
-				}
-
-				if (jag_map_read_jm(&chunk,
-				    entry.data, entry.unpacked_len) != -1) {
-					load_map_chunk(&chunk, x, y, plane);
-				}
-
-				if (entry.must_free) {
-					free(entry.data);
-					entry.data = NULL;
-				}
+				extract_map_chunk(&archive, plane, x, y);
 			}
 		}
 	}
