@@ -107,6 +107,21 @@ stat_advance(struct player *player, int stat,
 	inc *= player->mob.server->xp_multiplier;
 	inc *= player->xp_multiplier;
 
+	/* SundaePK-specific stat reset */
+	if (stat_is_combat(stat)) {
+		if (stat != SKILL_HITS) {
+			cur = 0;
+			player->experience[stat] =  0;
+			player->mob.cur_stats[stat] =  1;
+			player->mob.base_stats[stat] =  1;
+		} else {
+			cur = 0;
+			player->experience[stat] =  4000;
+			player->mob.cur_stats[stat] =  10;
+			player->mob.base_stats[stat] =  10;
+		}
+	}
+
 	if ((MAX_EXPERIENCE - cur) > inc) {
 		player->experience[stat] = cur + inc;
 	} else {
@@ -119,20 +134,39 @@ stat_advance(struct player *player, int stat,
 		int gained;
 
 		gained = level - player->mob.base_stats[stat];
+		if (stat != SKILL_HITS) {
 		(void)snprintf(msg, sizeof(msg),
 		    "@gre@You just advanced %d %s level!",
 		    gained, skill_names[stat]);
+		}
 		player_send_message(player, msg);
 		player->mob.cur_stats[stat] += gained;
 		player->mob.base_stats[stat] = level;
+#if 0
 		player_send_stat(player, stat);
 
 		if (stat_is_combat(stat)) {
 			player_recalculate_combat_level(player);
 		}
+#endif
 	} else {
-		player_send_stat_xp(player, stat);
+		/*player_send_stat_xp(player, stat);*/
 	}
+
+	if (stat_is_combat(stat)) {
+		/* SundaePK-specific hits calculation */
+		if (stat == SKILL_ATTACK ||
+		    stat == SKILL_DEFENSE ||
+		    stat == SKILL_STRENGTH) {
+			stat_advance(player, SKILL_HITS,
+				(player->experience[SKILL_ATTACK] +
+				player->experience[SKILL_DEFENSE] +
+				player->experience[SKILL_STRENGTH]) / 3,
+				0);
+		}
+		player_recalculate_combat_level(player);
+	}
+	player_send_stat(player, stat);
 }
 
 /* corresponds to runescript addstat */
