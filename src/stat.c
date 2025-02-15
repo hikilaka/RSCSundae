@@ -63,6 +63,7 @@ stat_is_combat(int stat)
 	    stat == SKILL_STRENGTH ||
 	    stat == SKILL_HITS ||
 	    stat == SKILL_MAGIC ||
+	    stat == SKILL_RANGED ||
 	    stat == SKILL_PRAYER;
 }
 
