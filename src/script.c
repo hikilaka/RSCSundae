@@ -68,6 +68,7 @@ static int script_addnpc(lua_State *);
 static int script_playercoord(lua_State *);
 static int script_teleport(lua_State *);
 static int script_qp(lua_State *);
+static int script_damagetimer(lua_State *);
 static int script_nodefault(lua_State *);
 static struct player *id_to_player(lua_Integer);
 static struct npc *id_to_npc(lua_Integer);
@@ -1682,6 +1683,30 @@ script_qp(lua_State *L)
 }
 
 static int
+script_damagetimer(lua_State *L)
+{
+	lua_Integer player_id;
+	struct player *p;
+
+	player_id = script_checkinteger(L, 1);
+
+	p = id_to_player(player_id);
+	if (p == NULL) {
+		printf("script warning: player %lld is undefined\n", player_id);
+		script_cancel(L, player_id);
+		return 0;
+	}
+
+	if (p->mob.damage_timer > 0) {
+		lua_pushinteger(L, p->mob.server->tick_counter -
+		   p->mob.damage_timer);
+	} else {
+		lua_pushinteger(L, INT_MAX);
+	}
+	return 1;
+}
+
+static int
 script_giveqp(lua_State *L)
 {
 	char mes[64];
@@ -2827,6 +2852,9 @@ script_init(struct server *s)
 
 	lua_pushcfunction(L, script_qp);
 	lua_setglobal(L, "qp");
+
+	lua_pushcfunction(L, script_damagetimer);
+	lua_setglobal(L, "damagetimer");
 
 	lua_pushcfunction(L, script_nodefault);
 	lua_setglobal(L, "nodefault");
