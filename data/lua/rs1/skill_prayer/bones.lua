@@ -6,7 +6,7 @@ function opinv_bones(player)
 	mes(player, "@que@You dig a hole in the ground")
 	delay(1)
 	mes(player, "@que@You bury the bones")
-	advancestat(player, STAT_PRAYER, 15, 0)
+	--advancestat(player, STAT_PRAYER, 15, 0)
 	remove(player, "bones", 1)
 end
 
@@ -15,6 +15,6 @@ function opinv_big_bones(player)
 	mes(player, "@que@you dig a hole in the ground")
 	delay(1)
 	mes(player, "@que@You bury the bones")
-	advancestat(player, STAT_PRAYER, 50, 0)
+	--advancestat(player, STAT_PRAYER, 50, 0)
 	remove(player, "big bones", 1)
 end
