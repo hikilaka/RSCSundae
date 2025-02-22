@@ -139,8 +139,8 @@ stat_advance(struct player *player, int stat,
 		(void)snprintf(msg, sizeof(msg),
 		    "@gre@You just advanced %d %s level!",
 		    gained, skill_names[stat]);
-#endif
 		player_send_message(player, msg);
+#endif
 		player->mob.cur_stats[stat] += gained;
 		player->mob.base_stats[stat] = level;
 #if 0
