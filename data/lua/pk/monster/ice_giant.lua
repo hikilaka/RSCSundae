@@ -16,7 +16,7 @@ function killnpc_ice_giant(player, npc, x, y)
 		addobject(player, "anchovie pizza", 1, x, y)
 		addobject(player, "anchovie pizza", 1, x, y)
 	elseif ran < 30 then
-		addobject(player, "death-rune", 50, x, y)
+		addobject(player, "death-rune", 40, x, y)
 	elseif ran < 40 then
 		addobject(player, "swordfish", 1, x, y)
 		addobject(player, "swordfish", 1, x, y)

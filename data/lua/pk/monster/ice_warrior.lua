@@ -13,7 +13,7 @@ function killnpc_ice_warrior(player, npc, x, y)
 		addobject(player, "anchovie pizza", 1, x, y)
 		addobject(player, "swordfish", 1, x, y)
 	elseif ran < 30 then
-		addobject(player, "death-rune", 40, x, y)
+		addobject(player, "death-rune", 15, x, y)
 	elseif ran < 40 then
 		addobject(player, "swordfish", 1, x, y)
 	elseif ran < 50 then
@@ -23,7 +23,7 @@ function killnpc_ice_warrior(player, npc, x, y)
 	elseif ran < 62 then
 		addobject(player, "rune mace", 1, x, y)
 	elseif ran < 80 then
-		addobject(player, "death-rune", 25, x, y)
+		addobject(player, "death-rune", 10, x, y)
 	else
 		addobject(player, "coins", 150, x, y)
 	end

@@ -17,7 +17,7 @@ function killnpc_chaos_dwarf(player, npc, x, y)
 	elseif ran < 50 then
 		addobject(player, "muddy key", 1, x, y)
 	elseif ran < 65 then
-		addobject(player, "death-rune", 40, x, y)
+		addobject(player, "death-rune", 30, x, y)
 	else
 		addobject(player, "coins", 180, x, y)
 	end

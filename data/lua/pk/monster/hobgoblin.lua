@@ -16,7 +16,7 @@ function killnpc_hobgoblin(player, npc, x, y)
 	elseif ran < 25 then
 		addobject(player, "coins", 150, x, y)
 	elseif ran < 50 then
-		addobject(player, "death-rune", 17, x, y)
+		addobject(player, "death-rune", 9, x, y)
 	elseif ran < 60 then
 		addobject(player, "magic cabbage", 1, x, y)
 	elseif ran < 70 then
