@@ -43,6 +43,8 @@ static void extract_map_chunk(struct jag_archive *, int, int, int);
 static void load_map_chunk(struct jag_map *, int, int, int);
 static void load_map_tile(struct jag_map *, int, int, int, int, int);
 static void fill_map_chunk(int, int, int);
+static int unpack_entry_or_override(struct jag_archive *, const char *,
+    struct jag_entry *);
 static int load_maps_jag(void);
 static void usage(void);
 
@@ -571,6 +573,28 @@ server_tick(void)
 }
 
 static int
+unpack_entry_or_override(struct jag_archive *archive, const char *name,
+    struct jag_entry *out)
+{
+	void *data;
+	size_t len;
+
+	data = read_file_full_bin(name, &len);
+	if (data != NULL) {
+		out->data = data;
+		out->unpacked_len = len;
+		out->must_free = true;
+		return 0;
+	}
+
+	if (jag_find_entry(archive, name, out) == -1 ||
+	    jag_unpack_entry(out) == -1) {
+		return -1;
+	}
+	return 0;
+}
+
+static int
 load_config_jag(void)
 {
 	struct jag_archive archive = {0};
@@ -594,8 +618,7 @@ load_config_jag(void)
 	 * we are reusing it
 	 */
 
-	if (jag_find_entry(&archive, "entity.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "entity.txt", &entry) == -1) {
 		goto err;
 	}
 	s.entity_config = config_parse_entity((char *)entry.data,
@@ -606,8 +629,7 @@ load_config_jag(void)
 	printf("read configuration for %zu mob sprites (\"entities\")\n",
 	    s.entity_config_count);
 
-	if (jag_find_entry(&archive, "objects.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "objects.txt", &entry) == -1) {
 		goto err;
 	}
 	s.item_config = config_parse_items((char *)entry.data,
@@ -619,8 +641,7 @@ load_config_jag(void)
 	printf("read configuration for %zu items (\"objects\")\n",
 	    s.item_config_count);
 
-	if (jag_find_entry(&archive, "prayers.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "prayers.txt", &entry) == -1) {
 		goto err;
 	}
 	s.prayer_config = config_parse_prayers((char *)entry.data,
@@ -631,8 +652,7 @@ load_config_jag(void)
 	printf("read configuration for %zu prayers\n",
 	    s.prayer_config_count);
 
-	if (jag_find_entry(&archive, "location.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "location.txt", &entry) == -1) {
 		goto err;
 	}
 	s.loc_config = config_parse_locs((char *)entry.data,
@@ -643,8 +663,7 @@ load_config_jag(void)
 	printf("read configuration for %zu locs\n",
 	    s.loc_config_count);
 
-	if (jag_find_entry(&archive, "boundary.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "boundary.txt", &entry) == -1) {
 		goto err;
 	}
 	s.bound_config = config_parse_bounds((char *)entry.data,
@@ -655,8 +674,7 @@ load_config_jag(void)
 	printf("read configuration for %zu bounds\n",
 	    s.bound_config_count);
 
-	if (jag_find_entry(&archive, "projectile.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "projectile.txt", &entry) == -1) {
 		goto err;
 	}
 	s.projectile_config = config_parse_projectiles((char *)entry.data,
@@ -667,8 +685,7 @@ load_config_jag(void)
 	printf("read configuration for %zu projectiles\n",
 	    s.projectile_config_count);
 
-	if (jag_find_entry(&archive, "npc.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "npc.txt", &entry) == -1) {
 		goto err;
 	}
 	s.npc_config = config_parse_npcs((char *)entry.data,
@@ -681,8 +698,7 @@ load_config_jag(void)
 	printf("read configuration for %zu npcs\n",
 	    s.npc_config_count);
 
-	if (jag_find_entry(&archive, "spells.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "spells.txt", &entry) == -1) {
 		goto err;
 	}
 	s.spell_config = config_parse_spells((char *)entry.data,
@@ -694,8 +710,7 @@ load_config_jag(void)
 	printf("read configuration for %zu spells\n",
 	    s.spell_config_count);
 
-	if (jag_find_entry(&archive, "shop.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "shop.txt", &entry) == -1) {
 		goto err;
 	}
 	s.shop_config = config_parse_shops((char *)entry.data,
@@ -707,8 +722,7 @@ load_config_jag(void)
 	printf("read configuration for %zu shops\n",
 	    s.shop_config_count);
 
-	if (jag_find_entry(&archive, "floor.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "floor.txt", &entry) == -1) {
 		goto err;
 	}
 	s.floor_config = config_parse_floors((char *)entry.data,
@@ -719,8 +733,7 @@ load_config_jag(void)
 	printf("read configuration for %zu floors\n",
 	    s.floor_config_count);
 
-	if (jag_find_entry(&archive, "words.txt", &entry) == -1 ||
-	    jag_unpack_entry(&entry) == -1) {
+	if (unpack_entry_or_override(&archive, "words.txt", &entry) == -1) {
 		goto err;
 	}
 
@@ -1048,10 +1061,9 @@ fill_map_chunk(int chunk_x, int chunk_y, int plane)
 static void
 extract_map_chunk(struct jag_archive *archive, int plane, int x, int y)
 {
-	FILE *f;
 	struct jag_entry entry = {0};
 	struct jag_map chunk = {0};
-	char file[64], file_full[128];
+	char file[64];
 
 	if (y > 46 || plane > 2) {
 		f = NULL;
@@ -1062,27 +1074,8 @@ extract_map_chunk(struct jag_archive *archive, int plane, int x, int y)
 	    "m%d%d%d%d%d.jm", plane,
 	    x / 10, x % 10, y / 10, y % 10);
 
-	/* support local overrides for maps in the archive */
-	(void)snprintf(file_full, sizeof(file_full),
-	    "./%s", file);
-
-	f = fopen(file_full, "rb");
-	if (f != NULL) {
-		entry.unpacked_len = 20736;
-		entry.data = malloc(entry.unpacked_len);
-		if (entry.data == NULL) {
-			goto fail;
-		}
-		entry.must_free = true;
-		fread(entry.data, 1, entry.unpacked_len, f);
-		fclose(f);
-		f = NULL;
-	} else {
-		if (jag_find_entry(archive,
-			file, &entry) == -1 ||
-		    jag_unpack_entry(&entry) == -1) {
-			goto fail;
-		}
+	if (unpack_entry_or_override(archive, file, &entry) == -1) {
+		goto fail;
 	}
 
 	if (jag_map_read_jm(&chunk,
@@ -1097,10 +1090,6 @@ extract_map_chunk(struct jag_archive *archive, int plane, int x, int y)
 
 	return;
 fail:
-	if (f != NULL) {
-		fclose(f);
-		f = NULL;
-	}
 	fill_map_chunk(x, y, plane);
 }
 

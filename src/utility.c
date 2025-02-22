@@ -442,11 +442,11 @@ chat_compress(const char *input, char *output)
 }
 
 char *
-buffer_file(const char *filename)
+read_file_full_txt(const char *path, size_t *len)
 {
-	FILE *file = fopen(filename, "r");
+	FILE *file = fopen(path, "r");
 	if (file == NULL) {
-		fprintf(stderr, "unable to open file %s\n", filename);
+		fprintf(stderr, "unable to open file %s\n", path);
 		return NULL;
 	}
 
@@ -462,8 +462,41 @@ buffer_file(const char *filename)
 	}
 
 	fread(buffer, 1, length, file);
-	buffer[length] = '\0';
 	fclose(file);
+
+	buffer[length] = '\0';
+
+	if (len != NULL) {
+		*len = (size_t)length;
+	}
+
+	return buffer;
+}
+
+void *
+read_file_full_bin(const char *path, size_t *len)
+{
+	FILE *file = fopen(path, "rb");
+	if (file == NULL) {
+		return NULL;
+	}
+
+	fseek(file, 0, SEEK_END);
+	long length = ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	uint8_t *buffer = malloc(length);
+	if (buffer == NULL) {
+		fclose(file);
+		return NULL;
+	}
+
+	fread(buffer, 1, length, file);
+	fclose(file);
+
+	if (len != NULL) {
+	    *len = (size_t)length;
+	}
 
 	return buffer;
 }
