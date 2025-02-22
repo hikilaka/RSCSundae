@@ -1066,7 +1066,6 @@ extract_map_chunk(struct jag_archive *archive, int plane, int x, int y)
 	char file[64];
 
 	if (y > 46 || plane > 2) {
-		f = NULL;
 		goto fail;
 	}
 
