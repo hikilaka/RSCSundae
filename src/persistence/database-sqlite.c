@@ -536,7 +536,7 @@ database_init(struct database *database)
 		return -1;
 	}
 
-	char *create_sql = buffer_file("./schema.sql");
+	char *create_sql = read_file_full_txt("./schema.sql", NULL);
 
 	if (create_sql == NULL) {
 		return -1;
