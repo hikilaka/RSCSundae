@@ -1,0 +1,31 @@
+--- npc.txt	2025-01-11 13:49:32.360212510 +0100
++++ npc.txt	2025-02-22 13:13:58.795674386 +0100
+@@ -672,7 +672,7 @@
+ =145,220,6,6,5;
+ =1,bones,1;
+ =2,Count Draynor,vampire,A vicious vampire;
+-=40,65,35,35,01,00,100,00,5,0,500;
++=40,65,35,35,00,00,100,00,5,0,500;
+ =10,00,02,10;
+ =head1,body1,legs1,na,na,na,na,na,na,na,na,blackcape;
+ =1,2,3,fceee0;
+@@ -783,7 +783,7 @@
+ =1,cc40cc,3,ccb366;
+ =145,220,6,6,5;
+ =1,bones,1;
+-=2,Valaine,Human,_She runs the champion's store;
++=2,Valaine,Human,,A minion of the count;
+ =35,25,30,10,00,00,100,00,4,0,500;
+ =10,00,02,10;
+ =femalehead,femalebody,legs1,na,na,na,na,na,na,na,na,na;
+@@ -981,8 +981,8 @@
+ =ffc260,00ffff,0000ff,eaded2;
+ =145,220,6,6,5;
+ =2,bones,1,steel mace,1;
+-=3,Monk of Zamorak,chaosmonk2,Human,An evil cleric;
+-=18,22,18,20,02,00,100,00,05,0,500;
++=3,Monk,chaosmonk2,Human,An evil cleric;
++=18,22,18,20,00,00,100,00,05,0,500;
+ =10,00,02,10;
+ =head4,body1,legs1,na,na,na,redrobe,redskirt,na,na,na,na;
+ =ffc260,00ffff,0000ff,eaded2;
