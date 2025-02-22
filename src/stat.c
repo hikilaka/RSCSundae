@@ -99,8 +99,11 @@ stat_advance(struct player *player, int stat,
     int base_xp, int proportion_xp)
 {
 	int cur, inc, level;
+	int orig;
 
 	assert(stat < MAX_SKILL_ID);
+
+	orig = player->mob.base_stats[stat];
 
 	cur = player->experience[stat];
 	inc = base_xp + (proportion_xp * player->mob.base_stats[stat]);
@@ -130,7 +133,11 @@ stat_advance(struct player *player, int stat,
 	}
 
 	level = xp_to_level(player->experience[stat]);
+#if 0
 	if (level > player->mob.base_stats[stat]) {
+#else
+	if (true) {
+#endif
 		char msg[64];
 		int gained;
 
@@ -143,31 +150,35 @@ stat_advance(struct player *player, int stat,
 #endif
 		player->mob.cur_stats[stat] += gained;
 		player->mob.base_stats[stat] = level;
-#if 0
 		player_send_stat(player, stat);
 
 		if (stat_is_combat(stat)) {
 			player_recalculate_combat_level(player);
 		}
-#endif
 	} else {
-		/*player_send_stat_xp(player, stat);*/
+		player_send_stat_xp(player, stat);
 	}
 
-	if (stat_is_combat(stat)) {
-		/* SundaePK-specific hits calculation */
-		if (stat == SKILL_ATTACK ||
-		    stat == SKILL_DEFENSE ||
-		    stat == SKILL_STRENGTH) {
-			stat_advance(player, SKILL_HITS,
-				(player->experience[SKILL_ATTACK] +
-				player->experience[SKILL_DEFENSE] +
-				player->experience[SKILL_STRENGTH]) / 3,
-				0);
+	/* SundaePK-specific unwear */
+	if (orig > level && (stat == SKILL_ATTACK || stat == SKILL_DEFENSE)) {
+		for (int i = 0; i < player->inv_count; ++i) {
+			if (player->inventory[i].worn) {
+				player->inventory[i].worn = false;
+				player_send_inv_slot(player, i);
+			}
 		}
-		player_recalculate_combat_level(player);
+		player_recalculate_equip(player);
 	}
-	player_send_stat(player, stat);
+
+	/* SundaePK-specific hits calculation */
+	if (stat == SKILL_ATTACK || stat == SKILL_DEFENSE ||
+	    stat == SKILL_STRENGTH) {
+		stat_advance(player, SKILL_HITS,
+			(player->experience[SKILL_ATTACK] +
+			player->experience[SKILL_DEFENSE] +
+			player->experience[SKILL_STRENGTH]) / 3,
+			0);
+	}
 }
 
 /* corresponds to runescript addstat */
