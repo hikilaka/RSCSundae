@@ -1751,6 +1751,15 @@ player_process_action(struct player *p)
 			p->action = ACTION_NONE;
 			return;
 		}
+		/*
+		 * later bug fix, see:
+		 * https://web.archive.org/web/20211023080829/http://www.saunalahti.fi/sniper4/bank.html
+		 */
+		if (npc->config->aggression == 0) {
+			player_send_message(p, "I can't attack that");
+			p->action = ACTION_NONE;
+			return;
+		}
 		if (p->projectile != NULL) {
 			if (mob_distance(&p->mob,
 			    npc->mob.x, npc->mob.y) <= p->projectile->range) {
