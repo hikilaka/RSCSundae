@@ -1,3 +1,16 @@
+RSC Sundae 1.4.0
+----------------
+
+* server: Support .txt overrides for config.jag.
+* server: Support local overrides for customized maps.
+* player: Restrict melee NPC attack per AR "banker killing" bug fix.
+* player: Drop all stackable items on death.
+* script: Fix casting on multiple items of the same type.
+* stat: Ranged levels should trigger a combat level update.
+* kebab: Added 2 tick delay.
+* admin: Added ::skull and ::empty commands.
+* win32: Fix runtime segfault, remove libev dependency.
+
 RSC Sundae 1.3.0
 ----------------
 
