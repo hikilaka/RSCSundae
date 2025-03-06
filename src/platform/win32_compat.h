@@ -6,6 +6,7 @@
 #include <sys/fcntl.h>
 #include <winsock2.h>
 #include <wspiapi.h>
+#define poll WSAPoll
 #define close closesocket
 #define ioctl ioctlsocket
 

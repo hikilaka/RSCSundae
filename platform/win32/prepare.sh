@@ -18,15 +18,6 @@ fi
 
 rm -f bzip2-1.0.8.tar.gz
 
-if ! [ -e libev-4.33 ]; then
-	if ! [ -e libev-4.33.tar.gz ]; then
-		curl -OJL http://dist.schmorp.de/libev/libev-4.33.tar.gz
-	fi
-	tar xzf libev-4.33.tar.gz
-fi
-
-rm -f libev-4.33.tar.gz
-
 if ! [ -e phc-winner-argon2-20190702 ]; then
 	if ! [ -e phc-winner-argon2-20190702.zip ]; then
 		curl -OJL https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20190702.zip

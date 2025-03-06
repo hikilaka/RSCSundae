@@ -18,4 +18,3 @@ Download library sources
 - Argon2: https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20190702.tar.gz
 - SQLite: https://sqlite.org/2024/sqlite-amalgamation-3460100.zip
 - BZip2: https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
-- libev: http://dist.schmorp.de/libev/libev-4.33.tar.gz

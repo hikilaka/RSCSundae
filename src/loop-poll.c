@@ -2,11 +2,15 @@
 #ifdef HAVE_SYS_TIMERFD_H
 #include <sys/timerfd.h>
 #endif
+#ifdef _WIN32
+#include "platform/win32_compat.h"
+#else
 #include <sys/socket.h>
 #include <poll.h>
+#include <netdb.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
-#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
