@@ -18,6 +18,9 @@
 /* Define if you have libev */
 #undef HAVE_LIBEV
 
+/* Define if you have libtommath */
+#undef HAVE_LIBTOM
+
 /* Define to 1 if you have the 'reallocarr' function. */
 #undef HAVE_REALLOCARR
 
