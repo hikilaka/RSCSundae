@@ -370,6 +370,7 @@ rscsundae_SOURCES = admin.c bank.c buffer.c mob.c netio.c player.c \
 	$(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_8) $(am__append_11) \
 	persistence/database-sqlite.c persistence/pwhash-argon2.c
+#rscsundae_SOURCES += loop-select.c
 rscsundae_LDADD = -lm $(libev_LIBS) $(LUA_LIBS) $(INIH_LIBS) \
 	$(am__append_7) $(am__append_10) $(SQLITE3_LIBS) \
 	$(LIBARGON2_LIBS)

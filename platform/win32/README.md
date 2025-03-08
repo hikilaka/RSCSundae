@@ -10,11 +10,3 @@ Download DLL binaries
 ---------------------
 
 - Lua: https://sourceforge.net/projects/luabinaries/files/5.4.2/Windows%20Libraries/Dynamic/lua-5.4.2_Win32_dllw6_lib.zip/download
-- OpenSSL: https://kb.firedaemon.com/support/solutions/articles/4000121705#Download-OpenSSL
-
-Download library sources
-------------------------
-
-- Argon2: https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20190702.tar.gz
-- SQLite: https://sqlite.org/2024/sqlite-amalgamation-3460100.zip
-- BZip2: https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz

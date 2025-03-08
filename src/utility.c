@@ -2,9 +2,6 @@
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifndef HAVE_ARC4RANDOM_BUF
-#include <openssl/rand.h>
-#endif
 #include <sys/stat.h>
 #include <ctype.h>
 #include <errno.h>
@@ -19,8 +16,13 @@
 #include "utility.h"
 
 #ifdef _WIN32
+#include <windows.h>
+#include <wincrypt.h>
 #define mkdir_port(s) mkdir(s)
-#else
+#else /* not _WIN32 */
+#ifndef HAVE_ARC4RANDOM_BUF
+#include <openssl/rand.h>
+#endif
 #define mkdir_port(s) mkdir(s, S_IRWXU)
 #endif
 
@@ -36,7 +38,6 @@ static const char legacy_chartab[] = {
     ',', ':', ';', '(', ')', '-', '&', '*', '\\', '\'',
     '\0'
 };
-
 
 static const char compression_tab[] = {
     ' ', 'e', 't', 'a', 'o', 'i', 'h', 'n', 's', 'r',
@@ -505,10 +506,27 @@ read_file_full_bin(const char *path, size_t *len)
 void
 arc4random_buf(void *buf, size_t len)
 {
+#ifdef _WIN32
+	static HCRYPTPROV h_prov = 0;
+	if (h_prov == 0) {
+		HCRYPTPROV h = 0;
+		if (CryptAcquireContext(&h, NULL, NULL, PROV_RSA_FULL,
+		    CRYPT_VERIFYCONTEXT) == 0) {
+			fprintf(stderr, "fatal error with CryptAcquireContext\n");
+			exit(EXIT_FAILURE);
+		}
+		h_prov = h;
+	}
+	if (CryptGenRandom(h_prov, (DWORD)len, (BYTE *)buf) == 0) {
+		fprintf(stderr, "fatal error with CryptGenRandom\n");
+		exit(EXIT_FAILURE);
+	}
+#else
 	if (RAND_bytes(buf, len) != 1) {
 		fprintf(stderr, "fatal error with RAND_bytes\n");
 		exit(EXIT_FAILURE);
 	}
+#endif
 }
 #endif
 

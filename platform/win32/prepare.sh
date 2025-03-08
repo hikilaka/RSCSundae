@@ -27,5 +27,17 @@ fi
 
 rm -f phc-winner-argon2-20190702.zip
 
+if ! [ -e libtommath-1.3.0 ]; then
+	if ! [ -e ltm-1.3.0.zip ]; then
+		curl -OJL https://github.com/libtom/libtommath/releases/download/v1.3.0/ltm-1.3.0.zip
+	fi
+	unzip ltm-1.3.0.zip
+fi
+
+rm -f ltm-1.3.0.zip
+
+cd libtommath-1.3.0 && perl gen.pl
+cd ..
+
+rm -f ../../config.h
 touch ../../config.h
-touch libev-4.33/config.h
