@@ -52,6 +52,7 @@ if LIBEV
 rscsundae_SOURCES += loop-ev.c
 else
 rscsundae_SOURCES += loop-poll.c
+#rscsundae_SOURCES += loop-select.c
 endif
 endif
 
