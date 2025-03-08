@@ -5,13 +5,6 @@ bin_PROGRAMS =	rscsundae
 AM_CPPFLAGS = -Iext/libjag/include
 AM_CPPFLAGS += $(LUA_CFLAGS)
 AM_CPPFLAGS += $(INIH_CFLAGS)
-AM_CPPFLAGS += $(LIBCRYPTO_CFLAGS)
-
-# only for testing, so slow it's unusable
-#AM_CPPFLAGS += -Iext/tiny-bignum-c
-#AM_CPPFLAGS += -DWITH_RSA_TINY
-
-AM_CPPFLAGS += -DWITH_RSA_OPENSSL
 
 rscsundae_SOURCES = \
 	admin.c \
@@ -47,9 +40,6 @@ rscsundae_SOURCES = \
 	protocol/opcodes203.c \
 	protocol/outgoing.c
 
-#rscsundae_SOURCES += protocol/rsa-tiny.c
-rscsundae_SOURCES += protocol/rsa-openssl.c
-
 if ! HAVE_SYSTEM_INIH
 AM_CPPFLAGS += -Iext/inih
 rscsundae_SOURCES += ext/inih/ini.c
@@ -69,7 +59,26 @@ rscsundae_LDADD = -lm
 rscsundae_LDADD += $(libev_LIBS)
 rscsundae_LDADD += $(LUA_LIBS)
 rscsundae_LDADD += $(INIH_LIBS)
+
+if HAVE_LIBCRYPTO
+AM_CPPFLAGS += $(LIBCRYPTO_CFLAGS)
 rscsundae_LDADD += $(LIBCRYPTO_LIBS)
+endif
+
+if LIBTOM
+rscsundae_SOURCES += protocol/rsa-libtom.c
+AM_CPPFLAGS += -DWITH_RSA_LIBTOM
+AM_CPPFLAGS += $(LIBTOMMATH_CFLAGS)
+rscsundae_LDADD += $(LIBTOMMATH_LIBS)
+else
+rscsundae_SOURCES += protocol/rsa-openssl.c
+AM_CPPFLAGS += -DWITH_RSA_OPENSSL
+# only for testing, so slow it's unusable
+#else
+#rscsundae_SOURCES += protocol/rsa-tiny.c
+#AM_CPPFLAGS += -Iext/tiny-bignum-c
+#AM_CPPFLAGS += -DWITH_RSA_TINY
+endif
 
 rscsundae_SOURCES += persistence/database-sqlite.c
 rscsundae_LDADD += $(SQLITE3_LIBS)
