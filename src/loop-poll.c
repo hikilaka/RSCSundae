@@ -24,15 +24,11 @@
 
 struct server *serv;
 
-static void server_sock_cb(int fd);
 static int loop_delay = TICK_RATE;
-static int timerfd = -1;
 
-static void
-server_sock_cb(int fd)
-{
-	net_player_accept(serv, fd);
-}
+#ifdef HAVE_SYS_TIMERFD_H
+static int timerfd = -1;
+#endif
 
 int
 loop_add_player(struct player *p)
@@ -97,7 +93,7 @@ loop_start(struct server *s)
 		for (int i = numfd; i < (numfd + numsockets); ++i) {
 			if ((pfds[i].revents & POLLRDNORM) ||
 			    (pfds[i].revents & POLLRDBAND)) {
-				server_sock_cb(pfds[i].fd);
+				net_player_accept(s, pfds[i].fd);
 			}
 		}
 		if (get_time_ms() >= next_tick) {
