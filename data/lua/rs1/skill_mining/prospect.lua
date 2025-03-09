@@ -15,6 +15,10 @@ function oploc2_plainrock2(player, x, y)
 	oploc2_plainrock1(player, x, y)
 end
 
+function oploc2_plainrock3(player, x, y)
+	oploc2_plainrock1(player, x, y)
+end
+
 -- RSC 2001/replays master archive/Skilling/Mining/mining- prospect- tin
 function oploc2_tinrock1(player, x, y)
 	do_prospect(player, "tin ore")
