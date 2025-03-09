@@ -27,10 +27,7 @@ PKG_CHECK_MODULES([LUA], [lua-5.4], [
 		PKG_CHECK_MODULES([LUA], [lua5.4])
 	])
 
-PKG_CHECK_MODULES([SQLITE3], [sqlite3], [
-	], [
-		PKG_CHECK_MODULES([SQLITE3], [sqlite3])
-	])
+PKG_CHECK_MODULES([SQLITE3], [sqlite3])
 
 AM_CONDITIONAL(HAVE_SYSTEM_INIH, true)
 PKG_CHECK_MODULES([INIH], [inih], [
@@ -38,48 +35,57 @@ PKG_CHECK_MODULES([INIH], [inih], [
 		AM_CONDITIONAL(HAVE_SYSTEM_INIH, false)
 	])
 
-PKG_CHECK_MODULES([LIBCRYPTO], [libcrypto])
+AM_CONDITIONAL(HAVE_LIBCRYPTO, true)
+PKG_CHECK_MODULES([LIBCRYPTO], [libcrypto], [
+	], [
+		AM_CONDITIONAL(HAVE_LIBCRYPTO, false)
+	])
 
 PKG_CHECK_MODULES([LIBARGON2], [libargon2])
 
 AM_SILENT_RULES([yes])
 
-AC_ARG_WITH([kqueue], 
+AC_ARG_WITH([libtom],
+	[AS_HELP_STRING([--with-libtom],
+		[use libtommath for RSA decryption (instead of libcrypto) @<:@default=no@:>@])],
+	[],
+	[with_libtom=no])
+
+AC_ARG_WITH([kqueue],
 	[AS_HELP_STRING([--with-kqueue],
 		[use kqueue for the event loop (best on BSD systems) @<:@default=check@:>@])],
 	[],
 	[with_kqueue=check])
 
-AC_ARG_WITH([libev], 
-	[AS_HELP_STRING([--with-libev],
-		[use libev for the event loop @<:@default=no@:>@])],
+AC_ARG_WITH([select],
+	[AS_HELP_STRING([--with-select],
+		[use select for the event loop (not recommended) @<:@default=no@:>@])],
 	[],
-	[with_libev=check])
+	[with_select=no])
 
-AM_CONDITIONAL(KQUEUE, false)
+AM_CONDITIONAL(HAVE_LIBTOM, false)
+AS_IF([test "x$with_libtom" != xno],
+	[PKG_CHECK_MODULES([LIBTOMMATH], [libtommath],
+		[
+			AM_CONDITIONAL(HAVE_LIBTOM, true)
+		]
+	)])
+
+# prefer kqueue
+AM_CONDITIONAL(HAVE_KQUEUE, false)
 AS_IF([test "x$with_kqueue" != xno],
 	[AC_CHECK_FUNCS([kqueue],
- 		[
-			AM_CONDITIONAL(KQUEUE, true)
-			AC_DEFINE([HAVE_KQUEUE], [1], [Define if you have kqueue])
+		[
+			AM_CONDITIONAL(HAVE_KQUEUE, true)
 		],
 		[],
 	)])
 
-AM_CONDITIONAL(LIBEV, false)
-AS_IF([test "x$with_libev" = xyes],
-	[AC_CHECK_HEADER([ev.h],
-		[AC_SEARCH_LIBS([ev_run], [ev],
-			[
-				AM_CONDITIONAL(LIBEV, true)
-				AC_DEFINE([HAVE_LIBEV], [1], [Define if you have libev])
-			],
-			[AC_MSG_FAILURE(
-				[--with-libev was given, but test for libev failed])],
-		)],
-		[AC_MSG_FAILURE(
-			[--with-libev was given, but test for libev failed])],
-	)])
+AM_CONDITIONAL(HAVE_POLL, false)
+AS_IF([test "x$with_select" = xno],
+	[
+		AC_CHECK_FUNCS([poll], [AM_CONDITIONAL(HAVE_POLL, true)], [])
+	])
 
 AC_DEFUN([GCC_W_NO_FORMAT_TRUNC],[
 	result=yes

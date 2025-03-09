@@ -1,40 +1,36 @@
-CC=		/usr/pkg/cross/i686-w64-mingw32/bin/i686-w64-mingw32-gcc
+CC=		/usr/pkg/cross/i686-w64-mingw32-msvcrt/bin/i686-w64-mingw32-gcc
 
 SRCDIR=		../../src
 
-LDFLAGS+=	-L./openssl-3/x86/lib
-LDFLAGS+=	-L.
-LDFLAGS+=	-lcrypto -llua54
+LDFLAGS=	-L.
+LDFLAGS+=	-llua54
 LDFLAGS+=	-lm -lwsock32 -lws2_32
 LDFLAGS+=	-s
 
-CFLAGS+=	-O2 -Wall -std=c99
-CFLAGS+=	-fno-set-stack-executable
+CFLAGS=		-O2 -Wall -std=c99
 CFLAGS+=	-fstack-protector-strong
+CFLAGS+=	-Wno-error=incompatible-pointer-types
 CFLAGS+=	-D_FORTIFY_SOURCE=2
 CFLAGS+=	-s
 
 CFLAGS+=	-I./phc-winner-argon2-20190702/include
-CFLAGS+=	-I./openssl-3/x86/include
 CFLAGS+=	-I./sqlite-amalgamation-3460100
+CFLAGS+=	-I./libtommath-1.3.0
 CFLAGS+=	-I./bzip2-1.0.8
-CFLAGS+=	-I./libev-4.33
 CFLAGS+=	-I./include
 CFLAGS+=	-I${SRCDIR}/ext/inih
 CFLAGS+=	-I${SRCDIR}/ext/libjag/include
 
 # target Windows XP
-CFLAGS+=	-D_WIN32_WINNT=0x0501
+CFLAGS+=	-D_WIN32_WINNT=0x0601
 
 CFLAGS+=	-D_POSIX_C_SOURCE=199309L
-CFLAGS+=	-DWITH_RSA_OPENSSL=1
+CFLAGS+=	-DWITH_RSA_LIBTOM=1
 CFLAGS+=	-DHAVE_SYS_TIME_H=1
 CFLAGS+=	-DARGON2_NO_THREADS=1
-CFLAGS+=	-DEV_NO_SMP=1
-CFLAGS+=	-DEV_NO_THREADS=1
 CFLAGS+=	-DSQLITE_MUTEX_NOOP=1
 
-OBJS+=		${SRCDIR}/admin.o
+OBJS=		${SRCDIR}/admin.o
 OBJS+=		${SRCDIR}/bank.o
 OBJS+=		${SRCDIR}/buffer.o
 OBJS+=		${SRCDIR}/config/config.o
@@ -52,7 +48,7 @@ OBJS+=		${SRCDIR}/ext/libjag/lib/jag_unpack_entry.o
 OBJS+=		${SRCDIR}/ext/libjag/lib/jag_unpack_file.o
 OBJS+=		${SRCDIR}/ext/reallocarr.o
 OBJS+=		${SRCDIR}/inventory.o
-OBJS+=		${SRCDIR}/loop-ev.o
+OBJS+=		${SRCDIR}/loop-select.o
 OBJS+=		${SRCDIR}/mob.o
 OBJS+=		${SRCDIR}/netio.o
 OBJS+=		${SRCDIR}/npc.o
@@ -62,7 +58,7 @@ OBJS+=		${SRCDIR}/player.o
 OBJS+=		${SRCDIR}/protocol/incoming.o
 OBJS+=		${SRCDIR}/protocol/opcodes203.o
 OBJS+=		${SRCDIR}/protocol/outgoing.o
-OBJS+=		${SRCDIR}/protocol/rsa-openssl.o
+OBJS+=		${SRCDIR}/protocol/rsa-libtom.o
 OBJS+=		${SRCDIR}/script.o
 OBJS+=		${SRCDIR}/server.o
 OBJS+=		${SRCDIR}/settings.o
@@ -80,7 +76,8 @@ OBJS+=		./bzip2-1.0.8/crctable.o
 OBJS+=		./bzip2-1.0.8/decompress.o
 OBJS+=		./bzip2-1.0.8/huffman.o
 OBJS+=		./bzip2-1.0.8/randtable.o
-OBJS+=		./libev-4.33/ev.o
+
+OBJS+=		./libtommath-1.3.0/mpi.o
 
 OBJS+=		./phc-winner-argon2-20190702/src/argon2.o
 OBJS+=		./phc-winner-argon2-20190702/src/blake2/blake2b.o

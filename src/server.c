@@ -137,11 +137,13 @@ main(int argc, char **argv)
 		return EXIT_FAILURE;
 	}
 
+	printf("loading script engine... ");
 	s.lua = script_init(&s);
 	if (s.lua == NULL) {
-		fprintf(stderr, "failed to start script engine\n");
+		printf("failed\n");
 		return EXIT_FAILURE;
 	}
+	printf("done\n");
 
 	printf("calculating password hashing params... ");
 	if (pwhash_init(&s.hash) != -1) {

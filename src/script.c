@@ -121,6 +121,7 @@ safe_call(lua_State *L, int nargs, int nresults, int player_id)
 	int ret = lua_pcall(L, nargs, nresults, 0);
 	if (ret != 0) {
 		printf("Error in Lua script: %s\n", lua_tostring(L, -1));
+		lua_pop(L, -1);
 		script_cancel(L, player_id);
 	}
 }
@@ -2113,6 +2114,7 @@ script_onopinv(lua_State *L, struct player *p, struct item_config *item)
 		lua_pushstring(L, item->names[i]);
 		safe_call(L, 2, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2156,6 +2158,7 @@ script_onuseobj(lua_State *L, struct player *p,
 			lua_pushstring(L, invitem->names[i]);
 			safe_call(L, 5, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
+			lua_pop(L, -1);
 			if (result != 0) {
 				return;
 			}
@@ -2183,6 +2186,7 @@ script_onuseinv(lua_State *L, struct player *p,
 			lua_pushstring(L, item2->names[j]);
 			safe_call(L, 3, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
+			lua_pop(L, -1);
 			if (result != 0) {
 				return;
 			}
@@ -2213,6 +2217,7 @@ script_onspellinv(lua_State *L, struct player *p,
 		lua_pushstring(L, p->spell->name);
 		safe_call(L, 4, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2240,6 +2245,7 @@ script_onusenpc(lua_State *L, struct player *p,
 			lua_pushstring(L, item->names[j]);
 			safe_call(L, 4, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
+			lua_pop(L, -1);
 			/*
 			 * replay:
 			 * rsc-preservation.xyz/Quests/sheep-shearer-zezima
@@ -2280,6 +2286,7 @@ script_onuseloc(lua_State *L, struct player *p,
 			lua_pushstring(L, item->names[j]);
 			safe_call(L, 5, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
+			lua_pop(L, -1);
 			if (result != 0) {
 				return;
 			}
@@ -2314,6 +2321,7 @@ script_onusebound(lua_State *L, struct player *p,
 			lua_pushstring(L, item->names[j]);
 			safe_call(L, 6, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
+			lua_pop(L, -1);
 			if (result != 0) {
 				return;
 			}
@@ -2341,6 +2349,7 @@ script_onskillnpc(lua_State *L, struct player *p,
 		lua_pushstring(L, spell->name);
 		safe_call(L, 4, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2381,6 +2390,7 @@ script_onopbound1(lua_State *L, struct player *p, struct bound *bound)
 		lua_pushnumber(L, bound->dir);
 		safe_call(L, 5, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2410,6 +2420,7 @@ script_onopbound2(lua_State *L, struct player *p, struct bound *bound)
 		lua_pushnumber(L, bound->dir);
 		safe_call(L, 5, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2438,6 +2449,7 @@ script_onoploc1(lua_State *L, struct player *p, struct loc *loc)
 		lua_pushnumber(L, loc->y);
 		safe_call(L, 4, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2466,6 +2478,7 @@ script_onoploc2(lua_State *L, struct player *p, struct loc *loc)
 		lua_pushnumber(L, loc->y);
 		safe_call(L, 4, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2489,6 +2502,7 @@ script_onattacknpc(lua_State *L, struct player *p, struct npc *npc)
 		lua_pushstring(L, npc->config->names[i]);
 		safe_call(L, 3, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2513,6 +2527,7 @@ script_onkillnpc(lua_State *L, struct player *p, struct npc *npc)
 		lua_pushnumber(L, npc->mob.y);
 		safe_call(L, 5, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return true;
 		}
@@ -2538,6 +2553,7 @@ script_onwearobj(lua_State *L, struct player *p, struct item_config *item)
 		lua_pushstring(L, item->names[i]);
 		safe_call(L, 2, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return false;
 		}
@@ -2568,6 +2584,7 @@ script_onspellobj(lua_State *L, struct player *p,
 		lua_pushnumber(L, item->y);
 		safe_call(L, 5, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return;
 		}
@@ -2595,6 +2612,7 @@ script_ontakeobj(lua_State *L, struct player *p, struct ground_item *item)
 		lua_pushnumber(L, item->y);
 		safe_call(L, 4, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
 		if (result != 0) {
 			return true;
 		}

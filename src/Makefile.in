@@ -89,9 +89,17 @@ POST_UNINSTALL = :
 bin_PROGRAMS = rscsundae$(EXEEXT)
 @HAVE_SYSTEM_INIH_FALSE@am__append_1 = -Iext/inih
 @HAVE_SYSTEM_INIH_FALSE@am__append_2 = ext/inih/ini.c
-@KQUEUE_TRUE@am__append_3 = loop-kqueue.c
-@KQUEUE_FALSE@@LIBEV_TRUE@am__append_4 = loop-ev.c
-@KQUEUE_FALSE@@LIBEV_FALSE@am__append_5 = loop-poll.c
+@HAVE_KQUEUE_TRUE@am__append_3 = loop-kqueue.c
+@HAVE_KQUEUE_FALSE@@HAVE_POLL_TRUE@am__append_4 = loop-poll.c
+@HAVE_KQUEUE_FALSE@@HAVE_POLL_FALSE@am__append_5 = loop-select.c
+@HAVE_LIBCRYPTO_TRUE@am__append_6 = $(LIBCRYPTO_CFLAGS)
+@HAVE_LIBCRYPTO_TRUE@am__append_7 = $(LIBCRYPTO_LIBS)
+@HAVE_LIBTOM_TRUE@am__append_8 = protocol/rsa-libtom.c
+@HAVE_LIBTOM_TRUE@am__append_9 = -DWITH_RSA_LIBTOM \
+@HAVE_LIBTOM_TRUE@	$(LIBTOMMATH_CFLAGS)
+@HAVE_LIBTOM_TRUE@am__append_10 = $(LIBTOMMATH_LIBS)
+@HAVE_LIBTOM_FALSE@am__append_11 = protocol/rsa-openssl.c
+@HAVE_LIBTOM_FALSE@am__append_12 = -DWITH_RSA_OPENSSL
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -116,14 +124,18 @@ am__rscsundae_SOURCES_DIST = admin.c bank.c buffer.c mob.c netio.c \
 	ext/libjag/lib/jag_unpack_entry.c \
 	ext/libjag/lib/jag_unpack_file.c ext/reallocarr.c \
 	protocol/incoming.c protocol/opcodes203.c protocol/outgoing.c \
-	protocol/rsa-openssl.c ext/inih/ini.c loop-kqueue.c loop-ev.c \
-	loop-poll.c persistence/database-sqlite.c \
-	persistence/pwhash-argon2.c
+	ext/inih/ini.c loop-kqueue.c loop-poll.c loop-select.c \
+	protocol/rsa-libtom.c protocol/rsa-openssl.c \
+	persistence/database-sqlite.c persistence/pwhash-argon2.c
 am__dirstamp = $(am__leading_dot)dirstamp
 @HAVE_SYSTEM_INIH_FALSE@am__objects_1 = ext/inih/ini.$(OBJEXT)
-@KQUEUE_TRUE@am__objects_2 = loop-kqueue.$(OBJEXT)
-@KQUEUE_FALSE@@LIBEV_TRUE@am__objects_3 = loop-ev.$(OBJEXT)
-@KQUEUE_FALSE@@LIBEV_FALSE@am__objects_4 = loop-poll.$(OBJEXT)
+@HAVE_KQUEUE_TRUE@am__objects_2 = loop-kqueue.$(OBJEXT)
+@HAVE_KQUEUE_FALSE@@HAVE_POLL_TRUE@am__objects_3 =  \
+@HAVE_KQUEUE_FALSE@@HAVE_POLL_TRUE@	loop-poll.$(OBJEXT)
+@HAVE_KQUEUE_FALSE@@HAVE_POLL_FALSE@am__objects_4 =  \
+@HAVE_KQUEUE_FALSE@@HAVE_POLL_FALSE@	loop-select.$(OBJEXT)
+@HAVE_LIBTOM_TRUE@am__objects_5 = protocol/rsa-libtom.$(OBJEXT)
+@HAVE_LIBTOM_FALSE@am__objects_6 = protocol/rsa-openssl.$(OBJEXT)
 am_rscsundae_OBJECTS = admin.$(OBJEXT) bank.$(OBJEXT) buffer.$(OBJEXT) \
 	mob.$(OBJEXT) netio.$(OBJEXT) player.$(OBJEXT) \
 	inventory.$(OBJEXT) npc.$(OBJEXT) script.$(OBJEXT) \
@@ -141,15 +153,17 @@ am_rscsundae_OBJECTS = admin.$(OBJEXT) bank.$(OBJEXT) buffer.$(OBJEXT) \
 	ext/libjag/lib/jag_unpack_file.$(OBJEXT) \
 	ext/reallocarr.$(OBJEXT) protocol/incoming.$(OBJEXT) \
 	protocol/opcodes203.$(OBJEXT) protocol/outgoing.$(OBJEXT) \
-	protocol/rsa-openssl.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
 	persistence/database-sqlite.$(OBJEXT) \
 	persistence/pwhash-argon2.$(OBJEXT)
 rscsundae_OBJECTS = $(am_rscsundae_OBJECTS)
 am__DEPENDENCIES_1 =
+@HAVE_LIBCRYPTO_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+@HAVE_LIBTOM_TRUE@am__DEPENDENCIES_3 = $(am__DEPENDENCIES_1)
 rscsundae_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -167,8 +181,8 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/admin.Po ./$(DEPDIR)/bank.Po \
 	./$(DEPDIR)/buffer.Po ./$(DEPDIR)/inventory.Po \
-	./$(DEPDIR)/loop-ev.Po ./$(DEPDIR)/loop-kqueue.Po \
-	./$(DEPDIR)/loop-poll.Po ./$(DEPDIR)/mob.Po \
+	./$(DEPDIR)/loop-kqueue.Po ./$(DEPDIR)/loop-poll.Po \
+	./$(DEPDIR)/loop-select.Po ./$(DEPDIR)/mob.Po \
 	./$(DEPDIR)/netio.Po ./$(DEPDIR)/npc.Po ./$(DEPDIR)/player.Po \
 	./$(DEPDIR)/script.Po ./$(DEPDIR)/server.Po \
 	./$(DEPDIR)/settings.Po ./$(DEPDIR)/shop.Po \
@@ -190,6 +204,7 @@ am__depfiles_remade = ./$(DEPDIR)/admin.Po ./$(DEPDIR)/bank.Po \
 	protocol/$(DEPDIR)/incoming.Po \
 	protocol/$(DEPDIR)/opcodes203.Po \
 	protocol/$(DEPDIR)/outgoing.Po \
+	protocol/$(DEPDIR)/rsa-libtom.Po \
 	protocol/$(DEPDIR)/rsa-openssl.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -265,6 +280,8 @@ LIBCRYPTO_CFLAGS = @LIBCRYPTO_CFLAGS@
 LIBCRYPTO_LIBS = @LIBCRYPTO_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
+LIBTOMMATH_CFLAGS = @LIBTOMMATH_CFLAGS@
+LIBTOMMATH_LIBS = @LIBTOMMATH_LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 LUA_CFLAGS = @LUA_CFLAGS@
 LUA_LIBS = @LUA_LIBS@
@@ -333,15 +350,14 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = subdir-objects foreign
-
+AM_CPPFLAGS = -Iext/libjag/include $(LUA_CFLAGS) $(INIH_CFLAGS) \
+	$(am__append_1) $(am__append_6) $(am__append_9) \
+	$(am__append_12) $(SQLITE3_CFLAGS) $(LIBARGON2_CFLAGS)
 # only for testing, so slow it's unusable
+#else
+#rscsundae_SOURCES += protocol/rsa-tiny.c
 #AM_CPPFLAGS += -Iext/tiny-bignum-c
 #AM_CPPFLAGS += -DWITH_RSA_TINY
-AM_CPPFLAGS = -Iext/libjag/include $(LUA_CFLAGS) $(INIH_CFLAGS) \
-	$(LIBCRYPTO_CFLAGS) -DWITH_RSA_OPENSSL $(am__append_1) \
-	$(SQLITE3_CFLAGS) $(LIBARGON2_CFLAGS)
-
-#rscsundae_SOURCES += protocol/rsa-tiny.c
 rscsundae_SOURCES = admin.c bank.c buffer.c mob.c netio.c player.c \
 	inventory.c npc.c script.c server.c settings.c shop.c stat.c \
 	trade.c utility.c zone.c config/config.c config/text.c \
@@ -354,11 +370,11 @@ rscsundae_SOURCES = admin.c bank.c buffer.c mob.c netio.c player.c \
 	ext/libjag/lib/jag_unpack_entry.c \
 	ext/libjag/lib/jag_unpack_file.c ext/reallocarr.c \
 	protocol/incoming.c protocol/opcodes203.c protocol/outgoing.c \
-	protocol/rsa-openssl.c $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) persistence/database-sqlite.c \
-	persistence/pwhash-argon2.c
-rscsundae_LDADD = -lm $(libev_LIBS) $(LUA_LIBS) $(INIH_LIBS) \
-	$(LIBCRYPTO_LIBS) $(SQLITE3_LIBS) $(LIBARGON2_LIBS)
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_8) $(am__append_11) \
+	persistence/database-sqlite.c persistence/pwhash-argon2.c
+rscsundae_LDADD = -lm $(LUA_LIBS) $(INIH_LIBS) $(am__append_7) \
+	$(am__append_10) $(SQLITE3_LIBS) $(LIBARGON2_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -496,8 +512,6 @@ protocol/opcodes203.$(OBJEXT): protocol/$(am__dirstamp) \
 	protocol/$(DEPDIR)/$(am__dirstamp)
 protocol/outgoing.$(OBJEXT): protocol/$(am__dirstamp) \
 	protocol/$(DEPDIR)/$(am__dirstamp)
-protocol/rsa-openssl.$(OBJEXT): protocol/$(am__dirstamp) \
-	protocol/$(DEPDIR)/$(am__dirstamp)
 ext/inih/$(am__dirstamp):
 	@$(MKDIR_P) ext/inih
 	@: > ext/inih/$(am__dirstamp)
@@ -506,6 +520,10 @@ ext/inih/$(DEPDIR)/$(am__dirstamp):
 	@: > ext/inih/$(DEPDIR)/$(am__dirstamp)
 ext/inih/ini.$(OBJEXT): ext/inih/$(am__dirstamp) \
 	ext/inih/$(DEPDIR)/$(am__dirstamp)
+protocol/rsa-libtom.$(OBJEXT): protocol/$(am__dirstamp) \
+	protocol/$(DEPDIR)/$(am__dirstamp)
+protocol/rsa-openssl.$(OBJEXT): protocol/$(am__dirstamp) \
+	protocol/$(DEPDIR)/$(am__dirstamp)
 persistence/$(am__dirstamp):
 	@$(MKDIR_P) persistence
 	@: > persistence/$(am__dirstamp)
@@ -537,9 +555,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bank.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/buffer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inventory.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop-ev.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop-kqueue.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop-poll.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop-select.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mob.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netio.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npc.Po@am__quote@ # am--include-marker
@@ -571,6 +589,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@protocol/$(DEPDIR)/incoming.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@protocol/$(DEPDIR)/opcodes203.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@protocol/$(DEPDIR)/outgoing.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@protocol/$(DEPDIR)/rsa-libtom.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@protocol/$(DEPDIR)/rsa-openssl.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -737,9 +756,9 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/bank.Po
 	-rm -f ./$(DEPDIR)/buffer.Po
 	-rm -f ./$(DEPDIR)/inventory.Po
-	-rm -f ./$(DEPDIR)/loop-ev.Po
 	-rm -f ./$(DEPDIR)/loop-kqueue.Po
 	-rm -f ./$(DEPDIR)/loop-poll.Po
+	-rm -f ./$(DEPDIR)/loop-select.Po
 	-rm -f ./$(DEPDIR)/mob.Po
 	-rm -f ./$(DEPDIR)/netio.Po
 	-rm -f ./$(DEPDIR)/npc.Po
@@ -771,6 +790,7 @@ distclean: distclean-am
 	-rm -f protocol/$(DEPDIR)/incoming.Po
 	-rm -f protocol/$(DEPDIR)/opcodes203.Po
 	-rm -f protocol/$(DEPDIR)/outgoing.Po
+	-rm -f protocol/$(DEPDIR)/rsa-libtom.Po
 	-rm -f protocol/$(DEPDIR)/rsa-openssl.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -821,9 +841,9 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/bank.Po
 	-rm -f ./$(DEPDIR)/buffer.Po
 	-rm -f ./$(DEPDIR)/inventory.Po
-	-rm -f ./$(DEPDIR)/loop-ev.Po
 	-rm -f ./$(DEPDIR)/loop-kqueue.Po
 	-rm -f ./$(DEPDIR)/loop-poll.Po
+	-rm -f ./$(DEPDIR)/loop-select.Po
 	-rm -f ./$(DEPDIR)/mob.Po
 	-rm -f ./$(DEPDIR)/netio.Po
 	-rm -f ./$(DEPDIR)/npc.Po
@@ -855,6 +875,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f protocol/$(DEPDIR)/incoming.Po
 	-rm -f protocol/$(DEPDIR)/opcodes203.Po
 	-rm -f protocol/$(DEPDIR)/outgoing.Po
+	-rm -f protocol/$(DEPDIR)/rsa-libtom.Po
 	-rm -f protocol/$(DEPDIR)/rsa-openssl.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic

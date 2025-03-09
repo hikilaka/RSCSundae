@@ -52,8 +52,8 @@ local function do_mine_plain(player, x, y)
 	if statrandom(player, STAT_MINING, 96, 350) then
 		if not mine_random_jewel(player) then
 			mes(player, "@que@A few lumps of uninteresting rock break off")
-			changeloc(x, y, "plainrock3")
-			restoreloc(x, y, 2)
+			--changeloc(x, y, "plainrock3")
+			--restoreloc(x, y, 2)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
