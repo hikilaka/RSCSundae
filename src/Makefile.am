@@ -45,19 +45,17 @@ AM_CPPFLAGS += -Iext/inih
 rscsundae_SOURCES += ext/inih/ini.c
 endif
 
-if KQUEUE
+if HAVE_KQUEUE
 rscsundae_SOURCES += loop-kqueue.c
 else
-if LIBEV
-rscsundae_SOURCES += loop-ev.c
-else
+if HAVE_POLL
 rscsundae_SOURCES += loop-poll.c
-#rscsundae_SOURCES += loop-select.c
+else
+rscsundae_SOURCES += loop-select.c
 endif
 endif
 
 rscsundae_LDADD = -lm
-rscsundae_LDADD += $(libev_LIBS)
 rscsundae_LDADD += $(LUA_LIBS)
 rscsundae_LDADD += $(INIH_LIBS)
 
@@ -66,7 +64,7 @@ AM_CPPFLAGS += $(LIBCRYPTO_CFLAGS)
 rscsundae_LDADD += $(LIBCRYPTO_LIBS)
 endif
 
-if LIBTOM
+if HAVE_LIBTOM
 rscsundae_SOURCES += protocol/rsa-libtom.c
 AM_CPPFLAGS += -DWITH_RSA_LIBTOM
 AM_CPPFLAGS += $(LIBTOMMATH_CFLAGS)

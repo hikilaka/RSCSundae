@@ -56,7 +56,6 @@ Dependencies:
 
 * BZip2 (for decompressing Jagex Archives to load the original game data)
 * Lua 5.4 (for running content scripts)
-* libev (for the event loop; optional - mostly for macOS and Windows)
 * inih (for parsing the configuration file)
 * libcrypto from OpenSSL (for RSA decryption, and random number generation on some systems)
 * SQLite3 (for player save file persistence)
