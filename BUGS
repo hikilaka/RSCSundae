@@ -1,5 +1,3 @@
-- lua stack overflow when creating coroutines with massive number of
-  active scripts
 - can climb ladders through walls (weapons store key) when they are blocked
   authentic in some cases, e.g. tai bwo wannai... not all though.
 - rock at al kharid mine gives nothing interesting happens on prospect
