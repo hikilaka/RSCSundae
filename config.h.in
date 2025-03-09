@@ -12,14 +12,11 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define if you have kqueue */
+/* Define to 1 if you have the 'kqueue' function. */
 #undef HAVE_KQUEUE
 
-/* Define if you have libev */
-#undef HAVE_LIBEV
-
-/* Define if you have libtommath */
-#undef HAVE_LIBTOM
+/* Define to 1 if you have the 'poll' function. */
+#undef HAVE_POLL
 
 /* Define to 1 if you have the 'reallocarr' function. */
 #undef HAVE_REALLOCARR
