@@ -356,11 +356,8 @@ npc_process_movement(struct npc *npc)
 
 		if (npc->random_walk_timer == 0) {
 			if (npc->mob.following_player == -1) {
-				double r = ranval(&npc->mob.server->ran) /
-				    (double)UINT32_MAX;
-
-				/* XXX: needs verifying */
-				npc->random_walk_timer = 1 + (int)(r * 30);
+				npc->random_walk_timer =
+				    10.0 * server_random();
 				npc_random_walk(npc);
 			}
 		} else {
