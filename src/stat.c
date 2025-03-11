@@ -174,9 +174,9 @@ stat_advance(struct player *player, int stat,
 	if (stat == SKILL_ATTACK || stat == SKILL_DEFENSE ||
 	    stat == SKILL_STRENGTH) {
 		stat_advance(player, SKILL_HITS,
-			(player->experience[SKILL_ATTACK] +
+			4616 + ((player->experience[SKILL_ATTACK] +
 			player->experience[SKILL_DEFENSE] +
-			player->experience[SKILL_STRENGTH]) / 3,
+			player->experience[SKILL_STRENGTH]) / 3),
 			0);
 	}
 }
