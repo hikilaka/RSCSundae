@@ -6,7 +6,7 @@ function killnpc_zombie3(player, npc, x, y)
 	if ran < 1 then
 		addobject(player, "rune battle axe", 1, x, y)
 	elseif ran < 10 then
-		addobject(player, "black medium helmet", 1, x, y)
+		addobject(player, "bronze medium helmet", 1, x, y)
 	elseif ran < 20 then
 		addobject(player, "anchovie pizza", 1, x, y)
 	elseif ran < 30 then
