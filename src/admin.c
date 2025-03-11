@@ -39,6 +39,10 @@ player_parse_admin_command(struct player *p, char *str)
 void
 player_parse_command(struct player *p, const char *cmd)
 {
+	if (strcmp(cmd, "kd") == 0) {
+		player_show_kd(p);
+		return;
+	}
 	if (strcmp(cmd, "online") == 0) {
 		char mes[128];
 

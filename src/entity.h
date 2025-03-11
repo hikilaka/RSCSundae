@@ -373,6 +373,8 @@ struct player {
 	uint64_t player_targets_time[MAX_CACHED_ATTACKERS];
 	uint64_t player_aggressors_time[MAX_CACHED_ATTACKERS];
 	FILE *packet_log;
+	int player_kills;
+	int player_deaths;
 };
 
 /* mob.c */
@@ -453,6 +455,7 @@ void player_variable_set(struct player *, const char *, int32_t);
 void player_takeobject(struct player *, struct ground_item *);
 void player_attempt_logout(struct player *, bool);
 void player_send_welcome(struct player *);
+void player_show_kd(struct player *);
 
 /* admin.c */
 void player_parse_admin_command(struct player *, char *);

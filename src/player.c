@@ -570,6 +570,17 @@ player_die(struct player *p, struct player *victor)
 		(void)snprintf(msg, sizeof(msg),
 		    "You have defeated %s!", name);
 		player_send_message(victor, msg);
+
+		victor->player_kills++;
+		p->player_deaths++;
+
+		player_variable_set(victor, "kills",
+		    player_variable_get(victor, "kills") + 1);
+
+		player_variable_set(p, "deaths",
+		    player_variable_get(p, "deaths") + 1);
+
+		player_show_kd(victor);
 	}
 
 	player_teleport(p,
@@ -2573,4 +2584,21 @@ player_attempt_logout(struct player *p, bool requested)
 		p->play_time += (time(NULL) - p->login_date);
 	}
 	player_send_logout(p);
+}
+
+void
+player_show_kd(struct player *p)
+{
+	char msg[256];
+
+	(void)snprintf(msg, sizeof(msg),
+	    "@que@You have %d kills and %d deaths",
+	    player_variable_get(p, "kills"),
+	    player_variable_get(p, "deaths"));
+	player_send_message(p, msg);
+
+	(void)snprintf(msg, sizeof(msg),
+	    "@que@This session: %d kills and %d deaths",
+	    p->player_kills, p->player_deaths);
+	player_send_message(p, msg);
 }
