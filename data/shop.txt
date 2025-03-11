@@ -81,14 +81,7 @@
 =black robe,50,100;
 =blackskirt,50,100;
 =enchantsaph,80,100;
-=generalshop7,11,130,40,3,1000;
-=pot,3,100;
-=jug,2,100;
-=shears,2,100;
-=bucket,2,100;
-=tinderbox,2,100;
-=chisel,2,100;
-=hammer,5,100;
+=generalshop7,4,130,40,3,1000;
 =strength4,100,100;
 =lobster,500,100;
 =swordfish,100,500;
