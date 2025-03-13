@@ -1,3 +1,15 @@
+RSC Sundae 1.5.0
+----------------
+
+* npc: Faster, more scientific walk timer.
+* mining: Fix "nothing interesting happens" with "uninteresting" rocks.
+* loop: Add support for select-based event looa.
+* loop: Removed support for libev.a
+* protocol: Add libtommath-based RSA implementation as alternative to
+  OpenSSL.
+* script: Fix some Lua stack leaks.
+* win32: Add support for Windows XP.
+
 RSC Sundae 1.4.0
 ----------------
 
