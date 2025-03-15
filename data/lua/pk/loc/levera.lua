@@ -19,4 +19,7 @@ function oploc1_levera(player, x, y)
 		teleport(player, 320, 163)
 		showeffect(0, 320, 162)
 	end
+	if resp ~= 5 then
+		mes(player, "You can teleport back by finding another lever")
+	end
 end
