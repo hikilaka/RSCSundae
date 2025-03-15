@@ -99,5 +99,5 @@
 =rune battle axe,10,25000;
 =longbow,250,300;
 =arrows,5000,1;
-=crossbow,250,300;
+=normal crossbow,250,300;
 =crossbow bolts,5000,1;
