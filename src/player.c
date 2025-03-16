@@ -2400,6 +2400,7 @@ player_init_adventurer(struct player *p)
 
 	/* post-tutorial island starter pack */
 
+#if 0
 	item = server_find_item_config("bronze axe");
 	if (item != NULL) {
 		player_inv_give(p, item, 1);
@@ -2411,6 +2412,11 @@ player_init_adventurer(struct player *p)
 	}
 
 	item = server_find_item_config("cookedmeat");
+	if (item != NULL) {
+		player_inv_give(p, item, 1);
+	}
+#endif
+	item = server_find_item_config("iron 2-handed sword");
 	if (item != NULL) {
 		player_inv_give(p, item, 1);
 	}
