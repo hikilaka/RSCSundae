@@ -40,7 +40,7 @@
 =rune plate mail legs,10,10000;
 =rune skirt,10,10000;
 =rune kite shield,10,10000;
-=clotheshop,22,100,55,3,0;
+=clotheshop,23,100,55,3,0;
 =WhiteApron,30,100;
 =Leather Armour,12,100;
 =leather gloves,10,100;
@@ -54,6 +54,7 @@
 =bluecape,50,1;
 =greencape,50,1;
 =yellowcape,50,1;
+=orangecape,50,1;
 =purplecape,50,1;
 =robe top,50,1;
 =robe bottom,50,1;
