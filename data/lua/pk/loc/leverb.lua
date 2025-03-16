@@ -3,6 +3,9 @@ function oploc1_leverb(player, x, y)
 		mes(player, "A mysterious force blocks your teleport spell!")
 		mes(player, "You can't use teleport so soon after combat")
 	else
+		changeloc(x, y, "leverdown")
+		delay(2)
+		changeloc(x, y, "leverb")
 		teleport(player, 226, 447)
 		showeffect(0, 226, 446)
 	end
