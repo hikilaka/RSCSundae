@@ -13,12 +13,12 @@ function killnpc_chaos_dwarf(player, npc, x, y)
 		addobject(player, "anchovie pizza", 1, x, y)
 		addobject(player, "anchovie pizza", 1, x, y)
 	elseif ran < 40 then
-		addobject(player, "coins", 200, x, y)
+		addobject(player, "coins", 250, x, y)
 	elseif ran < 50 then
 		addobject(player, "muddy key", 1, x, y)
 	elseif ran < 65 then
-		addobject(player, "death-rune", 20, x, y)
+		addobject(player, "death-rune", 12, x, y)
 	else
-		addobject(player, "coins", 180, x, y)
+		addobject(player, "coins", 350, x, y)
 	end
 end

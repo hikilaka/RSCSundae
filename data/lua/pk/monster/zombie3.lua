@@ -16,8 +16,8 @@ function killnpc_zombie3(player, npc, x, y)
 	elseif ran < 45 then
 		addobject(player, "chaos-rune", 50, x, y)
 	elseif ran < 90 then
-		addobject(player, "death-rune", 7, x, y)
+		addobject(player, "death-rune", 4, x, y)
 	else
-		addobject(player, "coins", 100, x, y)
+		addobject(player, "coins", 150, x, y)
 	end
 end
