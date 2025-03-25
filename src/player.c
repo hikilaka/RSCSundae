@@ -2239,7 +2239,8 @@ player_has_reagents(struct player *p, struct spell_config *spell)
 bool
 player_can_cast(struct player *p, struct spell_config *spell)
 {
-	int magic_level;
+	double probability;
+	double roll;
 
 	assert(spell != NULL);
 
@@ -2256,28 +2257,29 @@ player_can_cast(struct player *p, struct spell_config *spell)
 
 		(void)snprintf(mes, sizeof(mes),
 		    "You need to wait %d seconds before you can cast another spell",
-		    (p->spell_timer + 1) / 2);
+		    ((1 + p->spell_timer) * TICK_RATE) / 1000);
 		player_send_message(p, mes);
 		return false;
 	}
 
 	/*
-	 * XXX unlikely we'll ever have enough data for this to be accurate
 	 * https://classic.runescape.wiki/w/User:Stormykins/Magic_research
 	 */
-	magic_level = p->mob.cur_stats[SKILL_MAGIC];
-	if ((magic_level - spell->level) < 9 && p->bonus_magic < 32) {
-		double r1 = server_random();
-		double r2 = server_random();
-		double roll_spell = spell->level * r1;
-		double roll_player = (magic_level + (p->bonus_magic * 1.5)) * r2;
-		if (roll_player < roll_spell) {
-			player_send_message(p,
-			    "The spell fails! You may try again in 20 seconds");
-			p->spell_timer = 40;
-			return false;
-		}
+	probability = 50.0 +
+	    (p->mob.cur_stats[SKILL_MAGIC] - spell->level) *
+	    5.0 + p->bonus_magic;
+	roll = server_random() * 100.0;
+	if (roll > probability) {
+		player_send_message(p,
+		    "The spell fails! You may try again in 20 seconds");
+		/* Logg/Tylerbeg/06-13-2018 20.09.59 high alch from 55 to 60 and I got a dmed lol.pcap */
+		p->spell_timer = 32;
+		return false;
 	}
+	/*
+	 * three ticks between successful casts here:
+	 * flying sno/flying sno (unprocessed only)/penuslarge1/07-11-2018 16.12.51 autocast magic on some guards for 2 hours.pcap
+	 */
 	p->spell_timer = 3;
 	return true;
 }
