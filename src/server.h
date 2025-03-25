@@ -9,16 +9,7 @@
 #include "protocol/rsa.h"
 #include "zone.h"
 
-/*
- * Real server varied a lot but tended to aim towards 600 - many
- * replays show 600ms between script actions (e.g. mes).
- *
- * Older operating systems often cannot keep an exact time due to
- * waking up timers at regular intervals.  Sundae attempts to do
- * its best to compensate for this.  Also, virtual machines often
- * have unstable system clocks.
- */
-#define TICK_RATE	(600)
+#define TICK_RATE	(640)
 
 #define MAXPLAYERS	(1000)
 #define MAXNPCS		(1000)
