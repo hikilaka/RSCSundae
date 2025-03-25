@@ -8,7 +8,7 @@ local function valaine_change_magic(player, npc, stat)
 	local resp = multi(player,
 		"Change it to Level 1 please",
 		"Change it to Level 17 please",
-		"Change it to Level 44 please",
+		"Change it to Level 45 please",
 		"Change it to Level 70 please",
 		"Leave it as-is please")
 
@@ -21,8 +21,8 @@ local function valaine_change_magic(player, npc, stat)
 		advancestat(player, STAT_MAGIC, 12460, 0)
 		valaine_done(player, npc)
 	elseif resp == 3 then
-		say(player, "Change it to Level 44 please")
-		advancestat(player, STAT_MAGIC, 222596, 0)
+		say(player, "Change it to Level 45 please")
+		advancestat(player, STAT_MAGIC, 246048, 0)
 		valaine_done(player, npc)
 	elseif resp == 4 then
 		say(player, "Change it to Level 70 please")
