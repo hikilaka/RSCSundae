@@ -87,6 +87,16 @@ AS_IF([test "x$with_select" = xno],
 		AC_CHECK_FUNCS([poll], [AM_CONDITIONAL(HAVE_POLL, true)], [])
 	])
 
+# gethostbyname: Solaris libnsl
+AC_SEARCH_LIBS([gethostbyname], [bind nsl network], [], [
+	AC_MSG_ERROR([unable to find the gethostbyname() function])
+])
+
+# bind: SVR4 libsocket
+AC_SEARCH_LIBS([bind], [socket network], [], [
+	AC_MSG_ERROR([unable to find the bind() function])
+])
+
 AC_DEFUN([GCC_W_NO_FORMAT_TRUNC],[
 	result=yes
 	AC_MSG_CHECKING([whether ${CC} accepts -Wno-format-truncation])
