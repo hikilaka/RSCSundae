@@ -17,6 +17,7 @@ CFLAGS="$CFLAGS -std=gnu99"
 AC_CHECK_FUNCS([arc4random_buf])
 AC_CHECK_FUNCS([clock_gettime])
 AC_CHECK_FUNCS([reallocarr])
+AC_CHECK_FUNCS([daemon])
 AC_CHECK_FUNCS([timerfd_create])
 AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_HEADERS([sys/timerfd.h])
