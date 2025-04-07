@@ -4555,6 +4555,7 @@ then :
 
 fi
 
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for library containing BZ2_bzDecompressInit" >&5
 printf %s "checking for library containing BZ2_bzDecompressInit... " >&6; }
 if test ${ac_cv_search_BZ2_bzDecompressInit+y}
@@ -4620,7 +4621,15 @@ if test "$ac_res" != no
 then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
 
+
+else case e in #(
+  e)
+		as_fn_error $? "unable to find the bzip2 library" "$LINENO" 5
+
+ ;;
+esac
 fi
+
 
 
 
