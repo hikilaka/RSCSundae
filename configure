@@ -4491,6 +4491,13 @@ then :
 
 fi
 
+ac_fn_c_check_func "$LINENO" "daemon" "ac_cv_func_daemon"
+if test "x$ac_cv_func_daemon" = xyes
+then :
+  printf "%s\n" "#define HAVE_DAEMON 1" >>confdefs.h
+
+fi
+
 ac_fn_c_check_func "$LINENO" "timerfd_create" "ac_cv_func_timerfd_create"
 if test "x$ac_cv_func_timerfd_create" = xyes
 then :
