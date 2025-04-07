@@ -22,7 +22,13 @@ AC_CHECK_FUNCS([timerfd_create])
 AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_HEADERS([sys/timerfd.h])
 AC_CHECK_HEADERS([bzlib.h])
-AC_SEARCH_LIBS([BZ2_bzDecompressInit], [bz2])
+
+AC_SEARCH_LIBS([BZ2_bzDecompressInit], [bz2], [
+	], [
+		AC_MSG_ERROR([unable to find the bzip2 library])
+	]
+)
+
 PKG_CHECK_MODULES([LUA], [lua-5.4], [
 	], [
 		PKG_CHECK_MODULES([LUA], [lua5.4])
