@@ -95,7 +95,7 @@ AS_IF([test "x$with_select" = xno],
 	])
 
 # gethostbyname: Solaris libnsl
-AC_SEARCH_LIBS([gethostbyname], [bind nsl network], [], [
+AC_SEARCH_LIBS([gethostbyname], [bind nsl network socket], [], [
 	AC_MSG_ERROR([unable to find the gethostbyname() function])
 ])
 
