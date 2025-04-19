@@ -1,3 +1,11 @@
+RSC Sundae 1.5.1
+----------------
+
+* configure: Initial support for System V/Solaris.
+* player: Revised spell failure formula.
+* server: Revised tick rate.
+* metalwork: Fixed hatchet message.
+
 RSC Sundae 1.5.0
 ----------------
 
