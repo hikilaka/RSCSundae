@@ -70,7 +70,7 @@ main(int argc, char **argv)
 			assert(basedir != NULL);
 			break;
 		case 'd':
-#ifndef _WIN32
+#ifdef HAVE_DAEMON
 			daemon(1, 0);
 #endif
 			break;

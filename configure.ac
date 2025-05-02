@@ -17,11 +17,18 @@ CFLAGS="$CFLAGS -std=gnu99"
 AC_CHECK_FUNCS([arc4random_buf])
 AC_CHECK_FUNCS([clock_gettime])
 AC_CHECK_FUNCS([reallocarr])
+AC_CHECK_FUNCS([daemon])
 AC_CHECK_FUNCS([timerfd_create])
 AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_HEADERS([sys/timerfd.h])
 AC_CHECK_HEADERS([bzlib.h])
-AC_SEARCH_LIBS([BZ2_bzDecompressInit], [bz2])
+
+AC_SEARCH_LIBS([BZ2_bzDecompressInit], [bz2], [
+	], [
+		AC_MSG_ERROR([unable to find the bzip2 library])
+	]
+)
+
 PKG_CHECK_MODULES([LUA], [lua-5.4], [
 	], [
 		PKG_CHECK_MODULES([LUA], [lua5.4])
@@ -86,6 +93,16 @@ AS_IF([test "x$with_select" = xno],
 	[
 		AC_CHECK_FUNCS([poll], [AM_CONDITIONAL(HAVE_POLL, true)], [])
 	])
+
+# gethostbyname: Solaris libnsl
+AC_SEARCH_LIBS([gethostbyname], [bind nsl network socket], [], [
+	AC_MSG_ERROR([unable to find the gethostbyname() function])
+])
+
+# bind: SVR4 libsocket
+AC_SEARCH_LIBS([bind], [socket network], [], [
+	AC_MSG_ERROR([unable to find the bind() function])
+])
 
 AC_DEFUN([GCC_W_NO_FORMAT_TRUNC],[
 	result=yes
