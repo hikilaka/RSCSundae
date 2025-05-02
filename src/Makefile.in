@@ -92,7 +92,8 @@ bin_PROGRAMS = rscsundae$(EXEEXT)
 @HAVE_KQUEUE_TRUE@am__append_3 = loop-kqueue.c
 @HAVE_KQUEUE_FALSE@@HAVE_POLL_TRUE@am__append_4 = loop-poll.c
 @HAVE_KQUEUE_FALSE@@HAVE_POLL_FALSE@am__append_5 = loop-select.c
-@HAVE_LIBCRYPTO_TRUE@am__append_6 = $(LIBCRYPTO_CFLAGS)
+@HAVE_LIBCRYPTO_TRUE@am__append_6 = -DHAVE_LIBCRYPTO \
+@HAVE_LIBCRYPTO_TRUE@	$(LIBCRYPTO_CFLAGS)
 @HAVE_LIBCRYPTO_TRUE@am__append_7 = $(LIBCRYPTO_LIBS)
 @HAVE_LIBTOM_TRUE@am__append_8 = protocol/rsa-libtom.c
 @HAVE_LIBTOM_TRUE@am__append_9 = -DWITH_RSA_LIBTOM \

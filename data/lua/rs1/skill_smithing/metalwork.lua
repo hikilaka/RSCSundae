@@ -360,6 +360,11 @@ local function make_item(player, item_type, bar_type, num_bars)
 	if item_type == "nails" then
 		give(player, forging_table[bar_type][item_type].name, 2)
 		mes(player, "@que@You hammer the metal and make some nails")
+	elseif item_type == "hatchet" then
+		give(player, forging_table[bar_type][item_type].name, 1)
+		-- oddly inconsistent messaging here
+		-- https://youtu.be/Gsv0Vend8HE?t=487
+		mes(player, "@que@You hammer the metal and make an axe")
 	else
 		give(player, forging_table[bar_type][item_type].name, 1)
 		mes(player, "@que@You hammer the metal and make a " .. item_type)

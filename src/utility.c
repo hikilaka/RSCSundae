@@ -20,7 +20,7 @@
 #include <wincrypt.h>
 #define mkdir_port(s) mkdir(s)
 #else /* not _WIN32 */
-#ifndef HAVE_ARC4RANDOM_BUF
+#if !defined(HAVE_ARC4RANDOM_BUF) && defined(HAVE_LIBCRYPTO)
 #include <openssl/rand.h>
 #endif
 #define mkdir_port(s) mkdir(s, S_IRWXU)
@@ -521,9 +521,20 @@ arc4random_buf(void *buf, size_t len)
 		fprintf(stderr, "fatal error with CryptGenRandom\n");
 		exit(EXIT_FAILURE);
 	}
-#else
+#elif defined(HAVE_LIBCRYPTO)
 	if (RAND_bytes(buf, len) != 1) {
 		fprintf(stderr, "fatal error with RAND_bytes\n");
+		exit(EXIT_FAILURE);
+	}
+#else
+	static int rand_fd = -1;
+
+	if (rand_fd == -1) {
+		rand_fd = open("/dev/urandom", O_RDONLY);
+	}
+	if (rand_fd == -1 || read(rand_fd, buf, len) < 0) {
+		fprintf(stderr,
+		    "fatal error with /dev/urandom, no alternative in use\n");
 		exit(EXIT_FAILURE);
 	}
 #endif
