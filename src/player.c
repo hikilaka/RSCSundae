@@ -819,6 +819,9 @@ player_wilderness_check(struct player *p, struct player *target)
 {
 	int depth = mob_wilderness_level(&target->mob);
 	if (depth <= 0) {
+		/* mes found in an old screenshot */
+		player_send_message(p,
+		    "You can't attack other players here. Move to the wilderness");
 		return false;
 	}
 
