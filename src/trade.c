@@ -6,6 +6,7 @@
 #include "server.h"
 #include "utility.h"
 
+static void player_trade_inv_full(struct player *, struct player *);
 static void player_trade_finalize(struct player *);
 static int get_trade_amount(struct player *, uint16_t);
 
@@ -207,10 +208,35 @@ player_trade_decline(struct player *p)
 }
 
 static void
+player_trade_inv_full(struct player *p, struct player *partner)
+{
+	/* Revisionism/06-11-2018 19.49.36 get rune Axe and a bunch of Rune pl8s from No Donations.pcap */
+	player_send_message(p,
+	    "You don't have enough inventory space to receive the "
+	    "objects");
+	player_close_ui(p);
+
+	/*
+	 * there are two ticks between confirming the trade in this
+	 * replay and getting this message, indicating it probably
+	 * comes from the other player's confirmation. in the
+	 * Revisionism replay they get the above message immediately.
+	 *
+	 * RSC 2001/replays master archive/NPC (monsters, combat)/Guard/making runite items for user beebhawk.pcap
+	 */
+	player_send_message(partner,
+	    "Other player doesn't have enough inventory space to "
+	    "receive the objects");
+	player_close_ui(partner);
+}
+
+static void
 player_trade_finalize(struct player *p)
 {
 	struct player *partner;
 	struct item_config *config;
+	int slot_difference = 0;
+	int partner_slot_difference = 0;
 
 	if (p->trading_player == -1 || !p->ui_trade_open) {
 		return;
@@ -220,6 +246,43 @@ player_trade_finalize(struct player *p)
 		player_close_ui(p);
 		return;
 	}
+
+	/* sum up the inventories to see if it fits */
+
+	for (int i = 0; i < p->offer_count; ++i) {
+		config = server_item_config_by_id(p->trade_offer[i].id);
+		if (config->weight > 0 || !player_inv_held_id(p,
+		    p->trade_offer[i].id, p->trade_offer[i].stack + 1)) {
+			slot_difference--;
+		}
+		if (config->weight > 0 || !player_inv_held_id(partner,
+		    p->trade_offer[i].id, 1)) {
+			partner_slot_difference++;
+		}
+	}
+	for (int i = 0; i < partner->offer_count; ++i) {
+		config = server_item_config_by_id(partner->trade_offer[i].id);
+		if (config->weight > 0 || !player_inv_held_id(p,
+		    partner->trade_offer[i].id, 1)) {
+			slot_difference++;
+		}
+		if (config->weight > 0 || !player_inv_held_id(partner,
+		    p->trade_offer[i].id, p->trade_offer[i].stack + 1)) {
+			partner_slot_difference--;
+		}
+	}
+
+	if (slot_difference > (MAX_INV_SIZE - p->inv_count)) {
+		player_trade_inv_full(p, partner);
+		return;
+	}
+
+	if (partner_slot_difference > (MAX_INV_SIZE - partner->inv_count)) {
+		player_trade_inv_full(partner, p);
+		return;
+	}
+
+	/* actually finalizing now */
 
 	for (int i = 0; i < p->offer_count; ++i) {
 		player_inv_remove_id(p,
