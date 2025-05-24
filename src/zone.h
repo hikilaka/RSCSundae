@@ -67,11 +67,12 @@ struct ground_item {
 	uint16_t id;
 	uint16_t x;
 	uint16_t y;
+	uint16_t duration;	/* ticks until deletion */
 	uint32_t stack;
 	uint8_t respawn;
 	uint8_t on_surface;
-	uint64_t creation_time;
-	uint64_t respawn_time;
+	uint64_t creation_time;	/* ticks of creation */
+	uint64_t respawn_time;	/* ticks of next respawn */
 	uint64_t unique_id;
 	int64_t owner;
 };

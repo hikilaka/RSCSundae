@@ -253,10 +253,10 @@ script_addobject(lua_State *L)
 
 	if (amount > 1 && config->weight > 0) {
 		for (int i = 0; i < amount; ++i) {
-			server_add_temp_item(p, x, y, config->id, 1);
+			server_add_temp_item(p, x, y, config->id, 1, 200);
 		}
 	} else {
-		server_add_temp_item(p, x, y, config->id, amount);
+		server_add_temp_item(p, x, y, config->id, amount, 200);
 	}
 	return 0;
 }
