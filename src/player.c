@@ -515,10 +515,15 @@ player_die(struct player *p, struct player *victor)
 		mob_combat_reset(&victor->mob);
 	}
 
+	/*
+	 * see here for information on loot disappearing times
+	 * https://gitlab.com/openrsc/openrsc/-/issues/1457
+	 * appears to be real that the bones disappear quicker.
+	 */
 	item = server_find_item_config("bones");
 	assert(item != NULL);
 	server_add_temp_item(victor != NULL ? victor : p,
-	    p->mob.x, p->mob.y, item->id, 1);
+	    p->mob.x, p->mob.y, item->id, 1, 200);
 
 	if (p->skulled) {
 		kept_max = 0;
@@ -552,11 +557,11 @@ player_die(struct player *p, struct player *victor)
 		if (item->weight > 0) {
 			server_add_temp_item(victor != NULL ?
 			    victor : p, p->mob.x, p->mob.y,
-			    item->id, 1);
+			    item->id, 1, 1000);
 		} else {
 			server_add_temp_item(victor != NULL ?
 			    victor : p, p->mob.x, p->mob.y,
-			    item->id, stack);
+			    item->id, stack, 1000);
 		}
 	}
 
@@ -638,7 +643,8 @@ player_consume_ammo(struct player *p,
 				item->stack++;
 			} else {
 				server_add_temp_item(p,
-				    target->x, target->y, ammo_config->id, 1);
+				    target->x, target->y, ammo_config->id, 1,
+				    200);
 			}
 		}
 		return true;
@@ -1911,7 +1917,7 @@ player_process_action(struct player *p)
 		item_config = server_item_config_by_id(id);
 		assert(item_config != NULL);
 		player_inv_remove_slot(p, p->action_slot);
-		server_add_temp_item(p, p->mob.x, p->mob.y, id, stack);
+		server_add_temp_item(p, p->mob.x, p->mob.y, id, stack, 200);
 		p->action = ACTION_NONE;
 		break;
 	case ACTION_INV_OP1:

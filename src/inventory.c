@@ -48,7 +48,7 @@ player_inv_give(struct player *p, struct item_config *item, uint32_t count)
 		}
 		if (p->inv_count >= MAX_INV_SIZE) {
 			server_add_temp_item(p,
-			    p->mob.x, p->mob.y, item->id, count);
+			    p->mob.x, p->mob.y, item->id, count, 200);
 			return;
 		}
 		p->inventory[p->inv_count].id = item->id;
@@ -65,7 +65,7 @@ player_inv_give(struct player *p, struct item_config *item, uint32_t count)
 			player_send_inv_slot(p, p->inv_count - 1);
 		} else {
 			server_add_temp_item(p,
-			    p->mob.x, p->mob.y, item->id, 1);
+			    p->mob.x, p->mob.y, item->id, 1, 200);
 		}
 	}
 }

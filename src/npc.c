@@ -43,7 +43,7 @@ npc_die(struct npc *npc, struct player *p)
 
 			if (item_config->weight == 0) {
 				server_add_temp_item(p, npc->mob.x, npc->mob.y,
-				    id, npc->config->drops[i].amount);
+				    id, npc->config->drops[i].amount, 200);
 			} else {
 				/*
 				 * possibly an authentic bug - the config file
@@ -57,7 +57,7 @@ npc_die(struct npc *npc, struct player *p)
 				 * train prayer since big bones didn't exist.
 				 */
 				server_add_temp_item(p, npc->mob.x, npc->mob.y,
-				    id, 1);
+				    id, 1, 200);
 			}
 		}
 

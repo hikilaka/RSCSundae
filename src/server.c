@@ -344,7 +344,8 @@ server_tick(void)
 
 	/* remove stale temporary ground items */
 	for (size_t i = 0; i < s.temp_item_count; ++i) {
-		if (s.tick_counter < (s.temp_items[i].creation_time + 200)) {
+		if (s.tick_counter < (s.temp_items[i].creation_time +
+		    s.temp_items[i].duration)) {
 			continue;
 		}
 		s.temp_item_count--;
@@ -1318,7 +1319,8 @@ server_add_npc(int id, int x, int y)
 }
 
 int
-server_add_temp_item(struct player *owner, int x, int y, int id, uint32_t stack)
+server_add_temp_item(struct player *owner,
+    int x, int y, int id, uint32_t stack, int duration)
 {
 	struct ground_item item = {0};
 	int plane = 0;
@@ -1330,6 +1332,7 @@ server_add_temp_item(struct player *owner, int x, int y, int id, uint32_t stack)
 	item.stack = stack;
 	item.owner = owner != NULL ? owner->name : INT64_MAX;
 	item.creation_time = s.tick_counter;
+	item.duration = duration;
 	item.unique_id = s.ground_item_counter++;
 
 	while (w_y > PLANE_LEVEL_INC) {
