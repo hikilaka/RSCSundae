@@ -528,6 +528,10 @@ mob_check_collision(struct mob *mob,
 	int ty = y;
 	int cy = cur_y;
 
+	if (mob->noclip) {
+		return false;
+	}
+
 	cy -= (plane * PLANE_LEVEL_INC);
 	ty -= (plane * PLANE_LEVEL_INC);
 

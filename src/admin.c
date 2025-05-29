@@ -302,6 +302,10 @@ player_parse_mod_command(struct player *p, const char *cmd)
 				player_save(target);
 			}
 		}
+	} else if (strcmp(cmd, "noclip") == 0) {
+		p->mob.noclip = !p->mob.noclip;
+		player_send_message(p,
+		    p->mob.noclip ? "Noclipping on" : "Noclipping off");
 	}
 }
 
