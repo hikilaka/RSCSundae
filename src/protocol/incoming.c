@@ -137,6 +137,10 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			opcode = (opcode - isaac_next(&p->isaac_in)) & 0xff;
 		}
 		opcode = opcodes_in_203[opcode];
+	} else if (p->protocol_rev > 135) {
+		if (opcode == OP_CLI_WALK_TILE2) {
+			opcode = OP_CLI_WALK_TILE;
+		}
 	}
 
 	p->last_packet = p->mob.server->tick_counter;
@@ -1318,7 +1322,7 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 {
 	char namestr[64];
 	char password[32];
-	uint16_t ver;
+	uint16_t ver, referid;
 	int64_t name;
 
 	if (!p->mob.server->protocol110) {
@@ -1336,6 +1340,13 @@ process_login(struct player *p, uint8_t *data, size_t offset, size_t len)
 
 	p->protocol_rev = ver;
 	printf("got version number: %d\n", ver);
+
+	if (p->protocol_rev > 136) {
+		if (buf_getu16(data, offset, len, &referid) == -1) {
+			return -1;
+		}
+		offset += 2;
+	}
 
 	if (buf_gets64(data, offset, len, &name) == -1) {
 		return -1;

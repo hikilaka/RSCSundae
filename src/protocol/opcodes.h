@@ -60,6 +60,7 @@
 #define OP_CLI_INV_DROP		(251)
 #define OP_CLI_ITEM_TAKE	(252)
 #define OP_CLI_WALK_TILE	(255)
+#define OP_CLI_WALK_TILE2	(194) /* mudclient136 and higher */
 
 #define OP_SRV_MESSAGE			(8)
 #define OP_SRV_LOGOUT			(9)
