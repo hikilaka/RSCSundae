@@ -116,8 +116,11 @@
 #define RESP_PERM_DISABLED	(12)
 #define RESP_FULL		(14)
 
+extern uint8_t opcodes_in_201[256];
+extern uint8_t opcodes_out_201[256];
 extern uint8_t opcodes_in_203[256];
 extern uint8_t opcodes_out_203[256];
 
+void init_opcodes_201(void);
 void init_opcodes_203(void);
 #endif

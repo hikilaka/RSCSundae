@@ -107,12 +107,21 @@ player_write_packet(struct player *p, void *b, size_t len)
 	size_t orig_off = off;
 	uint32_t opcode;
 
-	if (p->protocol_rev == 203) {
-		opcode = opcodes_out_203[payload[0]];
-		if (opcode == 0) {
-			return -1;
-		}
-		payload[0] = opcode;
+	switch (p->protocol_rev) {
+		case 201:
+			opcode = opcodes_out_201[payload[0]];
+			if (opcode == 0) {
+				return -1;
+			}
+			payload[0] = opcode;
+			break;
+		case 203:
+			opcode = opcodes_out_203[payload[0]];
+			if (opcode == 0) {
+				return -1;
+			}
+			payload[0] = opcode;
+			break;
 	}
 
 	if (p->isaac_ready) {

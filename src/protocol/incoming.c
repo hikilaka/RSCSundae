@@ -132,11 +132,18 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 		}
 	}
 
-	if (p->protocol_rev == 203) {
+	if (p->protocol_rev > 182) {
 		if (p->isaac_ready) {
 			opcode = (opcode - isaac_next(&p->isaac_in)) & 0xff;
 		}
-		opcode = opcodes_in_203[opcode];
+		switch (p->protocol_rev) {
+			case 201:
+				opcode = opcodes_in_201[opcode];
+				break;
+			case 203:
+				opcode = opcodes_in_203[opcode];
+				break;
+		}
 	} else if (p->protocol_rev > 135) {
 		if (opcode == OP_CLI_WALK_TILE2) {
 			opcode = OP_CLI_WALK_TILE;

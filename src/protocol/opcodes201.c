@@ -1,0 +1,109 @@
+#include "opcodes.h"
+
+uint8_t opcodes_in_201[256];
+uint8_t opcodes_out_201[256];
+
+void
+init_opcodes_201(void)
+{
+	opcodes_in_201[0] = OP_CLI_LOGIN;
+	opcodes_in_201[249] = OP_CLI_PUBLIC_CHAT; /* done */
+	opcodes_in_201[186] = OP_CLI_PING; /* done */
+	opcodes_in_201[3] = OP_CLI_LOGOUT; /* done */
+	opcodes_in_201[32] = OP_CLI_ADMIN_COMMAND; /* done */
+	opcodes_in_201[1] = OP_CLI_RECONNECT;
+	opcodes_in_201[232] = OP_CLI_ADD_FRIEND; /* done */
+	opcodes_in_201[52] = OP_CLI_REMOVE_FRIEND; /* done */
+	opcodes_in_201[59] = OP_CLI_PRIVATE_MESSAGE; /* done */
+	opcodes_in_201[254] = OP_CLI_ADD_IGNORE; /* done */
+	opcodes_in_201[244] = OP_CLI_REMOVE_IGNORE; /* done */
+	opcodes_in_201[247] = OP_CLI_PRIVACY_SETTINGS; /* done */
+	opcodes_in_201[102] = OP_CLI_TRADE_CONFIRM; /* done */
+	opcodes_in_201[190] = OP_CLI_BANK_DEPOSIT; /* done */
+	opcodes_in_201[131] = OP_CLI_BANK_WITHDRAW; /* done */
+	opcodes_in_201[78] = OP_CLI_BANK_CLOSE; /* done */
+	opcodes_in_201[162] = OP_CLI_PRAYER_OFF; /* done */
+	opcodes_in_201[202] = OP_CLI_PRAYER_ON; /* done */
+	opcodes_in_201[165] = OP_CLI_SAVE_SETTING; /* done */
+	opcodes_in_201[91] = OP_CLI_FOLLOW_PLAYER; /* done */
+	opcodes_in_201[226] = OP_CLI_WALK_ENTITY; /* done */
+	opcodes_in_201[177] = OP_CLI_SHOP_SELL; /* done */
+	opcodes_in_201[67] = OP_CLI_SHOP_BUY; /* done */
+	opcodes_in_201[92] = OP_CLI_SHOP_CLOSE; /* done */
+	opcodes_in_201[11] = OP_CLI_PLAYER_USEWITH; /* done */
+	opcodes_in_201[161] = OP_CLI_INV_CAST; /* done */
+	opcodes_in_201[237] = OP_CLI_LOC_CAST; /* done */
+	opcodes_in_201[76] = OP_CLI_BOUND_CAST; /* done */
+	opcodes_in_201[18] = OP_CLI_ITEM_CAST; /* done */
+	opcodes_in_201[10] = OP_CLI_NPC_CAST; /* done */
+	opcodes_in_201[56] = OP_CLI_PLAYER_CAST; /* done */
+	opcodes_in_201[44] = OP_CLI_SELF_CAST; /* done */
+	opcodes_in_201[124] = OP_CLI_ATTACK_PLAYER; /* done */
+	opcodes_in_201[121] = OP_CLI_BOUND_OP2; /* done */
+	opcodes_in_201[172] = OP_CLI_LOC_OP2; /* done */
+	opcodes_in_201[74] = OP_CLI_COMBAT_STYLE; /* done */
+	opcodes_in_201[94] = OP_CLI_TRADE_ACCEPT; /* done */
+	opcodes_in_201[27] = OP_CLI_TRADE_DECLINE; /* done */
+	opcodes_in_201[144] = OP_CLI_TRADE_UPDATE; /* done */
+	opcodes_in_201[62] = OP_CLI_TRADE_PLAYER; /* done */
+	opcodes_in_201[238] = OP_CLI_ACCEPT_DESIGN; /* done */
+	opcodes_in_201[189] = OP_CLI_ANSWER_MULTI; /* done */
+	opcodes_in_201[100] = OP_CLI_BOUND_OP1; /* done */
+	opcodes_in_201[71] = OP_CLI_BOUND_USEWITH; /* done */
+	opcodes_in_201[235] = OP_CLI_INV_USEWITH; /* done */
+	opcodes_in_201[127] = OP_CLI_LOC_USEWITH; /* done */
+	opcodes_in_201[38] = OP_CLI_LOC_OP1; /* done */
+	opcodes_in_201[143] = OP_CLI_NPC_USEWITH; /* done */
+	opcodes_in_201[118] = OP_CLI_NPC_ATTACK; /* done */
+	opcodes_in_201[159] = OP_CLI_NPC_TALK; /* done */
+	opcodes_in_201[24] = OP_CLI_INV_OP1; /* done */
+	opcodes_in_201[40] = OP_CLI_INV_UNWEAR; /* done */
+	opcodes_in_201[199] = OP_CLI_INV_WEAR; /* done */
+	opcodes_in_201[255] = OP_CLI_ITEM_USEWITH; /* done */
+	opcodes_in_201[123] = OP_CLI_INV_DROP; /* done */
+	opcodes_in_201[253] = OP_CLI_ITEM_TAKE; /* done */
+	opcodes_in_201[211] = OP_CLI_WALK_TILE; /* done */
+
+	opcodes_out_201[OP_SRV_MESSAGE] = 168; /* done */
+	opcodes_out_201[OP_SRV_LOGOUT] = 125; /* done */
+	opcodes_out_201[OP_SRV_LOGOUT_REJECT] = 67; /* done */
+	opcodes_out_201[OP_SRV_INIT_FRIENDS] = 54; /* done */
+	opcodes_out_201[OP_SRV_FRIEND_UPDATE] = 248; /* done */
+	opcodes_out_201[OP_SRV_INIT_IGNORE] = 154; /* done */
+	opcodes_out_201[OP_SRV_PRIVACY_SETTINGS] = 137; /* done */
+	opcodes_out_201[OP_SRV_PRIVATE_MESSAGE] = 230; /* done */
+	opcodes_out_201[OP_SRV_STAT] = 23; /* done */
+	opcodes_out_201[OP_SRV_INVENTORY_REMOVE] = 44; /* done */
+	opcodes_out_201[OP_SRV_INVENTORY_ITEM] = 210; /* done */
+	opcodes_out_201[OP_SRV_TRADE_CONFIRM] = 128; /* done */
+	opcodes_out_201[OP_SRV_STAT_XP] = 69; /* done */
+	opcodes_out_201[OP_SRV_BANK_CLOSE] = 130; /* done */
+	opcodes_out_201[OP_SRV_BANK_SHOW] = 188; /* done */
+	opcodes_out_201[OP_SRV_QUESTS] = 26; /* done */
+	opcodes_out_201[OP_SRV_PRAYERS] = 222; /* done */
+	opcodes_out_201[OP_SRV_CLIENT_SETTINGS] = 161; /* done */
+	opcodes_out_201[OP_SRV_TRADE_STATE_LOCAL] = 170; /* done */
+	opcodes_out_201[OP_SRV_SHOP_CLOSE] = 42; /* done */
+	opcodes_out_201[OP_SRV_SHOP_OPEN] = 24; /* done */
+	opcodes_out_201[OP_SRV_TRADE_STATE_REMOTE] = 185; /* done */
+	opcodes_out_201[OP_SRV_UPDATE_TRADE_OFFER] = 155; /* done */
+	opcodes_out_201[OP_SRV_CLOSE_TRADE] = 113; /* done */
+	opcodes_out_201[OP_SRV_SHOW_TRADE] = 108; /* done */
+	opcodes_out_201[OP_SRV_SHOW_DESIGN] = 7; /* done */
+	opcodes_out_201[OP_SRV_DEATH] = 109; /* done */
+	opcodes_out_201[OP_SRV_EQUIP_BONUSES] = 33; /* done */
+	opcodes_out_201[OP_SRV_INIT_STATS] = 16; /* done */
+	opcodes_out_201[OP_SRV_INIT_PLANE] = 249; /* done */
+	opcodes_out_201[OP_SRV_HIDE_MULTI] = 208; /* done */
+	opcodes_out_201[OP_SRV_SHOW_MULTI] = 117; /* done */
+	opcodes_out_201[OP_SRV_NPC_APPEARANCE] = 47; /* done */
+	opcodes_out_201[OP_SRV_NPC_MOVEMENT] = 41; /* done */
+	opcodes_out_201[OP_SRV_BOUNDARIES] = 29; /* done */
+	opcodes_out_201[OP_SRV_PLAYER_APPEARANCE] = 183; /* done */
+	opcodes_out_201[OP_SRV_INVENTORY] = 37; /* done */
+	opcodes_out_201[OP_SRV_LOCS] = 158; /* done */
+	opcodes_out_201[OP_SRV_GROUND_ITEMS] = 172; /* done */
+	opcodes_out_201[OP_SRV_PLAYER_MOVEMENT] = 141; /* done */
+	opcodes_out_201[OP_SRV_SHOW_EFFECT] = 253; /* done */
+	opcodes_out_201[OP_SRV_SHOW_MESBOX] = 49; /* done */
+}

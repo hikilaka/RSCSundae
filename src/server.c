@@ -109,6 +109,7 @@ main(int argc, char **argv)
 	/* init random number generator */
 	raninit(&s.ran, time(NULL));
 
+	init_opcodes_201();
 	init_opcodes_203();
 	stat_calculate_table();
 
