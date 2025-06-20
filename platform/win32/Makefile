@@ -56,6 +56,7 @@ OBJS+=		${SRCDIR}/persistence/database-sqlite.o
 OBJS+=		${SRCDIR}/persistence/pwhash-argon2.o
 OBJS+=		${SRCDIR}/player.o
 OBJS+=		${SRCDIR}/protocol/incoming.o
+OBJS+=		${SRCDIR}/protocol/opcodes201.o
 OBJS+=		${SRCDIR}/protocol/opcodes203.o
 OBJS+=		${SRCDIR}/protocol/outgoing.o
 OBJS+=		${SRCDIR}/protocol/rsa-libtom.o
