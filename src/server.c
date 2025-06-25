@@ -797,8 +797,10 @@ load_map_tile(struct jag_map *chunk,
 	if (chunk->tiles[ind].overlay) {
 		object_type = chunk->tiles[ind].overlay - 1;
 		floor_config = server_floor_config_by_id(object_type);
-		assert(floor_config != NULL);
-		if (floor_config->blocked) {
+		if (floor_config == NULL) {
+			printf("warning: unknown floor type: %d\n", object_type);
+		}
+		if (floor_config != NULL && floor_config->blocked) {
 			s.adjacency[plane][world_x][world_y] |= ADJ_BLOCK;
 		}
 	}
@@ -971,17 +973,21 @@ load_map_tile(struct jag_map *chunk,
 				object_dir = l->dir;
 			}
 		}
-		item_config = server_item_config_by_id(item.id);
 		item.respawn = true;
-		if (object_dir > 0 && item_config->weight == 0) {
-			item.stack = object_dir;
-		} else {
-			item.stack = 1;
-		}
 		item.owner = INT64_MAX;
 		item.creation_time = 0;
 		item.respawn_time = 0;
-		server_add_item_respawn(&item);
+		item_config = server_item_config_by_id(item.id);
+		if (item_config != NULL) {
+			if (object_dir > 0 && item_config->weight == 0) {
+				item.stack = object_dir;
+			} else {
+				item.stack = 1;
+			}
+			server_add_item_respawn(&item);
+		} else {
+			printf("warning: unknown item type %d\n", item.id);
+		}
 	} else if (object_type > JAG_MAP_DIAG_NPC) {
 		server_add_npc(object_type - JAG_MAP_DIAG_NPC - 1,
 		    global_x, global_y);
@@ -1281,7 +1287,11 @@ server_add_npc(int id, int x, int y)
 			return -1;
 		}
 		npc->config = server_npc_config_by_id(id);
-		assert(npc->config != NULL);
+		if (npc->config == NULL) {
+			printf("warning: unknown NPC type %d\n", id);
+			free(npc);
+			return -1;
+		}
 		npc->spawn_x = x;
 		npc->spawn_y = y;
 		npc->mob.id = (uint16_t)i;
