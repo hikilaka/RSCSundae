@@ -884,9 +884,40 @@ function multi(player, ...)
 	return active_script.answer
 end
 
+function ismember()
+	return true
+end
+
 -- https://github.com/2004Scape/Server/blob/main/data/src/scripts/drop%20tables/scripts/shared_droptables.rs2
 function randomherb(player, x, y)
-	addobject(player, "coins", 10, x, y)
+	if not ismember() then
+		addobject(player, "coins", 10, x, y)
+		return
+	end
+	local ran = randomvar(128)
+	if ran < 32 then
+		addobject(player, "unidentifed guam", 1, x, y)
+	elseif ran < 56 then
+		addobject(player, "unidentified marrentill", 1, x, y)
+	elseif ran < 74 then
+		addobject(player, "unidentified tarromin", 1, x, y)
+	elseif ran < 88 then
+		addobject(player, "unidentified harralander", 1, x, y)
+	elseif ran < 99 then
+		addobject(player, "unidentified ranarr", 1, x, y)
+	elseif ran < 107 then
+		addobject(player, "unidentified irit", 1, x, y)
+	elseif ran < 113 then
+		addobject(player, "unidentified avantoe", 1, x, y)
+	elseif ran < 118 then
+		addobject(player, "unidentified kwuarm", 1, x, y)
+	elseif ran < 122 then
+		addobject(player, "unidentified cadantine", 1, x, y)
+	elseif ran < 125 then
+		addobject(player, "unidentified lantadyme", 1, x, y)
+	elseif ran < 128 then
+		addobject(player, "unidentified dwarf weed", 1, x, y)
+	end
 end
 
 -- https://github.com/2004Scape/Server/blob/main/data/src/scripts/drop%20tables/scripts/shared_droptables.rs2
