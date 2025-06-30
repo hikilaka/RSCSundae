@@ -12,7 +12,7 @@
 #define TICK_RATE	(640)
 
 #define MAXPLAYERS	(1000)
-#define MAXNPCS		(1000)
+#define MAXNPCS		(2000)
 
 #define ADJ_BLOCK_VERT		(1 << 0)
 #define ADJ_BLOCK_HORIZ		(1 << 1)

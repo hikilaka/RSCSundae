@@ -16,7 +16,7 @@
 #endif
 
 #ifndef ZONE_MAX_X
-#define ZONE_MAX_X	(450)
+#define ZONE_MAX_X	(550)
 #endif
 
 #ifndef ZONE_TOTAL_X
