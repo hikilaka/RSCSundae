@@ -180,6 +180,7 @@ struct mob {
 	uint8_t moved;
 	uint8_t in_combat;
 	uint8_t damage;
+	uint8_t noclip;
 	uint32_t combat_rounds;
 	uint64_t damage_timer;
 	uint8_t combat_next_hit;

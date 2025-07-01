@@ -60,6 +60,7 @@
 #define OP_CLI_INV_DROP		(251)
 #define OP_CLI_ITEM_TAKE	(252)
 #define OP_CLI_WALK_TILE	(255)
+#define OP_CLI_WALK_TILE2	(194) /* mudclient136 and higher */
 
 #define OP_SRV_MESSAGE			(8)
 #define OP_SRV_LOGOUT			(9)
@@ -115,8 +116,11 @@
 #define RESP_PERM_DISABLED	(12)
 #define RESP_FULL		(14)
 
+extern uint8_t opcodes_in_201[256];
+extern uint8_t opcodes_out_201[256];
 extern uint8_t opcodes_in_203[256];
 extern uint8_t opcodes_out_203[256];
 
+void init_opcodes_201(void);
 void init_opcodes_203(void);
 #endif

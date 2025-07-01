@@ -37,6 +37,7 @@ rscsundae_SOURCES = \
 	ext/libjag/lib/jag_unpack_file.c \
 	ext/reallocarr.c \
 	protocol/incoming.c \
+	protocol/opcodes201.c \
 	protocol/opcodes203.c \
 	protocol/outgoing.c
 

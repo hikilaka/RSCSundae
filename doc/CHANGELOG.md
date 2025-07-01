@@ -1,3 +1,14 @@
+RSC Sundae 1.6.0
+----------------
+
+* protocol: Added support for mudclient201 and most 2002 clients.
+* script: Made dialogue timeout in 20 seconds.
+* karamjaship: Allow the Crandor option to eventually disappear.
+* trade: Check if the receiving player's inventory will be full.
+* server: Add variable deletion time for temporary objs (e.g.
+  items lost on deathi disappear slower).
+* admin: Add noclipping command (requires client support).
+
 RSC Sundae 1.5.1
 ----------------
 

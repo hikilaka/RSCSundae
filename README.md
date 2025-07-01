@@ -28,6 +28,9 @@ For clients, RSC Sundae supports:
 * 204 protocol (the final version of RSC before "Retro Revival" in 2009,
 used by RSC-C, and STS)
 
+Most other late 2001 to March 2003 clients should work as well,
+including all 2002 versions.
+
 RSC Sundae has a few special features as well:
 
 * Live script reloading, allowing game updates without a restart
