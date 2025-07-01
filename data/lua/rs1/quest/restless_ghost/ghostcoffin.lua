@@ -37,8 +37,8 @@ function useloc_openghostcoffin_ghostskull(player, x, y)
 	delay(3)
 	mes(player, "You have completed the restless ghost quest")
 	advancestat(player, STAT_PRAYER, 2000, 250)
-	giveqp(player, 1)
 	setvar(player, "ghost_stage", 5)
+	giveqp(player, 1)
 end
 
 register_useloc("openghostcoffin", "ghostskull", useloc_openghostcoffin_ghostskull)
