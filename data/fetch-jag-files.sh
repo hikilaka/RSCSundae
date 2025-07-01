@@ -73,5 +73,10 @@ if [ "${hash}" != "${target}" ]; then
 	exit 1
 fi
 
+printf "fetching supplementary maps33 recreation\n"
+get_url https://aposbot.com/recreation/maps33.zip
+unzip -o maps33.zip
+rm -f maps33.zip
+
 printf "done\n"
 exit 0
