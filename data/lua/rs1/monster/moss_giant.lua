@@ -50,7 +50,7 @@ function killnpc_moss_giant(player, npc, x, y)
 			elseif drop[1] == "randomjewel" then
 				randomjewel(player, x, y)
 				break
-			elseif drop[1] == "blood-rune" then
+			elseif drop[1] == "blood-rune" and not ismember() then
 				-- https://github.com/2004Scape/Server/blob/b724dfcd9fe3b1f2a1de254394ccb64ad9a5a59c/data/src/scripts/drop%20tables/scripts/moss_giant.rs2#L4
 				addobject(player, "coins", 2, x, y)
 				break
