@@ -3,6 +3,7 @@
 function opinv_beer(player)
 	thinkbubble(player, "beer")
 	remove(player, "beer", 1)
+	give(player, "beer glass", 1)
 	mes(player, "@que@You drink the beer")
 	mes(player, "@que@You feel slightly reinvigorated")
 	healstat(player, STAT_HITS, 1, 0)
