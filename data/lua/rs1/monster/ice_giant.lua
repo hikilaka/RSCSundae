@@ -47,7 +47,7 @@ function killnpc_ice_giant(player, npc, x, y)
 			if drop[1] == "randomjewel" then
 				randomjewel(player, x, y)
 				break
-			elseif drop[1] == "blood-rune" and not ismember() then
+			elseif drop[1] == "blood-rune" then
 				-- https://github.com/2004Scape/Server/blob/ea12070508e42e6fac1092a77f18fe74200bc051/data/src/scripts/drop%20tables/scripts/ice_giant.rs2#L43
 				addobject(player, "black kite shield", 1, x, y)
 				break

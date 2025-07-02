@@ -44,7 +44,7 @@ function killnpc_darkerwiz(player, npc, x, y)
 
 		if ran < weight then
 			-- https://github.com/2004Scape/Server/blob/3b31da7a1ee31d7fcd9f74f43eae7d5a1dbbd5a3/data/src/scripts/drop%20tables/scripts/dark_wizard.rs2#L47
-			if drop[1] == "blood-rune" and not ismember() then
+			if drop[1] == "blood-rune" then
 				addobject(player, "blackwizhat", 1, x, y)
 				break
 			else
