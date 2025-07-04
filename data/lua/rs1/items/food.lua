@@ -3,8 +3,8 @@
 -- ./rscplus-replays-master/Logg/Tylerbeg/06-17-2018 21.12.28 making prototype dart after finishing Tourist Trap, buy some rope, talking to Basu, eat tomato and cheese, thief 35 to 36
 
 function eat_simple(player, type, amount)
-	mes(player, string.format("@que@You eat the %s", type))
 	remove(player, type, 1)
+	mes(player, string.format("@que@You eat the %s", type))
 	if statdown(player, STAT_HITS) then
 		mes(player, "@que@It heals some health")
 		healstat(player, STAT_HITS, amount, 0)

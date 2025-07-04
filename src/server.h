@@ -78,6 +78,7 @@ struct server {
 	bool register_required;
 	bool client_registration;
 	bool untradables;
+	bool ranged_xp_per_hit;
 	bool protocol110;
 	bool protocol204;
 	int xp_multiplier;

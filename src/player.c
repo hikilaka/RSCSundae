@@ -745,8 +745,12 @@ player_shoot_pvm(struct player *p, struct projectile_config *projectile,
 
 	if (projectile->type != PROJECTILE_TYPE_MAGIC) {
 		roll = player_pvm_ranged_roll(p, target);
-		if (roll > 0) {
+		if (roll > 0 && p->mob.server->ranged_xp_per_hit) {
 			stat_advance(p, SKILL_RANGED, roll * 16, 0);
+		} else if (roll >= target->mob.cur_stats[SKILL_HITS] &&
+		    !p->mob.server->ranged_xp_per_hit) {
+			int xp = mob_combat_xp(&target->mob);
+			stat_advance(p, SKILL_RANGED, xp * 4, 0);
 		}
 	} else if (projectile->power > 0) {
 		roll = player_magic_damage_roll(projectile->power);

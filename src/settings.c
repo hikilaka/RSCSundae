@@ -61,6 +61,9 @@ server_parse_settings(void *user, const char *section,
 		} else if (strcmp(name, "untradables") == 0) {
 			s->untradables =
 			    (strtol(value, NULL, 10) != 0);
+		} else if (strcmp(name, "ranged_xp_per_hit") == 0) {
+			s->ranged_xp_per_hit =
+			    (strtol(value, NULL, 10) != 0);
 		} else {
 			return 0;
 		}

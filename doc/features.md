@@ -48,7 +48,7 @@ Engine
 - [x] Protocol: 110 (new player)
 - [ ] Protocol: 110 (password change)
 - [x] Protocol: RSA decryption
-- [ ] Protocol: 201
+- [x] Protocol: 201
 - [x] Protocol: 204
 - [x] Five minute movement timer (should be optional)
 - [x] Al Kharid general store should reject silk

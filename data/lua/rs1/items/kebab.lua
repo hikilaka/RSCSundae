@@ -1,8 +1,8 @@
 -- https://oldschool.runescape.wiki/w/Kebab
 
 function opinv_kebab(player)
-	mes(player, "@que@You eat the Kebab")
 	remove(player, "kebab", 1)
+	mes(player, "@que@You eat the Kebab")
 	if random(64) then
 		-- rscplus-replays-master/Logg/Tylerbeg/05-29-2018\ 12.57.24\ bragging\ about\ santa\ hat\ in\ draynor
 		if statdown(player, STAT_HITS) then

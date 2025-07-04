@@ -37,7 +37,7 @@ function spellself_varrock_teleport(player)
 		teleport(player, 120, 504)
 		advancestat(player, STAT_MAGIC, 280, 0)
 		remove_teleport_runes(player, "fire")
-		showeffect(0, 120, 503)
+		showeffect(0, 120, 504)
 	end
 end
 
@@ -47,7 +47,7 @@ function spellself_lumbridge_teleport(player)
 		teleport(player, 120, 648)
 		advancestat(player, STAT_MAGIC, 328, 0)
 		remove_teleport_runes(player, "earth")
-		showeffect(0, 120, 647)
+		showeffect(0, 120, 648)
 	end
 end
 
@@ -57,6 +57,6 @@ function spellself_falador_teleport(player)
 		teleport(player, 312, 552)
 		advancestat(player, STAT_MAGIC, 376, 0)
 		remove_teleport_runes(player, "water")
-		showeffect(0, 312, 551)
+		showeffect(0, 312, 552)
 	end
 end
