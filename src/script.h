@@ -38,5 +38,6 @@ void script_onusenpc(lua_State *, struct player *,
 bool script_onkillnpc(lua_State *, struct player *, struct npc *);
 bool script_ontakeobj(lua_State *, struct player *, struct ground_item *);
 bool script_onwearobj(lua_State *, struct player *, struct item_config *);
+bool script_onattackplayer(lua_State *, struct player *, struct player *);
 void script_onattacknpc(lua_State *, struct player *, struct npc *);
 #endif

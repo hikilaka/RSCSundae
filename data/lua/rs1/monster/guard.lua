@@ -29,6 +29,18 @@ local drops = {
 	{ "iron ore", 1, 1 },
 }
 
+register_attackplayer(function(player, target)
+	-- https://www.youtube.com/watch?v=HO5gA8XY72o
+	-- https://classic.runescape.wiki/w/File:Fight1_7.jpg
+	local npc = nearvisnpc(player, "guard")
+	if npc then
+		npcsay(npc, "Hey! No fighting!")
+		npcattack(npc, player)
+		return false
+	end
+	return true
+end)
+
 function killnpc_guard(player, npc, x, y)
 	local ran = randomvar(128)
 
