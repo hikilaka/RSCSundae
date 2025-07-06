@@ -2461,6 +2461,24 @@ script_onoploc2(lua_State *L, struct player *p, struct loc *loc)
 	player_send_message(p, "Nothing interesting happens");
 }
 
+bool
+script_onattackplayer(lua_State *L, struct player *p, struct player *target)
+{
+	bool result = true;
+
+	lua_getglobal(L, "script_engine_attackplayer");
+	if (!lua_isfunction(L, -1)) {
+		puts("script error: can't find essential function script_engine_attackplayer");
+		return true;
+	}
+	lua_pushnumber(L, p->mob.id);
+	lua_pushnumber(L, target->mob.id);
+	safe_call(L, 2, 1, p->mob.id);
+	result = lua_toboolean(L, -1);
+	lua_pop(L, -1);
+	return result;
+}
+
 void
 script_onattacknpc(lua_State *L, struct player *p, struct npc *npc)
 {

@@ -946,6 +946,17 @@ player_process_combat(struct player *p)
 				return;
 			}
 
+			/*
+			 * script is allowed to forbid PvP combat, e.g
+			 * when a guard is nearby
+			 * https://www.youtube.com/watch?v=HO5gA8XY72o
+			 */
+			if (!script_onattackplayer(p->mob.server->lua,
+			    p, target)) {
+				p->mob.target_player = -1;
+				return;
+			}
+
 			if (p->projectile != NULL) {
 				player_shoot_pvp(p, p->projectile, target);
 				return;

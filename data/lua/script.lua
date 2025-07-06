@@ -5,6 +5,7 @@ local killnpc_scripts = {}
 local takeobj_scripts = {}
 local wearobj_scripts = {}
 local attacknpc_scripts = {}
+local attackplayer_scripts = {}
 local opinv_scripts = {}
 local skillplayer_scripts = {}
 local skillnpc_scripts = {}
@@ -81,6 +82,10 @@ end
 
 function register_attacknpc(name, callback)
 	attacknpc_scripts[name] = callback;
+end
+
+function register_attackplayer(callback)
+	table.insert(attackplayer_scripts, callback)
 end
 
 function register_killnpc(name, callback)
@@ -305,6 +310,24 @@ function script_engine_answer(player, answer)
 		print("Script error inside coroutine: " .. err)
 		script_engine_cancel(player)
 	end
+end
+
+function script_engine_attackplayer(player, target)
+	local script = player_scripts[player]
+	if script then
+		return false
+	end
+	-- these basically cannot run as coroutines because we need
+	-- to immediately signal to the engine whether the attack
+	-- is possible
+	active_script = nil
+	for i=1,#attackplayer_scripts,1 do
+		local script = attackplayer_scripts[i]
+		if not script(player, target) then
+			return false
+		end
+	end
+	return true
 end
 
 function script_engine_attacknpc(player, npc, name, x, y)
@@ -869,7 +892,12 @@ end
 
 function npcsay(npc, mes)
 	_npcsay(npc, mes)
-	delay(3)
+
+	-- this is not always running in a coroutine, for
+	-- example on an attackplayer trigger
+	if active_script then
+		delay(3)
+	end
 end
 
 function multi(player, ...)

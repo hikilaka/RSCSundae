@@ -160,7 +160,7 @@ These should all be implemented in Lua script:
 - [x] Equipment level requirements
 - [x] Silverlight effect
 - [x] Punching dummies
-- [ ] Guards should retaliate to PvP combat
+- [x] Guards should retaliate to PvP combat
 
 ### Drop tables
 
