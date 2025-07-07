@@ -618,7 +618,7 @@ script_nearnpc(lua_State *L)
 		return 1;
 	}
 
-	npc = mob_find_nearby_npc(&p->mob, name);
+	npc = mob_find_nearby_npc(&p->mob, name, false);
 	if (npc != NULL) {
 		npc->talk_target = p->mob.id;
 		lua_pushinteger(L, npc->mob.id);
@@ -648,9 +648,8 @@ script_nearvisnpc(lua_State *L)
 		return 1;
 	}
 
-	npc = mob_find_nearby_npc(&p->mob, name);
-	if (npc != NULL &&
-	    mob_check_reachable(&p->mob, npc->mob.x, npc->mob.y, true)) {
+	npc = mob_find_nearby_npc(&p->mob, name, true);
+	if (npc != NULL) {
 		npc->talk_target = p->mob.id;
 		mob_face(&npc->mob, p->mob.x, p->mob.y);
 		mob_face(&p->mob, npc->mob.x, npc->mob.y);
