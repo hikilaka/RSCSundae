@@ -20,6 +20,7 @@
 #define ADJ_BLOCK_SIGHT_HORIZ	(1 << 3)
 #define ADJ_BLOCK		(1 << 4)
 #define ADJ_BLOCK_SIGHT		(1 << 5)
+#define ADJ_INDOORS		(1 << 6)
 
 struct server {
 	void *loop_ctx;
@@ -36,7 +37,6 @@ struct server {
 	int save_timer;
 	uint64_t last_tick;
 	uint8_t adjacency[ZONE_MAX_PLANE][ZONE_MAX_X][ZONE_MAX_Y];
-	uint8_t roofs[ZONE_MAX_X][ZONE_MAX_Y];
 	struct player *players[MAXPLAYERS];
 	struct npc *npcs[MAXNPCS];
 	struct ground_item *temp_items;

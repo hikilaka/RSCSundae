@@ -803,10 +803,10 @@ load_map_tile(struct jag_map *chunk,
 		if (floor_config != NULL && floor_config->blocked) {
 			s.adjacency[plane][world_x][world_y] |= ADJ_BLOCK;
 		}
-	}
-
-	if (chunk->tiles[ind].roof) {
-		s.roofs[world_x][world_y] = chunk->tiles[ind].roof;
+		if (floor_config != NULL &&
+		    floor_config->type == FLOOR_INDOOR_SURFACE) {
+			s.adjacency[plane][world_x][world_y] |= ADJ_INDOORS;
+		}
 	}
 
 	object_type = chunk->tiles[ind].bound_diag;

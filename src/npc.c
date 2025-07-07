@@ -9,6 +9,20 @@ static void npc_retreat(struct npc *);
 static int npc_combat_roll(struct npc *, struct player *);
 static void npc_hunt_target(struct npc *);
 static bool npc_init_combat(struct npc *, struct player *);
+static bool npc_tile_indoors(struct npc *, int, int);
+
+static bool
+npc_tile_indoors(struct npc *npc, int x, int y)
+{
+	int plane = 0;
+	int p_y = y;
+
+	while (p_y > PLANE_LEVEL_INC) {
+		p_y -= PLANE_LEVEL_INC;
+		plane++;
+	}
+	return (npc->mob.server->adjacency[plane][x][p_y] & ADJ_INDOORS) != 0;
+}
 
 void
 npc_die(struct npc *npc, struct player *p)
@@ -190,7 +204,6 @@ npc_random_walk(struct npc *npc)
 	}
 
 	attempts = 0;
-
 	do {
 		rx = server_random();
 		ry = server_random();
@@ -209,16 +222,12 @@ npc_random_walk(struct npc *npc)
 
 		valid = true;
 
-		if (npc->mob.y > PLANE_LEVEL_INC) {
-			break;
-		}
-
 		switch (npc->config->move_restrict) {
 		case MOVE_RESTRICT_OUTDOORS:
-			valid = (npc->mob.server->roofs[x][y] == 0);
+			valid = !npc_tile_indoors(npc, x, y);
 			break;
 		case MOVE_RESTRICT_INDOORS:
-			valid = (npc->mob.server->roofs[x][y] != 0);
+			valid = npc_tile_indoors(npc, x, y);
 			break;
 		}
 	} while (!valid && (attempts++) < 10);
@@ -376,15 +385,13 @@ npc_process_movement(struct npc *npc)
 
 		switch (npc->config->move_restrict) {
 		case MOVE_RESTRICT_OUTDOORS:
-			if (y < PLANE_LEVEL_INC &&
-			    npc->mob.server->roofs[x][y] != 0) {
+			if (npc_tile_indoors(npc, x, y)) {
 				npc->mob.walk_queue_len = 0;
 				npc->mob.walk_queue_pos = 0;
 			}
 			break;
 		case MOVE_RESTRICT_INDOORS:
-			if (y < PLANE_LEVEL_INC &&
-			    npc->mob.server->roofs[x][y] == 0) {
+			if (!npc_tile_indoors(npc, x, y)) {
 				npc->mob.walk_queue_len = 0;
 				npc->mob.walk_queue_pos = 0;
 			}
