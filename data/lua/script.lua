@@ -5,6 +5,7 @@ local killnpc_scripts = {}
 local takeobj_scripts = {}
 local wearobj_scripts = {}
 local attacknpc_scripts = {}
+local attackbynpc_scripts = {}
 local attackplayer_scripts = {}
 local opinv_scripts = {}
 local skillplayer_scripts = {}
@@ -82,6 +83,10 @@ end
 
 function register_attacknpc(name, callback)
 	attacknpc_scripts[name] = callback;
+end
+
+function register_attackbynpc(name, callback)
+	attackbynpc_scripts[name] = callback;
 end
 
 function register_attackplayer(callback)
@@ -337,6 +342,29 @@ function script_engine_attacknpc(player, npc, name, x, y)
 	end
 	name = string.lower(name)
 	script = attacknpc_scripts[name]
+	if script then
+		local ps = new_player_script(player)
+		ps.co = coroutine.create(function()
+			script(player, npc, x, y)
+			if not ps.paused then
+				player_scripts[player] = nil
+				playerunbusy(player)
+			end
+		end)
+		player_scripts[player] = ps
+		playerbusy(player)
+		return true
+	end
+	return false
+end
+
+function script_engine_attackbynpc(player, npc, name, x, y)
+	local script = player_scripts[player]
+	if script then
+		return true
+	end
+	name = string.lower(name)
+	script = attackbynpc_scripts[name]
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
@@ -985,6 +1013,9 @@ for k, v in pairs(_G) do
 		elseif string.match(k, "^attacknpc_.*") then
 			target = string.gsub(string.sub(k, 11), "_", " ")
 			register_attacknpc(target, v)
+		elseif string.match(k, "^attackbynpc_.*") then
+			target = string.gsub(string.sub(k, 13), "_", " ")
+			register_attackbynpc(target, v)
 		elseif string.match(k, "^takeobj_.*") then
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_takeobj(target, v)

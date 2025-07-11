@@ -447,7 +447,7 @@ npc_init_combat(struct npc *npc, struct player *target)
 		return false;
 	}
 
-	script_onattacknpc(npc->mob.server->lua, target, npc);
+	script_onattackbynpc(npc->mob.server->lua, target, npc);
 
 	player_send_message(target, "You are under attack!");
 

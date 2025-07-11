@@ -2479,6 +2479,29 @@ script_onattackplayer(lua_State *L, struct player *p, struct player *target)
 }
 
 void
+script_onattackbynpc(lua_State *L, struct player *p, struct npc *npc)
+{
+	bool result = false;
+
+	for (size_t i = 0; i < npc->config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_attackbynpc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_attackbynpc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushnumber(L, npc->mob.id);
+		lua_pushstring(L, npc->config->names[i]);
+		safe_call(L, 3, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+}
+
+void
 script_onattacknpc(lua_State *L, struct player *p, struct npc *npc)
 {
 	bool result = false;
