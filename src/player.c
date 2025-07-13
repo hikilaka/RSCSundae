@@ -497,6 +497,16 @@ player_die(struct player *p, struct player *victor)
 	int kept_max = 3;
 	int stack;
 
+	if (victor != NULL &&
+	    victor->mob.in_combat && p->mob.in_combat &&
+	    p->mob.target_player == victor->mob.id &&
+	    victor->mob.target_player == p->mob.id) {
+		/*
+		 * Zephyr (redacted chat) replays/zephyr 2006/06-19-2018 22.44.06 pvp - kill Alec RSC again at deep wildy dungeon.pcap
+		 */
+		player_award_combat_xp(victor, &p->mob);
+	}
+
 	mob_die(&p->mob);
 
 	for (int i = 0; i < MAX_CACHED_ATTACKERS; ++i) {
