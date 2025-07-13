@@ -975,6 +975,22 @@ function check_cookrange(player)
 	return false
 end
 
+function has_air_staff(player)
+	return worn(player, "staff of air")
+end
+
+function has_water_staff(player)
+	return worn(player, "staff of water")
+end
+
+function has_earth_staff(player)
+	return worn(player, "staff of earth")
+end
+
+function has_fire_staff(player)
+	return worn(player, "staff of fire")
+end
+
 dofile("./lua/content.lua")
 
 --

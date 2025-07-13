@@ -22,7 +22,7 @@ register_spellinv("stringsaph", "enchant lvl-1 amulet", function(player, item)
 	remove(player, "stringsaph", 1)
 	give(player, "enchantsaph", 1)
 	advancestat(player, STAT_MAGIC, 136, 0)
-	if not worn(player, "staff of water") then
+	if not has_water_staff(player) then
 		remove(player, "water-rune", 1)
 	end
 	remove(player, "cosmic-rune", 1)
@@ -34,7 +34,7 @@ register_spellinv("stringem", "enchant lvl-2 amulet", function(player, item)
 	remove(player, "stringem", 1)
 	give(player, "enchantem", 1)
 	advancestat(player, STAT_MAGIC, 296, 0)
-	if not worn(player, "staff of air") then
+	if not has_air_staff(player) then
 		remove(player, "air-rune", 3)
 	end
 	remove(player, "cosmic-rune", 1)
@@ -46,7 +46,7 @@ register_spellinv("stringrub", "enchant lvl-3 amulet", function(player, item)
 	remove(player, "stringrub", 1)
 	give(player, "enchantrub", 1)
 	advancestat(player, STAT_MAGIC, 472, 0)
-	if not worn(player, "staff of fire") then
+	if not has_fire_staff(player) then
 		remove(player, "fire-rune", 5)
 	end
 	remove(player, "cosmic-rune", 1)
@@ -58,7 +58,7 @@ register_spellinv("stringdia", "enchant lvl-4 amulet", function(player, item)
 	remove(player, "stringdia", 1)
 	give(player, "enchantdia", 1)
 	advancestat(player, STAT_MAGIC, 536, 0)
-	if not worn(player, "staff of earth") then
+	if not has_earth_staff(player) then
 		remove(player, "earth-rune", 10)
 	end
 	remove(player, "cosmic-rune", 1)
