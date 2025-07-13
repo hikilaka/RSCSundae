@@ -1003,7 +1003,7 @@ script_substat(lua_State *L)
 	} else {
 		int extra;
 
-		extra = (int)((p->mob.base_stats[stat] *
+		extra = (int)((p->mob.cur_stats[stat] *
 		    (double)percent) / 100.0);
 		player_damage(p, NULL, constant + extra);
 	}
