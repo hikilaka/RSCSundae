@@ -75,6 +75,8 @@ Implemented
 * `ifqp(value)` - implemented as `qp(player)` in Lua.
 * `playercoord()` - implemented as `playercoord(player)` in Lua, returns x, y values.
 * `addnpc(npc)` - implemented as `addnpc(npc, x, y)` in Lua, returns npc handle.
+* `delnpc()` - implemented as `delnpc(npc)` in Lua.
+* `changenpc(npc)` - implemented as `delnpc(npc)` in Lua.
 * `ifnearnpc(npc)` - implemented as `nearnpc(player, npc)` in Lua, returns npc handle or nil.
 * `ifnearvisnpc(npc)` - implemented as `nearvisnpc(player, npc)` in Lua, returns npc handle or nil.
 * `teleport()` - implemented as `teleport(player, x, y)` in Lua.
@@ -87,8 +89,6 @@ Not implemented
 * `changelevel(level)`
 * `delinv()`
 * `ifobjectvisible()`
-* `delnpc()`
-* `changenpc(npc)`
 * `npcretreat(time)`
 * `ifplayervisible()`
 

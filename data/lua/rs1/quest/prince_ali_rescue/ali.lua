@@ -26,7 +26,7 @@ function talknpc_prince_ali(player, npc)
 			npcsay(disguise_prince, "My father will pay you well for this")
 			say(player, "Go to Leela, she is close to here")
 
-			delnpc("princeindisguise")
+			delnpc(disguise_prince)
 
 			mes(player, "The prince has escaped, well done!")
 			mes(player, "You are now a friend of Al kharid")

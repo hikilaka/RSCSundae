@@ -1890,27 +1890,16 @@ script_changenpc(lua_State *L)
 static int
 script_delnpc(lua_State *L)
 {
-	const char *name = script_checkstring(L, 1);
-	struct npc *npc = NULL;
+	lua_Integer id;
+	struct npc *npc;
 
-	for (size_t i = 0; i < serv->max_npc_id; ++i) {
-		struct npc *n = serv->npcs[i];
+	id = script_checkinteger(L, 1);
 
-		if (n == NULL) {
-			continue;
-		}
-
-		for (size_t j = 0; j < n->config->name_count; ++j) {
-			if (strcasecmp(name, n->config->names[j]) == 0) {
-				npc = n;
-				break;
-			}
-		}
-	}
-
+	npc = id_to_npc(id);
 	if (npc == NULL) {
-		printf("script warning: couldn't find npc %s\n", name);
-		return 0;
+		printf("script warning: npc %lld is undefined\n", id);
+		lua_pushnil(L);
+		return 1;
 	}
 
 	struct player *players[128];
