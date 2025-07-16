@@ -1,17 +1,7 @@
 -- 1e_Luis/Effect testing/Not meeting reqs to wear quest stuff
 
 local function fail_req(player, stat, name, level)
-	-- maybe later versions (after attack/defense potions) had a
-	-- 'statbaseatleast' type function
-	local failed = false
-	if not statatleast(player, stat, level) then
-		failed = true
-	end
-	-- magical cabbage
-	if statup(player, stat) then
-		failed = true
-	end
-	if failed then
+	if not statbase(player, stat, level) then
 		mes(player,
 		    "@que@You are not a high enough level to use this item")
 		-- incorrect grammar here is kosher, see replay
