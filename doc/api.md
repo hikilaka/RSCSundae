@@ -90,7 +90,7 @@ and we infer names from later versions of RS.
 
 * `ifstatbase(stat,variable,value)` - implemented as `statbase(player, stat, value)`
    in Lua.  Like ifstatabove but ignores potion boosts.
-* `teleportnpc(y)` - implemented as `teleportnpc(npc, x, y)` in Lua.
+* `teleportnpc()` - implemented as `teleportnpc(npc, x, y)` in Lua.
    Existence assumed from behaviour observed in Witch's House quest.
 
 Not implemented
