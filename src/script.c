@@ -1901,8 +1901,7 @@ script_changenpc(lua_State *L)
 		return 1;
 	}
 
-	npc->config = server_find_npc_config(name);
-	npc->refresh = true;
+	npc_change(npc, server_find_npc_config(name));
 
 	lua_pushinteger(L, npc->mob.id);
 	return 1;
@@ -1944,7 +1943,6 @@ script_delnpc(lua_State *L)
 static int
 script_teleportnpc(lua_State *L)
 {
-	struct zone *zone_old, *zone_new;
 	lua_Integer id, x, y;
 	struct npc *npc;
 
@@ -1959,23 +1957,7 @@ script_teleportnpc(lua_State *L)
 		return 1;
 	}
 
-	zone_old = server_find_zone(npc->mob.x, npc->mob.y);
-
-	npc->refresh = true;
-	npc->mob.moved = false;
-	npc->mob.x = x;
-	npc->mob.y = y;
-
-	zone_new = server_find_zone(npc->mob.x, npc->mob.y);
-	if (zone_new != zone_old) {
-		if (zone_old != NULL) {
-			zone_remove_npc(zone_old, npc->mob.id);
-		}
-		if (zone_new != NULL) {
-			zone_add_npc(zone_new, npc->mob.id);
-		}
-	}
-
+	npc_teleport(npc, x, y);
 	return 0;
 }
 

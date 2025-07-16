@@ -514,6 +514,8 @@ int player_send_mesbox(struct player *, const char *);
 
 /* npc.c */
 void npc_damage(struct npc *, struct player * , int);
+void npc_change(struct npc *, struct npc_config *);
+void npc_teleport(struct npc *, int, int);
 void npc_die(struct npc *, struct player *);
 void npc_process_movement(struct npc *);
 void npc_process_combat(struct npc *);

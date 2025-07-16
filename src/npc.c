@@ -136,6 +136,51 @@ npc_damage(struct npc *npc, struct player *p , int roll)
 	npc->mob.damage_timer = p->mob.server->tick_counter;
 }
 
+void
+npc_change(struct npc *npc, struct npc_config *config)
+{
+	assert(npc != NULL);
+	assert(config != NULL);
+
+	npc->config = config;
+	npc->refresh = true;
+
+	/* behaviour assumed from witch's house shapeshifter */
+
+	npc->mob.cur_stats[SKILL_ATTACK] = npc->config->attack;
+	npc->mob.cur_stats[SKILL_DEFENSE] = npc->config->defense;
+	npc->mob.cur_stats[SKILL_STRENGTH] = npc->config->strength;
+	npc->mob.cur_stats[SKILL_HITS] = npc->config->hits;
+
+	for (int i = 0; i < MAX_SKILL_ID; ++i) {
+		npc->mob.cur_stats[i] = npc->mob.base_stats[i];
+	}
+}
+
+void
+npc_teleport(struct npc *npc, int x, int y)
+{
+	struct zone *zone_old;
+	struct zone *zone_new;
+
+	zone_old = server_find_zone(npc->mob.x, npc->mob.y);
+
+	npc->refresh = true;
+	npc->mob.moved = false;
+	npc->mob.x = x;
+	npc->mob.y = y;
+
+	zone_new = server_find_zone(npc->mob.x, npc->mob.y);
+	if (zone_new != zone_old) {
+		if (zone_old != NULL) {
+			zone_remove_npc(zone_old, npc->mob.id);
+		}
+		if (zone_new != NULL) {
+			zone_add_npc(zone_new, npc->mob.id);
+		}
+	}
+}
+
 static void
 npc_retreat(struct npc *npc)
 {
