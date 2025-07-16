@@ -56,6 +56,7 @@ static int script_changeloc(lua_State *);
 static int script_restoreloc(lua_State *);
 static int script_changenpc(lua_State *);
 static int script_delnpc(lua_State *);
+static int script_teleportnpc(lua_State *);
 static int script_shootplayer(lua_State *);
 static int script_shootnpc(lua_State *);
 static int script_multi(lua_State *);
@@ -1901,14 +1902,7 @@ script_changenpc(lua_State *L)
 	}
 
 	npc->config = server_find_npc_config(name);
-
-	struct player *players[128];
-	size_t n;
-
-	n = mob_get_nearby_players(&npc->mob, players, 128);
-	for (size_t i = 0; i < n; ++i) {
-		players[i]->known_npc_count = 0;
-	}
+	npc->refresh = true;
 
 	lua_pushinteger(L, npc->mob.id);
 	return 1;
@@ -1941,7 +1935,45 @@ script_delnpc(lua_State *L)
 	free(npc);
 
 	for (size_t i = 0; i < n; ++i) {
-		players[i]->known_npc_count = 0;
+		player_remove_known_npc(players[i], id);
+	}
+
+	return 0;
+}
+
+static int
+script_teleportnpc(lua_State *L)
+{
+	struct zone *zone_old, *zone_new;
+	lua_Integer id, x, y;
+	struct npc *npc;
+
+	id = script_checkinteger(L, 1);
+	x = script_checkinteger(L, 2);
+	y = script_checkinteger(L, 3);
+
+	npc = id_to_npc(id);
+	if (npc == NULL) {
+		printf("script warning: npc %lld is undefined\n", id);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	zone_old = server_find_zone(npc->mob.x, npc->mob.y);
+
+	npc->refresh = true;
+	npc->mob.moved = false;
+	npc->mob.x = x;
+	npc->mob.y = y;
+
+	zone_new = server_find_zone(npc->mob.x, npc->mob.y);
+	if (zone_new != zone_old) {
+		if (zone_old != NULL) {
+			zone_remove_npc(zone_old, npc->mob.id);
+		}
+		if (zone_new != NULL) {
+			zone_add_npc(zone_new, npc->mob.id);
+		}
 	}
 
 	return 0;
@@ -2862,6 +2894,9 @@ script_init(struct server *s)
 
 	lua_pushcfunction(L, script_delnpc);
 	lua_setglobal(L, "delnpc");
+
+	lua_pushcfunction(L, script_teleportnpc);
+	lua_setglobal(L, "teleportnpc");
 
 	lua_pushcfunction(L, script_displaybalance);
 	lua_setglobal(L, "displaybalance");
