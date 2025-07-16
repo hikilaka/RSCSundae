@@ -36,6 +36,7 @@ static int script_npchealstat(lua_State *);
 static int script_npcaddstat(lua_State *);
 static int script_npcsubstat(lua_State *);
 static int script_statatleast(lua_State *);
+static int script_statbase(lua_State *);
 static int script_statup(lua_State *);
 static int script_statdown(lua_State *);
 static int script_statrandom(lua_State *);
@@ -811,6 +812,32 @@ script_statatleast(lua_State *L)
 		return 0;
 	}
 	b = p->mob.cur_stats[stat] >= low;
+	lua_pushboolean(L, b);
+	return 1;
+}
+
+static int
+script_statbase(lua_State *L)
+{
+	lua_Integer player_id, stat, low;
+	struct player *p;
+	int b;
+
+	player_id = script_checkinteger(L, 1);
+	stat = script_checkinteger(L, 2);
+	low = script_checkinteger(L, 3);
+	p = id_to_player(player_id);
+	if (p == NULL) {
+		printf("script warning: player %lld is undefined\n", player_id);
+		script_cancel(L, player_id);
+		return 0;
+	}
+	if (stat < 0 || stat >= MAX_SKILL_ID) {
+		printf("script warning: invalid stat id %lld\n", stat);
+		script_cancel(L, player_id);
+		return 0;
+	}
+	b = p->mob.base_stats[stat] >= low;
 	lua_pushboolean(L, b);
 	return 1;
 }
@@ -2754,6 +2781,9 @@ script_init(struct server *s)
 
 	lua_pushcfunction(L, script_statatleast);
 	lua_setglobal(L, "statatleast");
+
+	lua_pushcfunction(L, script_statbase);
+	lua_setglobal(L, "statbase");
 
 	lua_pushcfunction(L, script_statup);
 	lua_setglobal(L, "statup");

@@ -82,6 +82,15 @@ Implemented
 * `teleport()` - implemented as `teleport(player, x, y)` in Lua.
 * `showeffect(type)` - implemented as `showeffect(type, x, y)` in Lua.
 
+Implemented but undocumented
+----------------------------
+
+These ones we assume exist due to the behaviour of the game engine,
+and we infer names from later versions of RS.
+
+* `ifstatbase(stat,variable,value)` - implemented as `statbase(player, stat, value)`
+   in Lua.  Like ifstatabove but ignores potion boosts.
+
 Not implemented
 ---------------
 
