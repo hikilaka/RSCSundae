@@ -1581,20 +1581,6 @@ player_remove_known_loc(struct player *p, size_t index)
 	}
 }
 
-void
-player_remove_known_npc(struct player *p, int16_t id)
-{
-	for (size_t i = 0; i < p->known_npc_count; ++i) {
-		if (p->known_npcs[i] == id) {
-			p->known_npc_count--;
-			for (size_t j = i; j < p->known_npc_count; ++j) {
-				p->known_npcs[j] = p->known_npcs[j + 1];
-			}
-			break;
-		}
-	}
-}
-
 bool
 player_has_known_bound(struct player *p, int x, int y, int dir)
 {

@@ -1922,20 +1922,11 @@ script_delnpc(lua_State *L)
 		return 1;
 	}
 
-	struct player *players[128];
-	size_t n;
-
-	n = mob_get_nearby_players(&npc->mob, players, 128);
-
 	struct zone *zone = server_find_zone(npc->mob.x, npc->mob.y);
 	zone_remove_npc(zone, npc->mob.id);
 
 	serv->npcs[npc->mob.id] = NULL;
 	free(npc);
-
-	for (size_t i = 0; i < n; ++i) {
-		player_remove_known_npc(players[i], id);
-	}
 
 	return 0;
 }
