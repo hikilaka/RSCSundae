@@ -163,7 +163,11 @@ stat_remove(struct mob *mob, int stat, int constant, int percent)
 
 	assert(stat < MAX_SKILL_ID);
 
-	p = (int)((mob->base_stats[stat] * (double)percent) / 100.0);
+	/*
+	 * precent reduction is based on current level, see
+	 * https://classic.runescape.wiki/w/User:Stormykins/Dragonfire
+	 */
+	p = (int)((mob->cur_stats[stat] * (double)percent) / 100.0);
 	new = mob->cur_stats[stat] - constant - p;
 	mob->cur_stats[stat] = (uint16_t)(new < 0 ? 0 : new);
 }

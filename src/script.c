@@ -36,6 +36,7 @@ static int script_npchealstat(lua_State *);
 static int script_npcaddstat(lua_State *);
 static int script_npcsubstat(lua_State *);
 static int script_statatleast(lua_State *);
+static int script_statbase(lua_State *);
 static int script_statup(lua_State *);
 static int script_statdown(lua_State *);
 static int script_statrandom(lua_State *);
@@ -55,6 +56,7 @@ static int script_changeloc(lua_State *);
 static int script_restoreloc(lua_State *);
 static int script_changenpc(lua_State *);
 static int script_delnpc(lua_State *);
+static int script_teleportnpc(lua_State *);
 static int script_shootplayer(lua_State *);
 static int script_shootnpc(lua_State *);
 static int script_multi(lua_State *);
@@ -618,7 +620,7 @@ script_nearnpc(lua_State *L)
 		return 1;
 	}
 
-	npc = mob_find_nearby_npc(&p->mob, name);
+	npc = mob_find_nearby_npc(&p->mob, name, false);
 	if (npc != NULL) {
 		npc->talk_target = p->mob.id;
 		lua_pushinteger(L, npc->mob.id);
@@ -648,9 +650,8 @@ script_nearvisnpc(lua_State *L)
 		return 1;
 	}
 
-	npc = mob_find_nearby_npc(&p->mob, name);
-	if (npc != NULL &&
-	    mob_check_reachable(&p->mob, npc->mob.x, npc->mob.y, true)) {
+	npc = mob_find_nearby_npc(&p->mob, name, true);
+	if (npc != NULL) {
 		npc->talk_target = p->mob.id;
 		mob_face(&npc->mob, p->mob.x, p->mob.y);
 		mob_face(&p->mob, npc->mob.x, npc->mob.y);
@@ -812,6 +813,32 @@ script_statatleast(lua_State *L)
 		return 0;
 	}
 	b = p->mob.cur_stats[stat] >= low;
+	lua_pushboolean(L, b);
+	return 1;
+}
+
+static int
+script_statbase(lua_State *L)
+{
+	lua_Integer player_id, stat, low;
+	struct player *p;
+	int b;
+
+	player_id = script_checkinteger(L, 1);
+	stat = script_checkinteger(L, 2);
+	low = script_checkinteger(L, 3);
+	p = id_to_player(player_id);
+	if (p == NULL) {
+		printf("script warning: player %lld is undefined\n", player_id);
+		script_cancel(L, player_id);
+		return 0;
+	}
+	if (stat < 0 || stat >= MAX_SKILL_ID) {
+		printf("script warning: invalid stat id %lld\n", stat);
+		script_cancel(L, player_id);
+		return 0;
+	}
+	b = p->mob.base_stats[stat] >= low;
 	lua_pushboolean(L, b);
 	return 1;
 }
@@ -1004,7 +1031,7 @@ script_substat(lua_State *L)
 	} else {
 		int extra;
 
-		extra = (int)((p->mob.base_stats[stat] *
+		extra = (int)((p->mob.cur_stats[stat] *
 		    (double)percent) / 100.0);
 		player_damage(p, NULL, constant + extra);
 	}
@@ -1879,15 +1906,7 @@ script_changenpc(lua_State *L)
 		return 1;
 	}
 
-	npc->config = server_find_npc_config(name);
-
-	struct player *players[128];
-	size_t n;
-
-	n = mob_get_nearby_players(&npc->mob, players, 128);
-	for (size_t i = 0; i < n; ++i) {
-		players[i]->known_npc_count = 0;
-	}
+	npc_change(npc, server_find_npc_config(name));
 
 	lua_pushinteger(L, npc->mob.id);
 	return 1;
@@ -1896,33 +1915,17 @@ script_changenpc(lua_State *L)
 static int
 script_delnpc(lua_State *L)
 {
-	const char *name = script_checkstring(L, 1);
-	struct npc *npc = NULL;
+	lua_Integer id;
+	struct npc *npc;
 
-	for (size_t i = 0; i < serv->max_npc_id; ++i) {
-		struct npc *n = serv->npcs[i];
+	id = script_checkinteger(L, 1);
 
-		if (n == NULL) {
-			continue;
-		}
-
-		for (size_t j = 0; j < n->config->name_count; ++j) {
-			if (strcasecmp(name, n->config->names[j]) == 0) {
-				npc = n;
-				break;
-			}
-		}
-	}
-
+	npc = id_to_npc(id);
 	if (npc == NULL) {
-		printf("script warning: couldn't find npc %s\n", name);
-		return 0;
+		printf("script warning: npc %lld is undefined\n", id);
+		lua_pushnil(L);
+		return 1;
 	}
-
-	struct player *players[128];
-	size_t n;
-
-	n = mob_get_nearby_players(&npc->mob, players, 128);
 
 	struct zone *zone = server_find_zone(npc->mob.x, npc->mob.y);
 	zone_remove_npc(zone, npc->mob.id);
@@ -1930,10 +1933,27 @@ script_delnpc(lua_State *L)
 	serv->npcs[npc->mob.id] = NULL;
 	free(npc);
 
-	for (size_t i = 0; i < n; ++i) {
-		players[i]->known_npc_count = 0;
+	return 0;
+}
+
+static int
+script_teleportnpc(lua_State *L)
+{
+	lua_Integer id, x, y;
+	struct npc *npc;
+
+	id = script_checkinteger(L, 1);
+	x = script_checkinteger(L, 2);
+	y = script_checkinteger(L, 3);
+
+	npc = id_to_npc(id);
+	if (npc == NULL) {
+		printf("script warning: npc %lld is undefined\n", id);
+		lua_pushnil(L);
+		return 1;
 	}
 
+	npc_teleport(npc, x, y);
 	return 0;
 }
 
@@ -2485,6 +2505,29 @@ script_onattackplayer(lua_State *L, struct player *p, struct player *target)
 }
 
 void
+script_onattackbynpc(lua_State *L, struct player *p, struct npc *npc)
+{
+	bool result = false;
+
+	for (size_t i = 0; i < npc->config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_attackbynpc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_attackbynpc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushnumber(L, npc->mob.id);
+		lua_pushstring(L, npc->config->names[i]);
+		safe_call(L, 3, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+}
+
+void
 script_onattacknpc(lua_State *L, struct player *p, struct npc *npc)
 {
 	bool result = false;
@@ -2749,6 +2792,9 @@ script_init(struct server *s)
 	lua_pushcfunction(L, script_statatleast);
 	lua_setglobal(L, "statatleast");
 
+	lua_pushcfunction(L, script_statbase);
+	lua_setglobal(L, "statbase");
+
 	lua_pushcfunction(L, script_statup);
 	lua_setglobal(L, "statup");
 
@@ -2826,6 +2872,9 @@ script_init(struct server *s)
 
 	lua_pushcfunction(L, script_delnpc);
 	lua_setglobal(L, "delnpc");
+
+	lua_pushcfunction(L, script_teleportnpc);
+	lua_setglobal(L, "teleportnpc");
 
 	lua_pushcfunction(L, script_displaybalance);
 	lua_setglobal(L, "displaybalance");

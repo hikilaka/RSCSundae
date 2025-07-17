@@ -19,7 +19,7 @@ end
 
 -- rsc-preservation.xyz/Quests/The restless ghost - Part 2
 
-function useloc_openghostcoffin_ghostskull(player, x, y)
+register_useloc("openghostcoffin", "ghostskull", function(player, x, y)
 	if getvar(player, "ghost_stage") ~= 4 then
 		mes(player, "Nothing interesting happens")
 		return
@@ -27,8 +27,10 @@ function useloc_openghostcoffin_ghostskull(player, x, y)
 	mes(player, "You put the skull in the coffin")
 	delay(3)
 	remove(player, "ghostskull", 1)
-	--TODO: implement delnpc
-	--delnpc("ghostx")
+	local npc = nearnpc(player, "ghostx")
+	if npc then
+		delnpc(npc)
+	end
 	mes(player, "The ghost has vanished")
 	delay(3)
 	mes(player, "You think you hear a faint voice in the air")
@@ -39,6 +41,4 @@ function useloc_openghostcoffin_ghostskull(player, x, y)
 	advancestat(player, STAT_PRAYER, 2000, 250)
 	setvar(player, "ghost_stage", 5)
 	giveqp(player, 1)
-end
-
-register_useloc("openghostcoffin", "ghostskull", useloc_openghostcoffin_ghostskull)
+end)

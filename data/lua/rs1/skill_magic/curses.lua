@@ -3,20 +3,20 @@
 -- https://classic.runescape.wiki/w/Curse
 
 local function remove_confuse_runes(player)
-	if not worn(player, "staff of water") then
+	if not has_water_staff(player) then
 		remove(player, "water-rune", 3)
 	end
-	if not worn(player, "staff of earth") then
+	if not has_earth_staff(player) then
 		remove(player, "earth-rune", 2)
 	end
 	remove(player, "body-rune", 1)
 end
 
 local function remove_curse_runes(player)
-	if not worn(player, "staff of water") then
+	if not has_water_staff(player) then
 		remove(player, "water-rune", 2)
 	end
-	if not worn(player, "staff of earth") then
+	if not has_earth_staff(player) then
 		remove(player, "earth-rune", 3)
 	end
 	remove(player, "body-rune", 1)

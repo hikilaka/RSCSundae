@@ -2,7 +2,7 @@
 
 local function finalize_superheat(player)
 	advancestat(player, STAT_MAGIC, 424, 0)
-	if not worn(player, "staff of fire") then
+	if not has_fire_staff(player) then
 		remove(player, "fire-rune", 4)
 	end
 	remove(player, "nature-rune", 1)

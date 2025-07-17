@@ -251,7 +251,7 @@ function usenpc_lady_keli_rope(player, npc)
 			setvar(player, "prince_ali_keli_tied_once", 1)
 		end
 
-		delnpc("lady keli")
+		delnpc(npc)
 		pause(100, 100)
 		addnpc("lady keli", 195, 640)
 	elseif stage >= 4 then

@@ -171,7 +171,7 @@ mob_get_nearby_npcs(struct mob *mob,
 }
 
 struct npc *
-mob_find_nearby_npc(struct mob *mob, const char *name)
+mob_find_nearby_npc(struct mob *mob, const char *name, bool visible)
 {
 	struct npc *npcs[16];
 	size_t n;
@@ -185,6 +185,10 @@ mob_find_nearby_npc(struct mob *mob, const char *name)
 		}
 		for (size_t j = 0; j < npcs[i]->config->name_count; ++j) {
 			if (strcasecmp(name, npcs[i]->config->names[j]) == 0) {
+				if (visible && !mob_check_reachable(mob,
+				    npcs[i]->mob.x, npcs[i]->mob.y, true)) {
+					continue;
+				}
 				return npcs[i];
 			}
 		}

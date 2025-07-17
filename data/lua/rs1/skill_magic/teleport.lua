@@ -1,7 +1,7 @@
 -- teleport spells have no message to confirm they worked
 
 local function remove_teleport_runes(player, primary_rune_name)
-	if not worn(player, "staff of air") then
+	if not has_air_staff(player) then
 		remove(player, "air-rune", 3)
 	end
 	if not worn(player, "staff of " .. primary_rune_name) then

@@ -38,7 +38,7 @@ register_spellobj("_", "telekinetic grab", function(player, item, x, y)
 	mes(player, "@que@Cast spell successfully")
 	takeobject(player, item, x, y)
 	advancestat(player, STAT_MAGIC, 344, 0)
-	if not worn(player, "staff of air") then
+	if not has_air_staff(player) then
 		remove(player, "air-rune", 1)
 	end
 	remove(player, "law-rune", 1)

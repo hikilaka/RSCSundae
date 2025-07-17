@@ -9,6 +9,20 @@ static void npc_retreat(struct npc *);
 static int npc_combat_roll(struct npc *, struct player *);
 static void npc_hunt_target(struct npc *);
 static bool npc_init_combat(struct npc *, struct player *);
+static bool npc_tile_indoors(struct npc *, int, int);
+
+static bool
+npc_tile_indoors(struct npc *npc, int x, int y)
+{
+	int plane = 0;
+	int p_y = y;
+
+	while (p_y > PLANE_LEVEL_INC) {
+		p_y -= PLANE_LEVEL_INC;
+		plane++;
+	}
+	return (npc->mob.server->adjacency[plane][x][p_y] & ADJ_INDOORS) != 0;
+}
 
 void
 npc_die(struct npc *npc, struct player *p)
@@ -122,6 +136,51 @@ npc_damage(struct npc *npc, struct player *p , int roll)
 	npc->mob.damage_timer = p->mob.server->tick_counter;
 }
 
+void
+npc_change(struct npc *npc, struct npc_config *config)
+{
+	assert(npc != NULL);
+	assert(config != NULL);
+
+	npc->config = config;
+	npc->refresh = true;
+
+	/* behaviour assumed from witch's house shapeshifter */
+
+	npc->mob.cur_stats[SKILL_ATTACK] = npc->config->attack;
+	npc->mob.cur_stats[SKILL_DEFENSE] = npc->config->defense;
+	npc->mob.cur_stats[SKILL_STRENGTH] = npc->config->strength;
+	npc->mob.cur_stats[SKILL_HITS] = npc->config->hits;
+
+	for (int i = 0; i < MAX_SKILL_ID; ++i) {
+		npc->mob.cur_stats[i] = npc->mob.base_stats[i];
+	}
+}
+
+void
+npc_teleport(struct npc *npc, int x, int y)
+{
+	struct zone *zone_old;
+	struct zone *zone_new;
+
+	zone_old = server_find_zone(npc->mob.x, npc->mob.y);
+
+	npc->refresh = true;
+	npc->mob.moved = false;
+	npc->mob.x = x;
+	npc->mob.y = y;
+
+	zone_new = server_find_zone(npc->mob.x, npc->mob.y);
+	if (zone_new != zone_old) {
+		if (zone_old != NULL) {
+			zone_remove_npc(zone_old, npc->mob.id);
+		}
+		if (zone_new != NULL) {
+			zone_add_npc(zone_new, npc->mob.id);
+		}
+	}
+}
+
 static void
 npc_retreat(struct npc *npc)
 {
@@ -190,7 +249,6 @@ npc_random_walk(struct npc *npc)
 	}
 
 	attempts = 0;
-
 	do {
 		rx = server_random();
 		ry = server_random();
@@ -209,16 +267,12 @@ npc_random_walk(struct npc *npc)
 
 		valid = true;
 
-		if (npc->mob.y > PLANE_LEVEL_INC) {
-			break;
-		}
-
 		switch (npc->config->move_restrict) {
 		case MOVE_RESTRICT_OUTDOORS:
-			valid = (npc->mob.server->roofs[x][y] == 0);
+			valid = !npc_tile_indoors(npc, x, y);
 			break;
 		case MOVE_RESTRICT_INDOORS:
-			valid = (npc->mob.server->roofs[x][y] != 0);
+			valid = npc_tile_indoors(npc, x, y);
 			break;
 		}
 	} while (!valid && (attempts++) < 10);
@@ -376,15 +430,13 @@ npc_process_movement(struct npc *npc)
 
 		switch (npc->config->move_restrict) {
 		case MOVE_RESTRICT_OUTDOORS:
-			if (y < PLANE_LEVEL_INC &&
-			    npc->mob.server->roofs[x][y] != 0) {
+			if (npc_tile_indoors(npc, x, y)) {
 				npc->mob.walk_queue_len = 0;
 				npc->mob.walk_queue_pos = 0;
 			}
 			break;
 		case MOVE_RESTRICT_INDOORS:
-			if (y < PLANE_LEVEL_INC &&
-			    npc->mob.server->roofs[x][y] == 0) {
+			if (!npc_tile_indoors(npc, x, y)) {
 				npc->mob.walk_queue_len = 0;
 				npc->mob.walk_queue_pos = 0;
 			}
@@ -440,7 +492,7 @@ npc_init_combat(struct npc *npc, struct player *target)
 		return false;
 	}
 
-	script_onattacknpc(npc->mob.server->lua, target, npc);
+	script_onattackbynpc(npc->mob.server->lua, target, npc);
 
 	player_send_message(target, "You are under attack!");
 

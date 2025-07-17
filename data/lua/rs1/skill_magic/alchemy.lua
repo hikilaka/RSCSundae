@@ -4,7 +4,7 @@ register_spellinv("_", "low level alchemy", function(player, item)
 	mes(player, "@que@Alchemy spell successful")
 	sellinv(player, item, 40)
 	advancestat(player, STAT_MAGIC, 248, 0)
-	if not worn(player, "staff of fire") then
+	if not has_fire_staff(player) then
 		remove(player, "fire-rune", 3)
 	end
 	remove(player, "nature-rune", 1)
@@ -14,7 +14,7 @@ register_spellinv("_", "high level alchemy", function(player, item)
 	mes(player, "@que@Alchemy spell successful")
 	sellinv(player, item, 60)
 	advancestat(player, STAT_MAGIC, 520, 0)
-	if not worn(player, "staff of fire") then
+	if not has_fire_staff(player) then
 		remove(player, "fire-rune", 5)
 	end
 	remove(player, "nature-rune", 1)

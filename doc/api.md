@@ -75,10 +75,23 @@ Implemented
 * `ifqp(value)` - implemented as `qp(player)` in Lua.
 * `playercoord()` - implemented as `playercoord(player)` in Lua, returns x, y values.
 * `addnpc(npc)` - implemented as `addnpc(npc, x, y)` in Lua, returns npc handle.
+* `delnpc()` - implemented as `delnpc(npc)` in Lua.
+* `changenpc(npc)` - implemented as `delnpc(npc)` in Lua.
 * `ifnearnpc(npc)` - implemented as `nearnpc(player, npc)` in Lua, returns npc handle or nil.
 * `ifnearvisnpc(npc)` - implemented as `nearvisnpc(player, npc)` in Lua, returns npc handle or nil.
 * `teleport()` - implemented as `teleport(player, x, y)` in Lua.
 * `showeffect(type)` - implemented as `showeffect(type, x, y)` in Lua.
+
+Implemented but undocumented
+----------------------------
+
+These ones we assume exist due to the behaviour of the game engine,
+and we infer names from later versions of RS.
+
+* `ifstatbase(stat,variable,value)` - implemented as `statbase(player, stat, value)`
+   in Lua.  Like ifstatabove but ignores potion boosts.
+* `teleportnpc()` - implemented as `teleportnpc(npc, x, y)` in Lua.
+   Existence assumed from behaviour observed in Witch's House quest.
 
 Not implemented
 ---------------
@@ -87,8 +100,6 @@ Not implemented
 * `changelevel(level)`
 * `delinv()`
 * `ifobjectvisible()`
-* `delnpc()`
-* `changenpc(npc)`
 * `npcretreat(time)`
 * `ifplayervisible()`
 

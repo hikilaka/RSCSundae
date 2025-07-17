@@ -222,7 +222,8 @@ player_send_npc_movement(struct player *p)
 		if (known_npc == NULL ||
 		    !within_update_radius(p,
 			known_npc->mob.x, known_npc->mob.y, 2) ||
-		    known_npc->respawn_time > 0) {
+		    known_npc->respawn_time > 0 ||
+		    known_npc->refresh) {
 			if (buf_putbits(p->tmpbuf, bitpos,
 					PLAYER_BUFSIZE, 4, 15) == -1) {
 				return -1;

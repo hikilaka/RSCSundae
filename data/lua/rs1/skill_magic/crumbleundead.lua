@@ -1,10 +1,10 @@
 function skillnpc_crumble_undead(player, target)
 	mes(player, "@que@Cast spell successfully")
 	advancestat(player, STAT_MAGIC, 392, 0)
-	if not worn(player, "staff of air") then
+	if not has_air_staff(player) then
 		remove(player, "air-rune", 2)
 	end
-	if not worn(player, "staff of earth") then
+	if not has_earth_staff(player) then
 		remove(player, "earth-rune", 2)
 	end
 	remove(player, "chaos-rune", 1)

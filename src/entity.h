@@ -239,6 +239,7 @@ struct npc {
 	uint16_t spawn_y;
 	uint8_t busy;
 	uint8_t regen_timer;
+	uint8_t refresh;
 };
 
 enum rpg_class {
@@ -396,7 +397,7 @@ bool mob_reached_bound(struct mob *, struct bound *);
 bool mob_reached_loc(struct mob *, struct loc *);
 void mob_die(struct mob *);
 void mob_process_walk_queue(struct mob *);
-struct npc *mob_find_nearby_npc(struct mob *, const char *);
+struct npc *mob_find_nearby_npc(struct mob *, const char *, bool);
 bool mob_check_reachable(struct mob *, int, int, bool);
 
 /* player.c */
@@ -515,6 +516,8 @@ int player_send_mesbox(struct player *, const char *);
 
 /* npc.c */
 void npc_damage(struct npc *, struct player * , int);
+void npc_change(struct npc *, struct npc_config *);
+void npc_teleport(struct npc *, int, int);
 void npc_die(struct npc *, struct player *);
 void npc_process_movement(struct npc *);
 void npc_process_combat(struct npc *);
