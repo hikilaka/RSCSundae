@@ -11,6 +11,8 @@
 
 #define MAX_SPELL_REAGENTS	(4)
 
+#define MAX_SPRITE_SLOTS	(12)
+
 /* entities defined in config.jag */
 
 enum equip_type {
@@ -164,7 +166,7 @@ struct npc_config {
 	uint8_t unused2;
 	uint8_t hunt_range;
 	uint8_t unused3;
-	int16_t sprites[12];
+	int16_t sprites[MAX_SPRITE_SLOTS];
 	uint32_t colour_hair;
 	uint32_t colour_top;
 	uint32_t colour_bottom;
