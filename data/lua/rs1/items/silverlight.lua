@@ -1,3 +1,6 @@
+-- flying sno (redacted chat) replays/fsnom2@aol.com/07-30-2018 12.37.33
+-- seems to show it's both attacknpc and attackbynpc
+
 function attacknpc_demon(player, npc)
 	local applied = false
 
@@ -21,7 +24,10 @@ function attacknpc_demon(player, npc)
 		applied = true
 	end
 	if applied then
-		-- flying sno (redacted chat) replays/fsnom2@aol.com/07-30-2018 12.37.33
 		mes(player, "As you strike the demon with silverlight he appears to weaken a lot")
 	end
+end
+
+function attackbynpc_demon(player, npc)
+	attacknpc_demon(player, npc)
 end
