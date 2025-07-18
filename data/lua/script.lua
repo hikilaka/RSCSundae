@@ -873,7 +873,7 @@ function script_engine_useinv(player, name, item)
 end
 
 function pause(min, max)
-	local amount = min + (math.random() * max)
+	local amount = min + (math.random() * (max - min))
 
 	table.insert(paused_scripts, active_script)
 	player_scripts[active_script.player] = nil
