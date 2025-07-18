@@ -124,3 +124,8 @@ Implementation details
   that `ifnearvisnpc` ignores NPCs that are busy, and this is how
   distraction mechanics (e.g. in the knight's sword quest) are
   implemented.
+* One thing that official RS had that Sundae doesn't is a notion of
+  "the current globally active NPC interacting with this player",
+  instead local variables are used, which can't be overwritten
+  by another action. Taking this as either a positive or negative,
+  Spiders will never appear to have the dialogue of bankers.
