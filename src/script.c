@@ -623,6 +623,15 @@ script_nearnpc(lua_State *L)
 	npc = mob_find_nearby_npc(&p->mob, name, false);
 	if (npc != NULL) {
 		npc->talk_target = p->mob.id;
+		/*
+		 * various NPCs that talk through doors after an action demonstrate
+		 * this behaviour, including guild guards
+		 *
+		 * also observed in witch's house quest where the witch turns
+		 * to face the player through a wall
+		 */
+		mob_face(&npc->mob, p->mob.x, p->mob.y);
+		mob_face(&p->mob, npc->mob.x, npc->mob.y);
 		lua_pushinteger(L, npc->mob.id);
 		return 1;
 	}
