@@ -424,6 +424,7 @@ function script_engine_killnpc(player, npc, name, x, y)
 				npcunbusy(npc)
 			end
 		end)
+		active_script = ps
 		-- need to run the script in this context for invincible
 		-- NPCs to work properly
 		playerbusy(player)
