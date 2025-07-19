@@ -601,8 +601,8 @@ script_male(lua_State *L)
 	return 1;
 }
 
-static int
-script_set_active_npc(strucy player *p, struct npc *npc)
+static void
+script_set_active_npc(struct player *p, struct npc *npc)
 {
 	npc->talk_target = p->mob.id;
 	/*
