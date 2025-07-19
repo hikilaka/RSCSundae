@@ -63,6 +63,7 @@ Implemented
 * `npcsay(string)` - implemented as `npcsay(npc, string)` in Lua.
 * `npcbusy()` - implemented as `npcbusy(npc)` in Lua.
 * `npcunbusy()` - implemented as `npcunbusy(npc)` in Lua.
+* `npcretreat(time)` - implemented as `npcretreat(npc)` in Lua.
 * `shootnpc(projectile)` - implemented as `shootnpc(player, npc, projectile)` in Lua.
 * `addnpcstat(stat,constant,percent)` - implemented as `npcaddstat(npc, stat, constant, percent)` in Lua (TODO: rename?)
 * `subnpcstat(stat,constant,percent)` - implemented as `npcsubstat(npc, stat, constant, percent)` in Lua (TODO: rename?)
@@ -100,7 +101,6 @@ Not implemented
 * `changelevel(level)`
 * `delinv()`
 * `ifobjectvisible()`
-* `npcretreat(time)`
 * `ifplayervisible()`
 
 Intentionally not implemented

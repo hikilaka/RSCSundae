@@ -512,6 +512,7 @@ int player_send_effect(struct player *, struct effect *);
 int player_send_mesbox(struct player *, const char *);
 
 /* npc.c */
+void npc_retreat(struct npc *);
 void npc_damage(struct npc *, struct player * , int);
 void npc_change(struct npc *, struct npc_config *);
 void npc_teleport(struct npc *, int, int);

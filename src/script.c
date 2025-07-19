@@ -43,6 +43,7 @@ static int script_statrandom(lua_State *);
 static int script_npcstatup(lua_State *);
 static int script_npcstatdown(lua_State *);
 static int script_npcvisible(lua_State *);
+static int script_npcretreat(lua_State *);
 static int script_thinkbubble(lua_State *);
 static int script_boundaryteleport(lua_State *);
 static int script_upstairs(lua_State *);
@@ -1945,6 +1946,25 @@ script_delnpc(lua_State *L)
 }
 
 static int
+script_npcretreat(lua_State *L)
+{
+	lua_Integer id;
+	struct npc *npc;
+
+	id = script_checkinteger(L, 1);
+
+	npc = id_to_npc(id);
+	if (npc == NULL) {
+		printf("script warning: npc %lld is undefined\n", id);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	npc_retreat(npc);
+	return 0;
+}
+
+static int
 script_teleportnpc(lua_State *L)
 {
 	lua_Integer id, x, y;
@@ -2839,6 +2859,9 @@ script_init(struct server *s)
 
 	lua_pushcfunction(L, script_npcvisible);
 	lua_setglobal(L, "npcvisible");
+
+	lua_pushcfunction(L, script_npcretreat);
+	lua_setglobal(L, "npcretreat");
 
 	lua_pushcfunction(L, script_addstat);
 	lua_setglobal(L, "addstat");
