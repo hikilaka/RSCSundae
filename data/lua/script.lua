@@ -806,6 +806,9 @@ function script_engine_usenpc(player, npc, name, item)
 		player_scripts[player] = ps
 		npcbusy(npc)
 		playerbusy(player)
+		-- rsc-preservation.xyz/Quests/sheep-shearer-zezima
+		-- has the sheep facing the player even on failure
+		script_engine_npc_face_player(player, npc)
 		return true
 	end
 	return false

@@ -602,6 +602,21 @@ script_male(lua_State *L)
 }
 
 static int
+script_set_active_npc(strucy player *p, struct npc *npc)
+{
+	npc->talk_target = p->mob.id;
+	/*
+	 * various NPCs that talk through doors after an action demonstrate
+	 * this behaviour, including guild guards
+	 *
+	 * also observed in witch's house quest where the witch turns
+	 * to face the player through a wall
+	 */
+	mob_face(&npc->mob, p->mob.x, p->mob.y);
+	mob_face(&p->mob, npc->mob.x, npc->mob.y);
+}
+
+static int
 script_nearnpc(lua_State *L)
 {
 	lua_Integer player_id;
@@ -622,16 +637,7 @@ script_nearnpc(lua_State *L)
 
 	npc = mob_find_nearby_npc(&p->mob, name, false);
 	if (npc != NULL) {
-		npc->talk_target = p->mob.id;
-		/*
-		 * various NPCs that talk through doors after an action demonstrate
-		 * this behaviour, including guild guards
-		 *
-		 * also observed in witch's house quest where the witch turns
-		 * to face the player through a wall
-		 */
-		mob_face(&npc->mob, p->mob.x, p->mob.y);
-		mob_face(&p->mob, npc->mob.x, npc->mob.y);
+		script_set_active_npc(p, npc);
 		lua_pushinteger(L, npc->mob.id);
 		return 1;
 	}
@@ -661,9 +667,7 @@ script_nearvisnpc(lua_State *L)
 
 	npc = mob_find_nearby_npc(&p->mob, name, true);
 	if (npc != NULL) {
-		npc->talk_target = p->mob.id;
-		mob_face(&npc->mob, p->mob.x, p->mob.y);
-		mob_face(&p->mob, npc->mob.x, npc->mob.y);
+		script_set_active_npc(p, npc);
 		lua_pushinteger(L, npc->mob.id);
 		return 1;
 	}
@@ -2250,14 +2254,7 @@ script_onusenpc(lua_State *L, struct player *p,
 			safe_call(L, 4, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
 			lua_pop(L, -1);
-			/*
-			 * replay:
-			 * rsc-preservation.xyz/Quests/sheep-shearer-zezima
-			 * has the sheep facing the player even on failure
-			 */
 			if (result != 0) {
-				mob_face(&npc->mob, p->mob.x, p->mob.y);
-				mob_face(&p->mob, npc->mob.x, npc->mob.y);
 				return;
 			}
 		}
