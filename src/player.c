@@ -1910,8 +1910,11 @@ player_process_action(struct player *p)
 		stack = p->inventory[p->action_slot].stack;
 		item_config = server_item_config_by_id(id);
 		assert(item_config != NULL);
-		player_inv_remove_slot(p, p->action_slot);
-		server_add_temp_item(p, p->mob.x, p->mob.y, id, stack, 200);
+		if (script_ondropobj(p->mob.server->lua, p, item_config)) {
+			player_inv_remove_slot(p, p->action_slot);
+			server_add_temp_item(p,
+			    p->mob.x, p->mob.y, id, stack, 200);
+		}
 		p->action = ACTION_NONE;
 		break;
 	case ACTION_INV_OP1:

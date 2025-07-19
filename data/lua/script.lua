@@ -4,6 +4,7 @@ local talknpc_scripts = {}
 local killnpc_scripts = {}
 local takeobj_scripts = {}
 local wearobj_scripts = {}
+local dropobj_scripts = {}
 local attacknpc_scripts = {}
 local attackbynpc_scripts = {}
 local attackplayer_scripts = {}
@@ -107,6 +108,10 @@ end
 
 function register_wearobj(name, callback)
 	wearobj_scripts[name] = callback;
+end
+
+function register_dropobj(name, callback)
+	dropobj_scripts[name] = callback;
 end
 
 function register_skillnpc(name, spell, callback)
@@ -588,6 +593,29 @@ function script_engine_wearobj(player, name)
 	return false
 end
 
+function script_engine_dropobj(player, name)
+	local script = player_scripts[player]
+	if script then
+		return true
+	end
+	name = string.lower(name)
+	script = dropobj_scripts[name]
+	if script then
+		local ps = new_player_script(player)
+		ps.co = coroutine.create(function()
+			script(player)
+			if not ps.paused then
+				player_scripts[player] = nil
+				playerunbusy(player)
+			end
+		end)
+		player_scripts[player] = ps
+		playerbusy(player)
+		return true
+	end
+	return false
+end
+
 function script_engine_opinv(player, name)
 	local script = player_scripts[player]
 	if script then
@@ -1038,6 +1066,9 @@ for k, v in pairs(_G) do
 		elseif string.match(k, "^takeobj_.*") then
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_takeobj(target, v)
+		elseif string.match(k, "^dropobj_.*") then
+			target = string.gsub(string.sub(k, 9), "_", " ")
+			register_dropobj(target, v)
 		elseif string.match(k, "^spellself_.*") then
 			target = string.gsub(string.sub(k, 11), "_", " ")
 			register_spellself(target, v)
