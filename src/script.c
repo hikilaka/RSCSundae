@@ -2780,7 +2780,7 @@ script_init(struct server *s)
 	lua_setglobal(L, "_addloc");
 
 	lua_pushcfunction(L, script_delloc);
-	lua_setglobal(L, "_delloc");
+	lua_setglobal(L, "delloc");
 
 	lua_pushcfunction(L, script_npcsay);
 	lua_setglobal(L, "_npcsay");

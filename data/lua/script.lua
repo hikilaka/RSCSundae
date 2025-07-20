@@ -210,7 +210,7 @@ function script_engine_tick()
 			if not result then
 				print("Script error inside coroutine :" .. err)
 			end
-			_delloc(event.x, event.y)
+			delloc(event.x, event.y)
 			table.remove(delete_locs, i)
 			coroutine.close(event.co)
 		end
@@ -239,7 +239,7 @@ function script_engine_shutdown()
 	for i=#delete_locs,1,-1 do
 		local event = delete_locs[i]
 		local result, err = coroutine.resume(event.co)
-		_delloc(event.x, event.y)
+		delloc(event.x, event.y)
 		coroutine.close(event.co)
 	end
 	delete_locs = {}
@@ -922,18 +922,20 @@ end
 function addloc(name, x, y, timer)
 	_addloc(name, x, y)
 
-	local target = {}
-	target.x = x
-	target.y = y
-	target.timer = timer
-	target.co = active_script.co
+	if timer then
+		local target = {}
+		target.x = x
+		target.y = y
+		target.timer = timer
+		target.co = active_script.co
 
-	active_script.paused = true
+		active_script.paused = true
 
-	table.insert(delete_locs, target)
-	player_scripts[active_script.player] = nil
-	playerunbusy(active_script.player)
-	coroutine.yield(active_script.co)
+		table.insert(delete_locs, target)
+		player_scripts[active_script.player] = nil
+		playerunbusy(active_script.player)
+		coroutine.yield(active_script.co)
+	end
 end
 
 function restoreloc(x, y, timer)

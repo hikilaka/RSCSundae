@@ -45,6 +45,7 @@ Implemented
 * `randomvar(value)` - implemented as-is
 * `addobject(object, count, time)` - implemented as `addobject(player, object, count, x, y)` in Lua, with `time` being inferred from `config.jag`.
 * `addloc(location)` - implemented as `addloc(location, x, y, timer)` in Lua.
+* `delloc()` - implemented as `delloc(x, y)` in Lua.
 * `ifblocked()` - implemented as `blocked(x, y)` in Lua.
 * `give(object, count)` - implemented as `give(player, object, count)` in Lua.
 * `remove(object, count)` - implemented as `remove(player, object, count)` in Lua.
