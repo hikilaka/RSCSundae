@@ -99,7 +99,6 @@ Not implemented
 
 * `modpause(mindelay, maxdelay)`
 * `changelevel(level)`
-* `delinv()`
 * `ifobjectvisible()`
 * `ifplayervisible()`
 
@@ -112,6 +111,7 @@ Intentionally not implemented
 * `fork(labelname)` - use Lua functions.
 * `end()` - use Lua `return`.
 * `ifstatabove(stat,value)` - use `statatleast`.
+* `delinv()` - use `remove`.
 * `setcoord(coordinate)` - use Lua variables.
 
 Implementation details
@@ -129,3 +129,5 @@ Implementation details
   instead local variables are used, which can't be overwritten
   by another action. Taking this as either a positive or negative,
   Spiders will never appear to have the dialogue of bankers.
+* This is also why `delinv` is not implemented, there is no notion of
+  "global active inventory item".
