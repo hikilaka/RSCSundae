@@ -76,8 +76,8 @@ player_trade_offer(struct player *p, uint16_t id, uint32_t amount)
 	if (p->mob.server->untradables && config->quest_item) {
 		return;
 	}
-	if (p->trade_state == TRADE_STATE_CONFIRMED ||
-	    partner->trade_state == TRADE_STATE_CONFIRMED) {
+	if (p->trade_state >= TRADE_STATE_ACCEPTED &&
+	    partner->trade_state >= TRADE_STATE_ACCEPTED) {
 		return;
 	}
 	/* offer is about to change so unaccept the trade */
