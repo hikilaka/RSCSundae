@@ -2361,7 +2361,8 @@ script_onskillnpc(lua_State *L, struct player *p,
 	for (size_t i = 0; i < npc->config->name_count; ++i) {
 		lua_getglobal(L, "script_engine_skillnpc");
 		if (!lua_isfunction(L, -1)) {
-			puts("script error: can't find essential function script_engine_skillnpc");
+			puts("script error: can't find essential function "
+			    "script_engine_skillnpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
@@ -2376,9 +2377,29 @@ script_onskillnpc(lua_State *L, struct player *p,
 		}
 	}
 
+	for (size_t i = 0; i < npc->config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_skillnpc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function "
+			    "script_engine_skillnpc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushstring(L, npc->config->names[i]);
+		lua_pushnumber(L, npc->mob.id);
+		lua_pushstring(L, "_");
+		safe_call(L, 4, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+
 	lua_getglobal(L, "script_engine_skillnpc");
 	if (!lua_isfunction(L, -1)) {
-		puts("script error: can't find essential function script_engine_skillnpc");
+		puts("script error: can't find essential function "
+		    "script_engine_skillnpc");
 		return;
 	}
 	lua_pushnumber(L, p->mob.id);
