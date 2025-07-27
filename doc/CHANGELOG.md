@@ -1,3 +1,18 @@
+RSC Sundae 1.7.0
+----------------
+
+This release mainly focuses on fixes and runescript improvements
+to support 2002scape.
+
+* player: award melee xp for PvP combat
+* server: make NPC indoors detection work on non-ground levels
+* server: reduce memory usage by a few kilobytes.
+* script: add support for ondropobj, attackbynpc triggers
+* script: various new functions, delloc, npcretreat, teleportnpc
+* script: substat relative to current stat rather than base stat
+* script: fixed scaling of random pauses
+* thordur: implement the black hole experience
+
 RSC Sundae 1.6.0
 ----------------
 

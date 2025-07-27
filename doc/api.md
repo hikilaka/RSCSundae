@@ -45,6 +45,7 @@ Implemented
 * `randomvar(value)` - implemented as-is
 * `addobject(object, count, time)` - implemented as `addobject(player, object, count, x, y)` in Lua, with `time` being inferred from `config.jag`.
 * `addloc(location)` - implemented as `addloc(location, x, y, timer)` in Lua.
+* `delloc()` - implemented as `delloc(x, y)` in Lua.
 * `ifblocked()` - implemented as `blocked(x, y)` in Lua.
 * `give(object, count)` - implemented as `give(player, object, count)` in Lua.
 * `remove(object, count)` - implemented as `remove(player, object, count)` in Lua.
@@ -63,6 +64,7 @@ Implemented
 * `npcsay(string)` - implemented as `npcsay(npc, string)` in Lua.
 * `npcbusy()` - implemented as `npcbusy(npc)` in Lua.
 * `npcunbusy()` - implemented as `npcunbusy(npc)` in Lua.
+* `npcretreat(time)` - implemented as `npcretreat(npc)` in Lua.
 * `shootnpc(projectile)` - implemented as `shootnpc(player, npc, projectile)` in Lua.
 * `addnpcstat(stat,constant,percent)` - implemented as `npcaddstat(npc, stat, constant, percent)` in Lua (TODO: rename?)
 * `subnpcstat(stat,constant,percent)` - implemented as `npcsubstat(npc, stat, constant, percent)` in Lua (TODO: rename?)
@@ -98,9 +100,7 @@ Not implemented
 
 * `modpause(mindelay, maxdelay)`
 * `changelevel(level)`
-* `delinv()`
 * `ifobjectvisible()`
-* `npcretreat(time)`
 * `ifplayervisible()`
 
 Intentionally not implemented
@@ -112,6 +112,7 @@ Intentionally not implemented
 * `fork(labelname)` - use Lua functions.
 * `end()` - use Lua `return`.
 * `ifstatabove(stat,value)` - use `statatleast`.
+* `delinv()` - use `remove`.
 * `setcoord(coordinate)` - use Lua variables.
 
 Implementation details
@@ -124,3 +125,10 @@ Implementation details
   that `ifnearvisnpc` ignores NPCs that are busy, and this is how
   distraction mechanics (e.g. in the knight's sword quest) are
   implemented.
+* One thing that official RS had that Sundae doesn't is a notion of
+  "the current globally active NPC interacting with this player",
+  instead local variables are used, which can't be overwritten
+  by another action. Taking this as either a positive or negative,
+  Spiders will never appear to have the dialogue of bankers.
+* This is also why `delinv` is not implemented, there is no notion of
+  "global active inventory item".

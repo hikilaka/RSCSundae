@@ -38,6 +38,7 @@ static bool player_consume_ammo(struct player *,
     struct projectile_config *, struct mob *);
 static bool player_init_combat(struct player *, struct mob *);
 static void player_moved(struct player *, int, int);
+static void player_drop_loot(struct player *, struct player *);
 
 struct player *
 player_create(struct server *s, int sock, const char *address)
@@ -490,13 +491,56 @@ player_magic_damage_roll(int power)
 	return dmg / 10;
 }
 
-void
-player_die(struct player *p, struct player *victor)
+static void
+player_drop_loot(struct player *p, struct player *victor)
 {
 	struct item_config *item;
 	uint32_t value_lost = 0;
 	int kept_max = 3;
 	int stack;
+
+	if (p->skulled) {
+		kept_max = 0;
+		p->skulled = false;
+	}
+
+	if (p->prayers[PRAY_PROTECT_ITEM]) {
+		kept_max++;
+	}
+
+	while (p->inv_count > kept_max) {
+		int slot = INT_MAX;
+		uint32_t lowest_value = UINT32_MAX;
+
+		for (int i = 0; i < p->inv_count; ++i) {
+			item = server_item_config_by_id(p->inventory[i].id);
+			if (item->weight == 0 || item->value < lowest_value) {
+				slot = i;
+				lowest_value = item->value;
+			}
+		}
+		if (slot >= p->inv_count) {
+			break;
+		}
+		item = server_item_config_by_id(p->inventory[slot].id);
+		stack = p->inventory[slot].stack;
+		player_inv_remove_id(p, item->id, p->inventory[slot].stack);
+		if (item->weight > 0) {
+			server_add_temp_item(victor != NULL ?
+			    victor : p, p->mob.x, p->mob.y,
+			    item->id, 1, 1000);
+		} else {
+			server_add_temp_item(victor != NULL ?
+			    victor : p, p->mob.x, p->mob.y,
+			    item->id, stack, 1000);
+		}
+	}
+}
+
+void
+player_die(struct player *p, struct player *victor)
+{
+	struct item_config *item;
 
 	if (victor != NULL &&
 	    victor->mob.in_combat && p->mob.in_combat &&
@@ -535,46 +579,9 @@ player_die(struct player *p, struct player *victor)
 	server_add_temp_item(victor != NULL ? victor : p,
 	    p->mob.x, p->mob.y, item->id, 1, 200);
 
-	if (p->skulled) {
-		kept_max = 0;
-		p->skulled = false;
-	}
+	player_drop_loot(p, victor);
 
-	if (p->prayers[PRAY_PROTECT_ITEM]) {
-		kept_max++;
-	}
-
-	while (p->inv_count > kept_max) {
-		int slot = INT_MAX;
-		uint32_t lowest_value = UINT32_MAX;
-
-		for (int i = 0; i < p->inv_count; ++i) {
-			item = server_item_config_by_id(p->inventory[i].id);
-			if (item->weight == 0 || item->value < lowest_value) {
-				slot = i;
-				lowest_value = item->value;
-			}
-		}
-		if (slot >= p->inv_count) {
-			break;
-		}
-		item = server_item_config_by_id(p->inventory[slot].id);
-		stack = p->inventory[slot].stack;
-		player_inv_remove_id(p, item->id, p->inventory[slot].stack);
-		if (victor != NULL && victor->restrict_trade) {
-			continue;
-		}
-		if (item->weight > 0) {
-			server_add_temp_item(victor != NULL ?
-			    victor : p, p->mob.x, p->mob.y,
-			    item->id, 1, 1000);
-		} else {
-			server_add_temp_item(victor != NULL ?
-			    victor : p, p->mob.x, p->mob.y,
-			    item->id, stack, 1000);
-		}
-	}
-
+	/* inauthentic, but consider this a bug fix */
 	player_reset_prayers(p);
 
 	player_send_death(p);
@@ -1941,8 +1948,11 @@ player_process_action(struct player *p)
 		stack = p->inventory[p->action_slot].stack;
 		item_config = server_item_config_by_id(id);
 		assert(item_config != NULL);
-		player_inv_remove_slot(p, p->action_slot);
-		server_add_temp_item(p, p->mob.x, p->mob.y, id, stack, 200);
+		if (script_ondropobj(p->mob.server->lua, p, item_config)) {
+			player_inv_remove_slot(p, p->action_slot);
+			server_add_temp_item(p,
+			    p->mob.x, p->mob.y, id, stack, 200);
+		}
 		p->action = ACTION_NONE;
 		break;
 	case ACTION_INV_OP1:

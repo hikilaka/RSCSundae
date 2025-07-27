@@ -71,7 +71,7 @@ function talknpc_man1(player, npc)
 		man1_enemies(player, npc)
 	elseif rand < 220 then
 		mes(player, "@que@The man ignores you")
-		-- TODO npcretreat()?
+		npcretreat(npc)
 	elseif rand < 228 then
 		npcsay(npc, "I'm a little worried")
 		npcsay(npc, "I've heard there's lots of people going about,")

@@ -43,6 +43,7 @@ static int script_statrandom(lua_State *);
 static int script_npcstatup(lua_State *);
 static int script_npcstatdown(lua_State *);
 static int script_npcvisible(lua_State *);
+static int script_npcretreat(lua_State *);
 static int script_thinkbubble(lua_State *);
 static int script_boundaryteleport(lua_State *);
 static int script_upstairs(lua_State *);
@@ -601,6 +602,21 @@ script_male(lua_State *L)
 	return 1;
 }
 
+static void
+script_set_active_npc(struct player *p, struct npc *npc)
+{
+	npc->talk_target = p->mob.id;
+	/*
+	 * various NPCs that talk through doors after an action demonstrate
+	 * this behaviour, including guild guards
+	 *
+	 * also observed in witch's house quest where the witch turns
+	 * to face the player through a wall
+	 */
+	mob_face(&npc->mob, p->mob.x, p->mob.y);
+	mob_face(&p->mob, npc->mob.x, npc->mob.y);
+}
+
 static int
 script_nearnpc(lua_State *L)
 {
@@ -622,7 +638,7 @@ script_nearnpc(lua_State *L)
 
 	npc = mob_find_nearby_npc(&p->mob, name, false);
 	if (npc != NULL) {
-		npc->talk_target = p->mob.id;
+		script_set_active_npc(p, npc);
 		lua_pushinteger(L, npc->mob.id);
 		return 1;
 	}
@@ -652,9 +668,7 @@ script_nearvisnpc(lua_State *L)
 
 	npc = mob_find_nearby_npc(&p->mob, name, true);
 	if (npc != NULL) {
-		npc->talk_target = p->mob.id;
-		mob_face(&npc->mob, p->mob.x, p->mob.y);
-		mob_face(&p->mob, npc->mob.x, npc->mob.y);
+		script_set_active_npc(p, npc);
 		lua_pushinteger(L, npc->mob.id);
 		return 1;
 	}
@@ -1937,6 +1951,25 @@ script_delnpc(lua_State *L)
 }
 
 static int
+script_npcretreat(lua_State *L)
+{
+	lua_Integer id;
+	struct npc *npc;
+
+	id = script_checkinteger(L, 1);
+
+	npc = id_to_npc(id);
+	if (npc == NULL) {
+		printf("script warning: npc %lld is undefined\n", id);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	npc_retreat(npc);
+	return 0;
+}
+
+static int
 script_teleportnpc(lua_State *L)
 {
 	lua_Integer id, x, y;
@@ -2246,14 +2279,7 @@ script_onusenpc(lua_State *L, struct player *p,
 			safe_call(L, 4, 1, p->mob.id);
 			result = lua_toboolean(L, -1);
 			lua_pop(L, -1);
-			/*
-			 * replay:
-			 * rsc-preservation.xyz/Quests/sheep-shearer-zezima
-			 * has the sheep facing the player even on failure
-			 */
 			if (result != 0) {
-				mob_face(&npc->mob, p->mob.x, p->mob.y);
-				mob_face(&p->mob, npc->mob.x, npc->mob.y);
 				return;
 			}
 		}
@@ -2340,7 +2366,8 @@ script_onskillnpc(lua_State *L, struct player *p,
 	for (size_t i = 0; i < npc->config->name_count; ++i) {
 		lua_getglobal(L, "script_engine_skillnpc");
 		if (!lua_isfunction(L, -1)) {
-			puts("script error: can't find essential function script_engine_skillnpc");
+			puts("script error: can't find essential function "
+			    "script_engine_skillnpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
@@ -2355,9 +2382,29 @@ script_onskillnpc(lua_State *L, struct player *p,
 		}
 	}
 
+	for (size_t i = 0; i < npc->config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_skillnpc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function "
+			    "script_engine_skillnpc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushstring(L, npc->config->names[i]);
+		lua_pushnumber(L, npc->mob.id);
+		lua_pushstring(L, "_");
+		safe_call(L, 4, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+
 	lua_getglobal(L, "script_engine_skillnpc");
 	if (!lua_isfunction(L, -1)) {
-		puts("script error: can't find essential function script_engine_skillnpc");
+		puts("script error: can't find essential function "
+		    "script_engine_skillnpc");
 		return;
 	}
 	lua_pushnumber(L, p->mob.id);
@@ -2577,6 +2624,32 @@ script_onkillnpc(lua_State *L, struct player *p, struct npc *npc)
 }
 
 bool
+script_ondropobj(lua_State *L, struct player *p, struct item_config *item)
+{
+	bool result;
+
+	assert(p != NULL);
+	assert(item != NULL);
+
+	for (size_t i = 0; i < item->name_count; ++i) {
+		lua_getglobal(L, "script_engine_dropobj");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_dropobj");
+			return true;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushstring(L, item->names[i]);
+		safe_call(L, 2, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool
 script_onwearobj(lua_State *L, struct player *p, struct item_config *item)
 {
 	bool result;
@@ -2733,7 +2806,7 @@ script_init(struct server *s)
 	lua_setglobal(L, "_addloc");
 
 	lua_pushcfunction(L, script_delloc);
-	lua_setglobal(L, "_delloc");
+	lua_setglobal(L, "delloc");
 
 	lua_pushcfunction(L, script_npcsay);
 	lua_setglobal(L, "_npcsay");
@@ -2812,6 +2885,9 @@ script_init(struct server *s)
 
 	lua_pushcfunction(L, script_npcvisible);
 	lua_setglobal(L, "npcvisible");
+
+	lua_pushcfunction(L, script_npcretreat);
+	lua_setglobal(L, "npcretreat");
 
 	lua_pushcfunction(L, script_addstat);
 	lua_setglobal(L, "addstat");

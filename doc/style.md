@@ -34,3 +34,6 @@ Lua code
   (not ever changed).
 * Avoid using math.random(), for authentic randomness behaviour
   in content scripts use random() and randomvar() instead.
+* under_scores are preferred over camelCase. THVariableName may be
+  acceptable for getvar() variables in content originally designed by
+  Tytn H.

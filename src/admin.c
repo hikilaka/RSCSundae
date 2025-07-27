@@ -488,6 +488,17 @@ player_parse_dev_command(struct player *p, const char *cmd)
 				p->variables[i].value);
 			player_send_message(p, msg);
 		}
+	} else if (strcmp(cmd, "openshop") == 0) {
+		char *varname;
+
+		varname = strtok(NULL, " ");
+
+		if (varname == NULL) {
+			player_send_message(p, "Usage: openshop varname");
+			return;
+		}
+
+		player_send_shop(p, varname);
 	} else if (strcmp(cmd, "addnpc") == 0) {
 		struct npc_config *config;
 		char *name;

@@ -5,7 +5,6 @@
 #include "server.h"
 
 static void npc_random_walk(struct npc *);
-static void npc_retreat(struct npc *);
 static int npc_combat_roll(struct npc *, struct player *);
 static void npc_hunt_target(struct npc *);
 static bool npc_init_combat(struct npc *, struct player *);
@@ -181,7 +180,7 @@ npc_teleport(struct npc *npc, int x, int y)
 	}
 }
 
-static void
+void
 npc_retreat(struct npc *npc)
 {
 	int attempts = 0;

@@ -4,6 +4,7 @@ local talknpc_scripts = {}
 local killnpc_scripts = {}
 local takeobj_scripts = {}
 local wearobj_scripts = {}
+local dropobj_scripts = {}
 local attacknpc_scripts = {}
 local attackbynpc_scripts = {}
 local attackplayer_scripts = {}
@@ -109,6 +110,10 @@ function register_wearobj(name, callback)
 	wearobj_scripts[name] = callback;
 end
 
+function register_dropobj(name, callback)
+	dropobj_scripts[name] = callback;
+end
+
 function register_skillnpc(name, spell, callback)
 	if not skillnpc_scripts[spell] then
 		skillnpc_scripts[spell] = {}
@@ -205,7 +210,7 @@ function script_engine_tick()
 			if not result then
 				print("Script error inside coroutine :" .. err)
 			end
-			_delloc(event.x, event.y)
+			delloc(event.x, event.y)
 			table.remove(delete_locs, i)
 			coroutine.close(event.co)
 		end
@@ -234,7 +239,7 @@ function script_engine_shutdown()
 	for i=#delete_locs,1,-1 do
 		local event = delete_locs[i]
 		local result, err = coroutine.resume(event.co)
-		_delloc(event.x, event.y)
+		delloc(event.x, event.y)
 		coroutine.close(event.co)
 	end
 	delete_locs = {}
@@ -419,6 +424,7 @@ function script_engine_killnpc(player, npc, name, x, y)
 				npcunbusy(npc)
 			end
 		end)
+		active_script = ps
 		-- need to run the script in this context for invincible
 		-- NPCs to work properly
 		playerbusy(player)
@@ -584,6 +590,29 @@ function script_engine_wearobj(player, name)
 		if not script(player, name) then
 			return true
 		end
+	end
+	return false
+end
+
+function script_engine_dropobj(player, name)
+	local script = player_scripts[player]
+	if script then
+		return true
+	end
+	name = string.lower(name)
+	script = dropobj_scripts[name]
+	if script then
+		local ps = new_player_script(player)
+		ps.co = coroutine.create(function()
+			script(player)
+			if not ps.paused then
+				player_scripts[player] = nil
+				playerunbusy(player)
+			end
+		end)
+		player_scripts[player] = ps
+		playerbusy(player)
+		return true
 	end
 	return false
 end
@@ -806,6 +835,9 @@ function script_engine_usenpc(player, npc, name, item)
 		player_scripts[player] = ps
 		npcbusy(npc)
 		playerbusy(player)
+		-- rsc-preservation.xyz/Quests/sheep-shearer-zezima
+		-- has the sheep facing the player even on failure
+		script_engine_npc_face_player(player, npc)
 		return true
 	end
 	return false
@@ -873,7 +905,7 @@ function script_engine_useinv(player, name, item)
 end
 
 function pause(min, max)
-	local amount = min + (math.random() * max)
+	local amount = min + (math.random() * (max - min))
 
 	table.insert(paused_scripts, active_script)
 	player_scripts[active_script.player] = nil
@@ -890,18 +922,20 @@ end
 function addloc(name, x, y, timer)
 	_addloc(name, x, y)
 
-	local target = {}
-	target.x = x
-	target.y = y
-	target.timer = timer
-	target.co = active_script.co
+	if timer then
+		local target = {}
+		target.x = x
+		target.y = y
+		target.timer = timer
+		target.co = active_script.co
 
-	active_script.paused = true
+		active_script.paused = true
 
-	table.insert(delete_locs, target)
-	player_scripts[active_script.player] = nil
-	playerunbusy(active_script.player)
-	coroutine.yield(active_script.co)
+		table.insert(delete_locs, target)
+		player_scripts[active_script.player] = nil
+		playerunbusy(active_script.player)
+		coroutine.yield(active_script.co)
+	end
 end
 
 function restoreloc(x, y, timer)
@@ -1035,6 +1069,9 @@ for k, v in pairs(_G) do
 		elseif string.match(k, "^takeobj_.*") then
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_takeobj(target, v)
+		elseif string.match(k, "^dropobj_.*") then
+			target = string.gsub(string.sub(k, 9), "_", " ")
+			register_dropobj(target, v)
 		elseif string.match(k, "^spellself_.*") then
 			target = string.gsub(string.sub(k, 11), "_", " ")
 			register_spellself(target, v)

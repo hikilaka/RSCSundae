@@ -816,16 +816,18 @@ player_send_privacy_settings(struct player *p)
 	 * first one is "hide online status", unique to these earlier
 	 * revisions, but we treat it identically to private block
 	 */
+	if (p->protocol_rev < 115) {
+		(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
+				p->block_private);
+	}
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		        p->block_private);
+			p->block_public);
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		        p->block_public);
+			p->block_private);
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		        p->block_private);
+			p->block_trade);
 	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		        p->block_trade);
-	(void)buf_putu8(p->tmpbuf, offset++, PLAYER_BUFSIZE,
-		        p->block_duel);
+			p->block_duel);
 	return player_write_packet(p, p->tmpbuf, offset);
 }
 
