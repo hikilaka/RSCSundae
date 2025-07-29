@@ -58,6 +58,7 @@ Implemented
 * `takeobject()` - implemented as `takeobject(player, object, x, y)` in Lua.
 * `changeloc(location)` - implemented as `changeloc(x, y, location)` in Lua.
 * `changebound(boundary)` - implemented as `changeloc(x, y, dir, boundary)` in Lua.
+* `boundaryteleport()` - implemented as `boundaryteleport(player, x, y, dir)` in Lua.
 * `upstairs()` - implemented as `upstairs(player, x, y)` in Lua.
 * `downstairs()` - implemented as `downstairs(player, x, y)` in Lua.
 * `changelevelup()` - implemented as `changelevelup(player)` in Lua.
