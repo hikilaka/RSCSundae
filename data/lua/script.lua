@@ -384,8 +384,18 @@ function script_engine_rangenpc(player, npc, name, x, y)
 				playerunbusy(player)
 			end
 		end)
+		-- need to run the script in this context for invincible
+		-- NPCs to work properly
 		player_scripts[player] = ps
+		active_script = ps
 		playerbusy(player)
+		local result, err = coroutine.resume(ps.co)
+		if not result then
+			print("Script error inside coroutine: " .. err)
+			script_engine_cancel(player)
+		else
+			player_scripts[player] = ps
+		end
 		return true
 	end
 	return false
