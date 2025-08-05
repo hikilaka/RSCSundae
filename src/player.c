@@ -1021,7 +1021,10 @@ player_process_combat(struct player *p)
 			}
 
 			if (p->projectile != NULL) {
-				player_shoot_pvm(p, p->projectile, target);
+				if (p->mob.target_npc != -1) {
+					player_shoot_pvm(p,
+					    p->projectile, target);
+				}
 				return;
 			}
 

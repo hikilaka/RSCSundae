@@ -41,5 +41,6 @@ bool script_ondropobj(lua_State *, struct player *, struct item_config *);
 bool script_onwearobj(lua_State *, struct player *, struct item_config *);
 bool script_onattackplayer(lua_State *, struct player *, struct player *);
 void script_onattacknpc(lua_State *, struct player *, struct npc *);
+void script_onrangenpc(lua_State *, struct player *, struct npc *);
 void script_onattackbynpc(lua_State *, struct player *, struct npc *);
 #endif

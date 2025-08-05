@@ -5,6 +5,7 @@ local killnpc_scripts = {}
 local takeobj_scripts = {}
 local wearobj_scripts = {}
 local dropobj_scripts = {}
+local rangenpc_scripts = {}
 local attacknpc_scripts = {}
 local attackbynpc_scripts = {}
 local attackplayer_scripts = {}
@@ -80,6 +81,10 @@ end
 
 function register_oploc2(name, callback)
 	oploc2_scripts[name] = callback;
+end
+
+function register_rangenpc(name, callback)
+	rangenpc_scripts[name] = callback;
 end
 
 function register_attacknpc(name, callback)
@@ -347,6 +352,29 @@ function script_engine_attacknpc(player, npc, name, x, y)
 	end
 	name = string.lower(name)
 	script = attacknpc_scripts[name]
+	if script then
+		local ps = new_player_script(player)
+		ps.co = coroutine.create(function()
+			script(player, npc, x, y)
+			if not ps.paused then
+				player_scripts[player] = nil
+				playerunbusy(player)
+			end
+		end)
+		player_scripts[player] = ps
+		playerbusy(player)
+		return true
+	end
+	return false
+end
+
+function script_engine_rangenpc(player, npc, name, x, y)
+	local script = player_scripts[player]
+	if script then
+		return true
+	end
+	name = string.lower(name)
+	script = rangenpc_scripts[name]
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
@@ -1066,6 +1094,9 @@ for k, v in pairs(_G) do
 		elseif string.match(k, "^attackbynpc_.*") then
 			target = string.gsub(string.sub(k, 13), "_", " ")
 			register_attackbynpc(target, v)
+		elseif string.match(k, "^rangenpc_.*") then
+			target = string.gsub(string.sub(k, 10), "_", " ")
+			register_rangenpc(target, v)
 		elseif string.match(k, "^takeobj_.*") then
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_takeobj(target, v)

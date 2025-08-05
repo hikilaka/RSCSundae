@@ -1776,7 +1776,7 @@ script_nodefault(lua_State *L)
 
 	if (p->mob.target_npc != -1) {
 		npc = id_to_npc(p->mob.target_npc);
-		if (npc != NULL) {
+		if (npc != NULL && npc->mob.target_player == p->mob.id) {
 			mob_combat_reset(&npc->mob);
 		}
 		mob_combat_reset(&p->mob);
@@ -2578,6 +2578,29 @@ script_onattacknpc(lua_State *L, struct player *p, struct npc *npc)
 		lua_getglobal(L, "script_engine_attacknpc");
 		if (!lua_isfunction(L, -1)) {
 			puts("script error: can't find essential function script_engine_attacknpc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushnumber(L, npc->mob.id);
+		lua_pushstring(L, npc->config->names[i]);
+		safe_call(L, 3, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+}
+
+void
+script_onrangenpc(lua_State *L, struct player *p, struct npc *npc)
+{
+	bool result = false;
+
+	for (size_t i = 0; i < npc->config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_rangenpc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_rangenpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
