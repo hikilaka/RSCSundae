@@ -1021,6 +1021,8 @@ player_process_combat(struct player *p)
 			}
 
 			if (p->projectile != NULL) {
+				script_onrangenpc(p->mob.server->lua,
+				    p, target);
 				if (p->mob.target_npc != -1) {
 					player_shoot_pvm(p,
 					    p->projectile, target);
