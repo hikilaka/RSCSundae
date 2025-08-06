@@ -83,6 +83,7 @@ enum action {
 	ACTION_LOC_OP1		= 18,
 	ACTION_LOC_OP2		= 19,
 	ACTION_SELF_CAST	= 20,
+	ACTION_LOC_CAST		= 21,
 };
 
 enum trade_state {

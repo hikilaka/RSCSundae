@@ -2723,6 +2723,36 @@ script_onspellobj(lua_State *L, struct player *p,
 	}
 }
 
+void
+script_onspellloc(lua_State *L, struct player *p,
+    struct spell_config *spell, struct loc *loc)
+{
+	struct loc_config *config;
+	bool result;
+
+	config = server_loc_config_by_id(loc->id);
+	assert(config != NULL);
+
+	for (size_t i = 0; i < config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_spellloc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_spellloc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushstring(L, spell->name);
+		lua_pushstring(L, config->names[i]);
+		lua_pushnumber(L, loc->x);
+		lua_pushnumber(L, loc->y);
+		safe_call(L, 5, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+}
+
 bool
 script_ontakeobj(lua_State *L, struct player *p, struct ground_item *item)
 {

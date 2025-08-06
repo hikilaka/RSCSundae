@@ -665,6 +665,34 @@ process_packet(struct player *p, uint8_t *data, size_t len)
 			}
 		}
 		break;
+	case OP_CLI_LOC_CAST:
+		{
+			uint16_t spell_id, x, y;
+			struct spell_config *spell;
+			struct loc *loc;
+
+			if (buf_getu16(data, offset, len, &x) == -1) {
+				return;
+			}
+			offset += 2;
+			if (buf_getu16(data, offset, len, &y) == -1) {
+				return;
+			}
+			offset += 2;
+			if (buf_getu16(data, offset, len, &spell_id) == -1) {
+				return;
+			}
+			offset += 2;
+			loc = server_find_loc(x, y);
+			spell = server_spell_config_by_id(spell_id);
+			if (loc != NULL && spell != NULL &&
+			    spell->type == SPELL_CAST_ON_LOC) {
+				p->action = ACTION_LOC_CAST;
+				p->spell = spell;
+				memcpy(&p->action_loc, loc, sizeof(struct loc));
+			}
+		}
+		break;
 	case OP_CLI_ATTACK_PLAYER:
 		{
 			uint16_t id;

@@ -2198,6 +2198,24 @@ player_process_action(struct player *p)
 		p->action = ACTION_NONE;
 		script_onusebound(p->mob.server->lua, p, bound, item_config);
 		break;
+	case ACTION_LOC_CAST:
+		loc = server_find_loc(p->action_loc.x, p->action_loc.y);
+		if (loc == NULL) {
+			p->action = ACTION_NONE;
+			p->mob.walk_queue_len = 0;
+			p->mob.walk_queue_pos = 0;
+			return;
+		}
+		if (!mob_reached_loc(&p->mob, loc) ||
+		    (p->mob.walk_queue_len - p->mob.walk_queue_pos) > 0) {
+			return;
+		}
+		if (!player_can_cast(p, p->spell)) {
+			return;
+		}
+		p->action = ACTION_NONE;
+		script_onspellloc(p->mob.server->lua, p, p->spell, loc);
+		break;
 	case ACTION_LOC_USEWITH:
 		if (p->action_slot >= p->inv_count) {
 			p->action = ACTION_NONE;
