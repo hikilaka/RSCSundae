@@ -13,9 +13,9 @@ void script_cancel(lua_State *, uint16_t);
 void script_cancel_multi(lua_State *, uint16_t);
 bool script_onnpctalk(lua_State *, struct player *, struct npc *);
 void script_onopinv(lua_State *, struct player *, struct item_config *);
-void script_onskillplayer(lua_State *, struct player *,
+void script_onspellplayer(lua_State *, struct player *,
     struct player *, struct spell_config *);
-void script_onskillnpc(lua_State *, struct player *,
+void script_onspellnpc(lua_State *, struct player *,
     struct npc *, struct spell_config *);
 void script_onspellself(lua_State *, struct player *, struct spell_config *);
 void script_onspellobj(lua_State *, struct player *,

@@ -10,8 +10,8 @@ local attacknpc_scripts = {}
 local attackbynpc_scripts = {}
 local attackplayer_scripts = {}
 local opinv_scripts = {}
-local skillplayer_scripts = {}
-local skillnpc_scripts = {}
+local spellplayer_scripts = {}
+local spellnpc_scripts = {}
 local spellself_scripts = {}
 local spellinv_scripts = {}
 local spellobj_scripts = {}
@@ -65,7 +65,7 @@ function register_opinv(name, callback)
 end
 
 function register_skillplayer(spell, callback)
-	skillplayer_scripts[spell] = callback;
+	spellplayer_scripts[spell] = callback;
 end
 
 function register_opbound1(name, callback)
@@ -121,10 +121,10 @@ function register_dropobj(name, callback)
 end
 
 function register_skillnpc(name, spell, callback)
-	if not skillnpc_scripts[spell] then
-		skillnpc_scripts[spell] = {}
+	if not spellnpc_scripts[spell] then
+		spellnpc_scripts[spell] = {}
 	end
-	skillnpc_scripts[spell][name] = callback
+	spellnpc_scripts[spell][name] = callback
 end
 
 function register_spellinv(name, spell, callback)
@@ -522,17 +522,17 @@ function script_engine_talknpc(player, name, npc)
 	return false
 end
 
-function script_engine_skillnpc(player, name, npc, spell)
+function script_engine_spellnpc(player, name, npc, spell)
 	local script = player_scripts[player]
 	if script then
 		return true
 	end
 	spell = string.lower(spell)
 	name = string.lower(name)
-	if not skillnpc_scripts[spell] then
+	if not spellnpc_scripts[spell] then
 		return false
 	end
-	script = skillnpc_scripts[spell][name]
+	script = spellnpc_scripts[spell][name]
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
@@ -716,13 +716,13 @@ function script_engine_opinv(player, name)
 	return false
 end
 
-function script_engine_skillplayer(player, target, name)
+function script_engine_spellplayer(player, target, name)
 	local script = player_scripts[player]
 	if script then
 		return true
 	end
 	name = string.lower(name)
-	script = skillplayer_scripts[name]
+	script = spellplayer_scripts[name]
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
@@ -1119,6 +1119,10 @@ for k, v in pairs(_G) do
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_talknpc(target, v)
 		elseif string.match(k, "^skillplayer_.*") then
+			-- legacy, pre-release name for this trigger
+			target = string.gsub(string.sub(k, 13), "_", " ")
+			register_skillplayer(target, v)
+		elseif string.match(k, "^spellplayer_.*") then
 			target = string.gsub(string.sub(k, 13), "_", " ")
 			register_skillplayer(target, v)
 		elseif string.match(k, "^opbound1_.*") then

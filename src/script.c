@@ -2150,14 +2150,15 @@ script_onopinv(lua_State *L, struct player *p, struct item_config *item)
 	player_send_message(p, "Nothing interesting happens");
 }
 
-/* XXX: this name is assumed, not actually found in runescript docs */
+/* XXX: this trigger is assumed, not actually found in runescript docs */
 void
-script_onskillplayer(lua_State *L, struct player *p,
+script_onspellplayer(lua_State *L, struct player *p,
     struct player *target, struct spell_config *spell)
 {
-	lua_getglobal(L, "script_engine_skillplayer");
+	lua_getglobal(L, "script_engine_spellplayer");
 	if (!lua_isfunction(L, -1)) {
-		puts("script error: can't find essential function script_engine_skillplayer");
+		puts("script error: can't find essential function "
+		    "script_engine_spellplayer");
 		return;
 	}
 	lua_pushnumber(L, p->mob.id);
@@ -2353,16 +2354,16 @@ script_onusebound(lua_State *L, struct player *p,
 }
 
 void
-script_onskillnpc(lua_State *L, struct player *p,
+script_onspellnpc(lua_State *L, struct player *p,
     struct npc *npc, struct spell_config *spell)
 {
 	bool result;
 
 	for (size_t i = 0; i < npc->config->name_count; ++i) {
-		lua_getglobal(L, "script_engine_skillnpc");
+		lua_getglobal(L, "script_engine_spellnpc");
 		if (!lua_isfunction(L, -1)) {
 			puts("script error: can't find essential function "
-			    "script_engine_skillnpc");
+			    "script_engine_spellnpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
@@ -2378,10 +2379,10 @@ script_onskillnpc(lua_State *L, struct player *p,
 	}
 
 	for (size_t i = 0; i < npc->config->name_count; ++i) {
-		lua_getglobal(L, "script_engine_skillnpc");
+		lua_getglobal(L, "script_engine_spellnpc");
 		if (!lua_isfunction(L, -1)) {
 			puts("script error: can't find essential function "
-			    "script_engine_skillnpc");
+			    "script_engine_spellnpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
@@ -2396,10 +2397,10 @@ script_onskillnpc(lua_State *L, struct player *p,
 		}
 	}
 
-	lua_getglobal(L, "script_engine_skillnpc");
+	lua_getglobal(L, "script_engine_spellnpc");
 	if (!lua_isfunction(L, -1)) {
 		puts("script error: can't find essential function "
-		    "script_engine_skillnpc");
+		    "script_engine_spellnpc");
 		return;
 	}
 	lua_pushnumber(L, p->mob.id);

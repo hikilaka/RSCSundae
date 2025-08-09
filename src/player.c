@@ -2094,7 +2094,7 @@ player_process_action(struct player *p)
 			    "I can't get a clear shot from here");
 			return;
 		}
-		script_onskillnpc(p->mob.server->lua, p, npc, p->spell);
+		script_onspellnpc(p->mob.server->lua, p, npc, p->spell);
 		break;
 	case ACTION_PLAYER_ATTACK:
 		if (p->mob.in_combat) {
@@ -2151,7 +2151,7 @@ player_process_action(struct player *p)
 			    "I can't get a clear shot from here");
 			return;
 		}
-		script_onskillplayer(p->mob.server->lua, p, target, p->spell);
+		script_onspellplayer(p->mob.server->lua, p, target, p->spell);
 		break;
 	case ACTION_BOUND_OP1:
 	case ACTION_BOUND_OP2:
