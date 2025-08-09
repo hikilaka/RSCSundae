@@ -2150,7 +2150,6 @@ script_onopinv(lua_State *L, struct player *p, struct item_config *item)
 	player_send_message(p, "Nothing interesting happens");
 }
 
-/* XXX: this trigger is assumed, not actually found in runescript docs */
 void
 script_onspellplayer(lua_State *L, struct player *p,
     struct player *target, struct spell_config *spell)
