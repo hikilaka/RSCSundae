@@ -64,8 +64,13 @@ function register_opinv(name, callback)
 	opinv_scripts[name] = callback;
 end
 
-function register_skillplayer(spell, callback)
+function register_spellplayer(spell, callback)
 	spellplayer_scripts[spell] = callback;
+end
+
+function register_skillplayer(spell, callback)
+	-- legacy trigger name compat
+	register_spellplayer(spell, callback)
 end
 
 function register_opbound1(name, callback)
@@ -120,11 +125,16 @@ function register_dropobj(name, callback)
 	dropobj_scripts[name] = callback;
 end
 
-function register_skillnpc(name, spell, callback)
+function register_spellnpc(name, spell, callback)
 	if not spellnpc_scripts[spell] then
 		spellnpc_scripts[spell] = {}
 	end
 	spellnpc_scripts[spell][name] = callback
+end
+
+function register_skillnpc(name, spell, callback)
+	-- legacy trigger name compat
+	register_spellnpc(name, spell, callback)
 end
 
 function register_spellinv(name, spell, callback)
