@@ -329,7 +329,7 @@ player_send_npc_movement(struct player *p)
 		int numbits = 10;
 		if (p->protocol_rev < 119) {
 			numbits = 8;
-		} else if (p->protocol_rev < 159) {
+		} else if (p->protocol_rev < 156) {
 			numbits = 9;
 		}
 
