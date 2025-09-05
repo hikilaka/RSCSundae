@@ -58,7 +58,7 @@ register_useloc("fire", "uncooked pizza", function(player, x, y)
 	mes(player, "@que@You need a proper oven to cook this")
 end)
 
-local function cook_pizza(player)
+local function cook_pizza(player, low, high)
 	if not statatleast(player, STAT_COOKING, 35) then
 		mes(player, "@que@You need a cooking level of 35 to make pizza")
 		return
@@ -67,8 +67,7 @@ local function cook_pizza(player)
 	mes(player, "@que@You cook the pizza in the oven...")
 	delay(5)
 	remove(player, "uncooked pizza", 1)
-	-- https://oldschool.runescape.wiki/w/Plain_pizza?oldid=14516457&action=edit
-	if statrandom(player, STAT_COOKING, 8, 352) then
+	if statrandom(player, STAT_COOKING, low, high) then
 		mes(player, "@que@You remove the pizza from the oven")
 		give(player, "plain pizza", 1)
 		advancestat(player, STAT_COOKING, 440, 0)
@@ -81,11 +80,11 @@ local function cook_pizza(player)
 end
 
 register_useloc("range", "uncooked pizza", function(player, x, y)
-	cook_pizza(player)
+	cook_pizza(player, 48, 352)
 end)
 
 register_useloc("cookrange", "uncooked pizza", function(player, x, y)
 	if check_cookrange(player) then
-		cook_pizza(player)
+		cook_pizza(player, 58, 372)
 	end
 end)

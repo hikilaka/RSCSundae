@@ -5,15 +5,17 @@ local killnpc_scripts = {}
 local takeobj_scripts = {}
 local wearobj_scripts = {}
 local dropobj_scripts = {}
+local rangenpc_scripts = {}
 local attacknpc_scripts = {}
 local attackbynpc_scripts = {}
 local attackplayer_scripts = {}
 local opinv_scripts = {}
-local skillplayer_scripts = {}
-local skillnpc_scripts = {}
+local spellplayer_scripts = {}
+local spellnpc_scripts = {}
 local spellself_scripts = {}
 local spellinv_scripts = {}
 local spellobj_scripts = {}
+local spellloc_scripts = {}
 local opbound1_scripts = {}
 local opbound2_scripts = {}
 local oploc1_scripts = {}
@@ -62,8 +64,13 @@ function register_opinv(name, callback)
 	opinv_scripts[name] = callback;
 end
 
+function register_spellplayer(spell, callback)
+	spellplayer_scripts[spell] = callback;
+end
+
 function register_skillplayer(spell, callback)
-	skillplayer_scripts[spell] = callback;
+	-- legacy trigger name compat
+	register_spellplayer(spell, callback)
 end
 
 function register_opbound1(name, callback)
@@ -80,6 +87,10 @@ end
 
 function register_oploc2(name, callback)
 	oploc2_scripts[name] = callback;
+end
+
+function register_rangenpc(name, callback)
+	rangenpc_scripts[name] = callback;
 end
 
 function register_attacknpc(name, callback)
@@ -114,11 +125,16 @@ function register_dropobj(name, callback)
 	dropobj_scripts[name] = callback;
 end
 
-function register_skillnpc(name, spell, callback)
-	if not skillnpc_scripts[spell] then
-		skillnpc_scripts[spell] = {}
+function register_spellnpc(name, spell, callback)
+	if not spellnpc_scripts[spell] then
+		spellnpc_scripts[spell] = {}
 	end
-	skillnpc_scripts[spell][name] = callback
+	spellnpc_scripts[spell][name] = callback
+end
+
+function register_skillnpc(name, spell, callback)
+	-- legacy trigger name compat
+	register_spellnpc(name, spell, callback)
 end
 
 function register_spellinv(name, spell, callback)
@@ -126,6 +142,13 @@ function register_spellinv(name, spell, callback)
 		spellinv_scripts[spell] = {}
 	end
 	spellinv_scripts[spell][name] = callback
+end
+
+function register_spellloc(name, spell, callback)
+	if not spellloc_scripts[spell] then
+		spellloc_scripts[spell] = {}
+	end
+	spellloc_scripts[spell][name] = callback
 end
 
 function register_spellobj(name, spell, callback)
@@ -363,6 +386,39 @@ function script_engine_attacknpc(player, npc, name, x, y)
 	return false
 end
 
+function script_engine_rangenpc(player, npc, name, x, y)
+	local script = player_scripts[player]
+	if script then
+		return true
+	end
+	name = string.lower(name)
+	script = rangenpc_scripts[name]
+	if script then
+		local ps = new_player_script(player)
+		ps.co = coroutine.create(function()
+			script(player, npc, x, y)
+			if not ps.paused then
+				player_scripts[player] = nil
+				playerunbusy(player)
+			end
+		end)
+		-- need to run the script in this context for invincible
+		-- NPCs to work properly
+		player_scripts[player] = ps
+		active_script = ps
+		playerbusy(player)
+		local result, err = coroutine.resume(ps.co)
+		if not result then
+			print("Script error inside coroutine: " .. err)
+			script_engine_cancel(player)
+		else
+			player_scripts[player] = ps
+		end
+		return true
+	end
+	return false
+end
+
 function script_engine_attackbynpc(player, npc, name, x, y)
 	local script = player_scripts[player]
 	if script then
@@ -476,17 +532,17 @@ function script_engine_talknpc(player, name, npc)
 	return false
 end
 
-function script_engine_skillnpc(player, name, npc, spell)
+function script_engine_spellnpc(player, name, npc, spell)
 	local script = player_scripts[player]
 	if script then
 		return true
 	end
 	spell = string.lower(spell)
 	name = string.lower(name)
-	if not skillnpc_scripts[spell] then
+	if not spellnpc_scripts[spell] then
 		return false
 	end
-	script = skillnpc_scripts[spell][name]
+	script = spellnpc_scripts[spell][name]
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
@@ -541,6 +597,36 @@ function script_engine_spellinv(player, name, item, spell)
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
 			script(player, item)
+			if not ps.paused then
+				player_scripts[player] = nil
+				playerunbusy(player)
+			end
+		end)
+		player_scripts[player] = ps
+		playerbusy(player)
+		return true
+	end
+	return false
+end
+
+function script_engine_spellloc(player, spell, name, x, y)
+	local script = player_scripts[player]
+	if script then
+		return true
+	end
+	spell = string.lower(spell)
+	name = string.lower(name)
+	if not spellloc_scripts[spell] then
+		return false
+	end
+	script = spellloc_scripts[spell][name]
+	if not script then
+		script = spellloc_scripts[spell]["_"]
+	end
+	if script then
+		local ps = new_player_script(player)
+		ps.co = coroutine.create(function()
+			script(player, x, y)
 			if not ps.paused then
 				player_scripts[player] = nil
 				playerunbusy(player)
@@ -640,13 +726,13 @@ function script_engine_opinv(player, name)
 	return false
 end
 
-function script_engine_skillplayer(player, target, name)
+function script_engine_spellplayer(player, target, name)
 	local script = player_scripts[player]
 	if script then
 		return true
 	end
 	name = string.lower(name)
-	script = skillplayer_scripts[name]
+	script = spellplayer_scripts[name]
 	if script then
 		local ps = new_player_script(player)
 		ps.co = coroutine.create(function()
@@ -1043,6 +1129,10 @@ for k, v in pairs(_G) do
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_talknpc(target, v)
 		elseif string.match(k, "^skillplayer_.*") then
+			-- legacy, pre-release name for this trigger
+			target = string.gsub(string.sub(k, 13), "_", " ")
+			register_skillplayer(target, v)
+		elseif string.match(k, "^spellplayer_.*") then
 			target = string.gsub(string.sub(k, 13), "_", " ")
 			register_skillplayer(target, v)
 		elseif string.match(k, "^opbound1_.*") then
@@ -1066,6 +1156,9 @@ for k, v in pairs(_G) do
 		elseif string.match(k, "^attackbynpc_.*") then
 			target = string.gsub(string.sub(k, 13), "_", " ")
 			register_attackbynpc(target, v)
+		elseif string.match(k, "^rangenpc_.*") then
+			target = string.gsub(string.sub(k, 10), "_", " ")
+			register_rangenpc(target, v)
 		elseif string.match(k, "^takeobj_.*") then
 			target = string.gsub(string.sub(k, 9), "_", " ")
 			register_takeobj(target, v)

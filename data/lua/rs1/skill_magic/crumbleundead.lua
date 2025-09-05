@@ -1,4 +1,4 @@
-function skillnpc_crumble_undead(player, target)
+function spellnpc_crumble_undead(player, target)
 	mes(player, "@que@Cast spell successfully")
 	advancestat(player, STAT_MAGIC, 392, 0)
 	if not has_air_staff(player) then
@@ -11,10 +11,10 @@ function skillnpc_crumble_undead(player, target)
 	shootnpc(player, target, "monmissile12")
 end
 
-register_skillnpc("skeleton", "crumble undead", skillnpc_crumble_undead)
-register_skillnpc("zombie", "crumble undead", skillnpc_crumble_undead)
-register_skillnpc("ghost", "crumble undead", skillnpc_crumble_undead)
-register_skillnpc("_", "crumble undead", function(player, target)
+register_spellnpc("skeleton", "crumble undead", spellnpc_crumble_undead)
+register_spellnpc("zombie", "crumble undead", spellnpc_crumble_undead)
+register_spellnpc("ghost", "crumble undead", spellnpc_crumble_undead)
+register_spellnpc("_", "crumble undead", function(player, target)
 	-- ./rscplus-replays-master/kRiStOf/Salarin The Twisted
 	mes(player, "@que@This spell can only be used on skeletons, zombies and ghosts")
 end)

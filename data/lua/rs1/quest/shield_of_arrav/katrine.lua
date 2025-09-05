@@ -1,6 +1,18 @@
 -- https://classic.runescape.wiki/w/Transcript:Katrine
 -- RSC 2001/3/f2p (not 100% complete)/dialogue- katrine- phoenix gang member.pcap
 
+local function katrine_who(player, npc)
+	say(player, "Who are all those people in there?")
+	npcsay(npc, "They're just various rogues and thieves")
+	say(player, "They don't say a lot")
+	npcsay(npc, "Nope")
+end
+
+local function katrine_teach(player, npc)
+	say(player, "Teach me to be a top class criminal")
+	npcsay(npc, "Teach yourself")
+end
+
 local function katrine_riches(player, npc)
 	say(player, "I'm looking for fame and riches")
 	npcsay(npc, "And you expect to find it up the backstreets of Varrock?")
@@ -175,13 +187,9 @@ function talknpc_katrine(player, npc)
 			"Who are all those people in there?",
 			"Teach me to be a top class criminal")
 		if resp == 1 then
-			say(player, "Who are all those people in there?")
-			npcsay(npc, "They're just various rogues and thieves")
-			say(player, "They don't say a lot")
-			npcsay(npc, "Nope")
+			katrine_who(player, npc)
 		elseif resp == 2 then
-			say(player, "Teach me to be a top class criminal")
-			npcsay(npc, "Teach yourself")
+			katrine_teach(player, npc)
 		end
 	end
 end

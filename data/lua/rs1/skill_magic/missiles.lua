@@ -135,122 +135,122 @@ function finalize_fire_blast(player)
 	remove(player, "death-rune", 1)
 end
 
-function skillplayer_wind_strike(player, target)
+function spellplayer_wind_strike(player, target)
 	shootplayer(player, target, "missile01")
 	finalize_wind_strike(player)
 end
 
-register_skillnpc("_", "wind strike", function(player, target)
+register_spellnpc("_", "wind strike", function(player, target)
 	shootnpc(player, target, "monmissile01")
 	finalize_wind_strike(player)
 end)
 
-function skillplayer_water_strike(player, target)
+function spellplayer_water_strike(player, target)
 	shootplayer(player, target, "missile02")
 	finalize_water_strike(player)
 end
 
-register_skillnpc("_", "water strike", function(player, target)
+register_spellnpc("_", "water strike", function(player, target)
 	shootnpc(player, target, "monmissile02")
 	finalize_water_strike(player)
 end)
 
-function skillplayer_earth_strike(player, target)
+function spellplayer_earth_strike(player, target)
 	shootplayer(player, target, "missile03")
 	finalize_earth_strike(player)
 end
 
-register_skillnpc("_", "earth strike", function(player, target)
+register_spellnpc("_", "earth strike", function(player, target)
 	shootnpc(player, target, "monmissile03")
 	finalize_earth_strike(player)
 end)
 
-function skillplayer_fire_strike(player, target)
+function spellplayer_fire_strike(player, target)
 	shootplayer(player, target, "missile04")
 	finalize_fire_strike(player)
 end
 
-register_skillnpc("_", "fire strike", function(player, target)
+register_spellnpc("_", "fire strike", function(player, target)
 	shootnpc(player, target, "monmissile04")
 	finalize_fire_strike(player)
 end)
 
-function skillplayer_wind_bolt(player, target)
+function spellplayer_wind_bolt(player, target)
 	shootplayer(player, target, "missile05")
 	finalize_wind_bolt(player)
 end
 
-register_skillnpc("_", "wind bolt", function(player, target)
+register_spellnpc("_", "wind bolt", function(player, target)
 	shootnpc(player, target, "monmissile05")
 	finalize_wind_bolt(player)
 end)
 
-function skillplayer_water_bolt(player, target)
+function spellplayer_water_bolt(player, target)
 	shootplayer(player, target, "missile06")
 	finalize_water_bolt(player)
 end
 
-register_skillnpc("_", "water bolt", function(player, target)
+register_spellnpc("_", "water bolt", function(player, target)
 	shootnpc(player, target, "monmissile06")
 	finalize_water_bolt(player)
 end)
 
-function skillplayer_earth_bolt(player, target)
+function spellplayer_earth_bolt(player, target)
 	shootplayer(player, target, "missile07")
 	finalize_earth_bolt(player)
 end
 
-register_skillnpc("_", "earth bolt", function(player, target)
+register_spellnpc("_", "earth bolt", function(player, target)
 	shootnpc(player, target, "monmissile07")
 	finalize_earth_bolt(player)
 end)
 
-function skillplayer_fire_bolt(player, target)
+function spellplayer_fire_bolt(player, target)
 	shootplayer(player, target, "missile08")
 	finalize_fire_bolt(player)
 end
 
-register_skillnpc("_", "fire bolt", function(player, target)
+register_spellnpc("_", "fire bolt", function(player, target)
 	shootnpc(player, target, "monmissile08")
 	finalize_fire_bolt(player)
 end)
 
-function skillplayer_wind_blast(player, target)
+function spellplayer_wind_blast(player, target)
 	shootplayer(player, target, "missile09")
 	finalize_wind_blast(player)
 end
 
-register_skillnpc("_", "wind blast", function(player, target)
+register_spellnpc("_", "wind blast", function(player, target)
 	shootnpc(player, target, "monmissile09")
 	finalize_wind_blast(player)
 end)
 
-function skillplayer_water_blast(player, target)
+function spellplayer_water_blast(player, target)
 	shootplayer(player, target, "missile10")
 	finalize_water_blast(player)
 end
 
-register_skillnpc("_", "water blast", function(player, target)
+register_spellnpc("_", "water blast", function(player, target)
 	shootnpc(player, target, "monmissile10")
 	finalize_water_blast(player)
 end)
 
-function skillplayer_earth_blast(player, target)
+function spellplayer_earth_blast(player, target)
 	shootplayer(player, target, "missile11")
 	finalize_earth_blast(player)
 end
 
-register_skillnpc("_", "earth blast", function(player, target)
+register_spellnpc("_", "earth blast", function(player, target)
 	shootnpc(player, target, "monmissile11")
 	finalize_earth_blast(player)
 end)
 
-function skillplayer_fire_blast(player, target)
+function spellplayer_fire_blast(player, target)
 	shootplayer(player, target, "missile12")
 	finalize_fire_blast(player)
 end
 
-register_skillnpc("_", "fire blast", function(player, target)
+register_spellnpc("_", "fire blast", function(player, target)
 	shootnpc(player, target, "monmissile12")
 	finalize_fire_blast(player)
 end)

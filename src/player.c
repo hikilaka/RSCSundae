@@ -1050,7 +1050,12 @@ player_process_combat(struct player *p)
 			}
 
 			if (p->projectile != NULL) {
-				player_shoot_pvm(p, p->projectile, target);
+				script_onrangenpc(p->mob.server->lua,
+				    p, target);
+				if (p->mob.target_npc != -1) {
+					player_shoot_pvm(p,
+					    p->projectile, target);
+				}
 				return;
 			}
 
@@ -2122,7 +2127,7 @@ player_process_action(struct player *p)
 			    "I can't get a clear shot from here");
 			return;
 		}
-		script_onskillnpc(p->mob.server->lua, p, npc, p->spell);
+		script_onspellnpc(p->mob.server->lua, p, npc, p->spell);
 		break;
 	case ACTION_PLAYER_ATTACK:
 		if (p->mob.in_combat) {
@@ -2179,7 +2184,7 @@ player_process_action(struct player *p)
 			    "I can't get a clear shot from here");
 			return;
 		}
-		script_onskillplayer(p->mob.server->lua, p, target, p->spell);
+		script_onspellplayer(p->mob.server->lua, p, target, p->spell);
 		break;
 	case ACTION_BOUND_OP1:
 	case ACTION_BOUND_OP2:
@@ -2225,6 +2230,24 @@ player_process_action(struct player *p)
 		assert(item_config != NULL);
 		p->action = ACTION_NONE;
 		script_onusebound(p->mob.server->lua, p, bound, item_config);
+		break;
+	case ACTION_LOC_CAST:
+		loc = server_find_loc(p->action_loc.x, p->action_loc.y);
+		if (loc == NULL) {
+			p->action = ACTION_NONE;
+			p->mob.walk_queue_len = 0;
+			p->mob.walk_queue_pos = 0;
+			return;
+		}
+		if (!mob_reached_loc(&p->mob, loc) ||
+		    (p->mob.walk_queue_len - p->mob.walk_queue_pos) > 0) {
+			return;
+		}
+		if (!player_can_cast(p, p->spell)) {
+			return;
+		}
+		p->action = ACTION_NONE;
+		script_onspellloc(p->mob.server->lua, p, p->spell, loc);
 		break;
 	case ACTION_LOC_USEWITH:
 		if (p->action_slot >= p->inv_count) {

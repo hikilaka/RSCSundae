@@ -22,7 +22,7 @@ local function remove_curse_runes(player)
 	remove(player, "body-rune", 1)
 end
 
-function skillplayer_confuse(player, target)
+function spellplayer_confuse(player, target)
 	if statdown(target, STAT_ATTACK) then
 		mes(player, "Your opponent already has weakened attack")
 	else
@@ -35,7 +35,7 @@ function skillplayer_confuse(player, target)
 	end
 end
 
-register_skillnpc("_", "confuse", function(player, target)
+register_spellnpc("_", "confuse", function(player, target)
 	if npcstatdown(target, STAT_ATTACK) then
 		mes(player, "Your opponent already has weakened attack")
 	else
@@ -47,7 +47,7 @@ register_skillnpc("_", "confuse", function(player, target)
 	end
 end)
 
-function skillplayer_weaken(player, target)
+function spellplayer_weaken(player, target)
 	if statdown(target, STAT_STRENGTH) then
 		mes(player, "Your opponent already has weakened strength")
 	else
@@ -60,7 +60,7 @@ function skillplayer_weaken(player, target)
 	end
 end
 
-register_skillnpc("_", "weaken", function(player, target)
+register_spellnpc("_", "weaken", function(player, target)
 	if npcstatdown(target, STAT_STRENGTH) then
 		mes(player, "Your opponent already has weakened strength")
 	else
@@ -72,7 +72,7 @@ register_skillnpc("_", "weaken", function(player, target)
 	end
 end)
 
-function skillplayer_curse(player, target)
+function spellplayer_curse(player, target)
 	if statdown(target, STAT_DEFENSE) then
 		mes(player, "Your opponent already has weakened defence")
 	else
@@ -85,7 +85,7 @@ function skillplayer_curse(player, target)
 	end
 end
 
-register_skillnpc("_", "curse", function(player, target)
+register_spellnpc("_", "curse", function(player, target)
 	if npcstatdown(target, STAT_DEFENSE) then
 		mes(player, "Your opponent already has weakened defence")
 	else

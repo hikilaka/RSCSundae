@@ -1781,7 +1781,7 @@ script_nodefault(lua_State *L)
 
 	if (p->mob.target_npc != -1) {
 		npc = id_to_npc(p->mob.target_npc);
-		if (npc != NULL) {
+		if (npc != NULL && npc->mob.target_player == p->mob.id) {
 			mob_combat_reset(&npc->mob);
 		}
 		mob_combat_reset(&p->mob);
@@ -2155,14 +2155,14 @@ script_onopinv(lua_State *L, struct player *p, struct item_config *item)
 	player_send_message(p, "Nothing interesting happens");
 }
 
-/* XXX: this name is assumed, not actually found in runescript docs */
 void
-script_onskillplayer(lua_State *L, struct player *p,
+script_onspellplayer(lua_State *L, struct player *p,
     struct player *target, struct spell_config *spell)
 {
-	lua_getglobal(L, "script_engine_skillplayer");
+	lua_getglobal(L, "script_engine_spellplayer");
 	if (!lua_isfunction(L, -1)) {
-		puts("script error: can't find essential function script_engine_skillplayer");
+		puts("script error: can't find essential function "
+		    "script_engine_spellplayer");
 		return;
 	}
 	lua_pushnumber(L, p->mob.id);
@@ -2358,16 +2358,16 @@ script_onusebound(lua_State *L, struct player *p,
 }
 
 void
-script_onskillnpc(lua_State *L, struct player *p,
+script_onspellnpc(lua_State *L, struct player *p,
     struct npc *npc, struct spell_config *spell)
 {
 	bool result;
 
 	for (size_t i = 0; i < npc->config->name_count; ++i) {
-		lua_getglobal(L, "script_engine_skillnpc");
+		lua_getglobal(L, "script_engine_spellnpc");
 		if (!lua_isfunction(L, -1)) {
 			puts("script error: can't find essential function "
-			    "script_engine_skillnpc");
+			    "script_engine_spellnpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
@@ -2383,10 +2383,10 @@ script_onskillnpc(lua_State *L, struct player *p,
 	}
 
 	for (size_t i = 0; i < npc->config->name_count; ++i) {
-		lua_getglobal(L, "script_engine_skillnpc");
+		lua_getglobal(L, "script_engine_spellnpc");
 		if (!lua_isfunction(L, -1)) {
 			puts("script error: can't find essential function "
-			    "script_engine_skillnpc");
+			    "script_engine_spellnpc");
 			return;
 		}
 		lua_pushnumber(L, p->mob.id);
@@ -2401,10 +2401,10 @@ script_onskillnpc(lua_State *L, struct player *p,
 		}
 	}
 
-	lua_getglobal(L, "script_engine_skillnpc");
+	lua_getglobal(L, "script_engine_spellnpc");
 	if (!lua_isfunction(L, -1)) {
 		puts("script error: can't find essential function "
-		    "script_engine_skillnpc");
+		    "script_engine_spellnpc");
 		return;
 	}
 	lua_pushnumber(L, p->mob.id);
@@ -2597,6 +2597,29 @@ script_onattacknpc(lua_State *L, struct player *p, struct npc *npc)
 	}
 }
 
+void
+script_onrangenpc(lua_State *L, struct player *p, struct npc *npc)
+{
+	bool result = false;
+
+	for (size_t i = 0; i < npc->config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_rangenpc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_rangenpc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushnumber(L, npc->mob.id);
+		lua_pushstring(L, npc->config->names[i]);
+		safe_call(L, 3, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+}
+
 bool
 script_onkillnpc(lua_State *L, struct player *p, struct npc *npc)
 {
@@ -2696,6 +2719,36 @@ script_onspellobj(lua_State *L, struct player *p,
 		lua_pushstring(L, config->names[i]);
 		lua_pushnumber(L, item->x);
 		lua_pushnumber(L, item->y);
+		safe_call(L, 5, 1, p->mob.id);
+		result = lua_toboolean(L, -1);
+		lua_pop(L, -1);
+		if (result != 0) {
+			return;
+		}
+	}
+}
+
+void
+script_onspellloc(lua_State *L, struct player *p,
+    struct spell_config *spell, struct loc *loc)
+{
+	struct loc_config *config;
+	bool result;
+
+	config = server_loc_config_by_id(loc->id);
+	assert(config != NULL);
+
+	for (size_t i = 0; i < config->name_count; ++i) {
+		lua_getglobal(L, "script_engine_spellloc");
+		if (!lua_isfunction(L, -1)) {
+			puts("script error: can't find essential function script_engine_spellloc");
+			return;
+		}
+		lua_pushnumber(L, p->mob.id);
+		lua_pushstring(L, spell->name);
+		lua_pushstring(L, config->names[i]);
+		lua_pushnumber(L, loc->x);
+		lua_pushnumber(L, loc->y);
 		safe_call(L, 5, 1, p->mob.id);
 		result = lua_toboolean(L, -1);
 		lua_pop(L, -1);
