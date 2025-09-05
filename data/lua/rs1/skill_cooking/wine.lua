@@ -2,7 +2,6 @@
 
 function useinv_waterjug_grapes(player)
 	if not statatleast(player, STAT_COOKING, 35) then
-		-- XXX message is unverified, no replay available
 		mes(player, "@que@You need a cooking level of 35 to make wine")
 		return
 	end
@@ -16,8 +15,8 @@ function useinv_waterjug_grapes(player)
 		give(player, "wine", 1)
 		advancestat(player, STAT_COOKING, 440, 0)
 	else
-		-- XXX message is unverified, no replay available
-		mes(player, "@que@You accidentally make some bad wine")
+		-- message from mysterious source
+		mes(player, "@que@You accidentally make horrible wine!")
 		give(player, "bad wine", 1)
 	end
 end

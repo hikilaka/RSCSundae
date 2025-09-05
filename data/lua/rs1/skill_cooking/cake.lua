@@ -23,7 +23,7 @@ function mix_cake(player)
 	give(player, "uncooked cake", 1)
 end
 
-function cook_cake(player)
+local function cook_cake(player, low, high)
 	if not statatleast(player, STAT_COOKING, 40) then
 		-- XXX message unverified
 		mes(player, "@que@You need a cooking level of 40 to bake a cake")
@@ -34,10 +34,7 @@ function cook_cake(player)
 	remove(player, "uncooked cake", 1)
 	give(player, "cake tin", 1)
 	delay(5)
-	-- chance from OSRS
-	if statrandom(player, STAT_COOKING, 38, 332) then
-		-- XXX nobody successfully cooks a cake in a replay,
-		-- so this message is assumed
+	if statrandom(player, STAT_COOKING, low, high) then
 		mes(player, "@que@You remove the cake from the oven")
 		give(player, "cake", 1)
 		advancestat(player, STAT_COOKING, 480, 0)
@@ -67,5 +64,12 @@ register_useloc("fire", "uncooked cake", function(player, x, y)
 	mes(player, "@que@You need a proper oven to cook this")
 end)
 
-register_useloc("range", "uncooked cake", cook_cake)
-register_useloc("cookrange", "uncooked cake", cook_cake)
+register_useloc("range", "uncooked cake", function(player, x, y)
+	cook_cake(player, 38, 332)
+end)
+
+register_useloc("cookrange", "uncooked cake", function(player, x, y)
+	if check_cookrange(player) then
+		cook_cake(player, 48, 352)
+	end
+end)
