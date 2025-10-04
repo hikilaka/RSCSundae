@@ -15,7 +15,7 @@ function finalize_water_strike(player)
 	if not has_air_staff(player) then
 		remove(player, "air-rune", 1)
 	end
-	if nothas_water_staff(player) then
+	if not has_water_staff(player) then
 		remove(player, "water-rune", 1)
 	end
 	remove(player, "mind-rune", 1)
@@ -60,7 +60,7 @@ function finalize_water_bolt(player)
 	if not has_air_staff(player) then
 		remove(player, "air-rune", 2)
 	end
-	if nothas_water_staff(player) then
+	if not has_water_staff(player) then
 		remove(player, "water-rune", 2)
 	end
 	remove(player, "chaos-rune", 1)
@@ -105,7 +105,7 @@ function finalize_water_blast(player)
 	if not has_air_staff(player) then
 		remove(player, "air-rune", 3)
 	end
-	if nothas_water_staff(player) then
+	if not has_water_staff(player) then
 		remove(player, "water-rune", 3)
 	end
 	remove(player, "death-rune", 1)
