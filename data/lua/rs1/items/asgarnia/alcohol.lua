@@ -13,7 +13,7 @@ function opinv_wizards_mind_bomb(player)
 	substat(player, STAT_ATTACK, 1, 5)
 	substat(player, STAT_DEFENSE, 1, 5)
 	substat(player, STAT_STRENGTH, 1, 5)
-	addstat(player, STAT_MAGIC, 1, 2)
+	addstat(player, STAT_MAGIC, 2, 2)
 	healstat(player, STAT_HITS, 1, 0)
 end
 
