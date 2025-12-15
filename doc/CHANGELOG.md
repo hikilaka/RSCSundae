@@ -1,3 +1,15 @@
+RSC Sundae 1.8.0
+----------------
+
+* script: Add onrangenpc, onspellloc triggers.
+* script: Rename skillX triggers (internal) to spellX. Old names
+  remain supported.
+* protocol: Compatibility with mudclient156.
+* alcohol: Fix wizards mind bomb boost.
+* cooking: Revised rates (particularly for Cook's range).
+* guildmaster: Fix being able to  repeat dragon slayer.
+* missiles: Fix typo causing runes to not be consumed.
+
 RSC Sundae 1.7.0
 ----------------
 

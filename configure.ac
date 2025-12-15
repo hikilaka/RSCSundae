@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([rscsundae], [0.0.1], [stormy@mailfence.com])
+AC_INIT([rscsundae], [1.8.0], [stormy@mailfence.com])
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CC
 AC_CONFIG_HEADERS([config.h])
