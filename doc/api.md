@@ -97,6 +97,21 @@ and we infer names from later versions of RS.
 * `teleportnpc()` - implemented as `teleportnpc(npc, x, y)` in Lua.
    Existence assumed from behaviour observed in Witch's House quest.
 
+Other alleged runescript functions
+----------------------------------
+
+Many of these are applicable to later revisions and were added in 2002-2003.
+
+* `openbank`
+* `ifbank`
+* `resetidkit` - used by makeover mage?
+* `ifinside`
+* `ifwilderness`
+* `ifmember`
+* `mesbox`, `bigmesbox`
+* `addfatigue`, `healfatigue`
+* `iffattiguemore`, `iffatigueless`
+
 Not implemented
 ---------------
 
