@@ -2,7 +2,7 @@
 
 function talknpc_barbarian(player, npc)
 	say(player, "Hello")
-	local rand = randomvar(11)
+	local rand = randomvar(12)
 	if rand == 0 then
 		npcsay(npc, "Hello")
 	elseif rand == 1 then
@@ -28,7 +28,11 @@ function talknpc_barbarian(player, npc)
 		npcsay(npc, "Who are you?")
 		say(player, "I'm a bold adventurer")
 		npcsay(npc, "You don't look very strong")
-	else
+	elseif rand == 10 then
 		npcsay(npc, "Beer?")
+	else
+		npcsay(npc, "Bones?")
+		mes(player, "The barbarian gives you some bones")
+		give(player, "bones", 1)
 	end	
 end
