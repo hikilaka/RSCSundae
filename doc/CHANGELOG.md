@@ -1,3 +1,9 @@
+RSC Sundae 1.8.1
+----------------
+
+* Implement an obscure Barbarian chat dialogue where they
+  give you some bones.
+
 RSC Sundae 1.8.0
 ----------------
 
