@@ -77,7 +77,13 @@ mob_combat_roll(int att_stat, int att_bonus,
 int
 mob_wilderness_level(struct mob *mob)
 {
-	int depth = 2203 - (mob->y + PLANE_HEIGHT);
+	int plane;
+	int plane_height;
+	int depth;
+
+	plane = mob->y / PLANE_LEVEL_INC;
+	plane_height = PLANE_HEIGHT - (plane * PLANE_LEVEL_INC);
+	depth = 2203 - (mob->y + plane_height);
 	if ((mob->x + PLANE_WIDTH) >= 2640) {
 		depth = -50;
 	}
