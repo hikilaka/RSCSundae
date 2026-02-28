@@ -4,7 +4,8 @@
 function talknpc_curator(player, npc)
 	npcsay(npc, "Welcome to the museum of Varrock")
 	if held(player, "arravshield1", 1) and
-	    held(player, "arravshield2", 1) then
+	    held(player, "arravshield2", 1) and
+	    (getvar(player, "arrav_stage") == 4) then
 		say(player, "I have retrieved the shield of Arrav and I would like to claim my reward")
 		npcsay(npc, "The shield of Arrav?")
 		npcsay(npc, "Let me see that")
