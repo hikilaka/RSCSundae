@@ -126,7 +126,7 @@ local function do_mine_iron(player, x, y)
 			give(player, "iron ore", 1)
 			advancestat(player, STAT_MINING, 140, 0)
 			changeloc(x, y, "ironrock3")
-			restoreloc(x, y, 10)
+			restoreloc(x, y, 15)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
@@ -144,7 +144,7 @@ local function do_mine_silver(player, x, y)
 			give(player, "silver", 1)
 			advancestat(player, STAT_MINING, 160, 0)
 			changeloc(x, y, "silverrock3")
-			restoreloc(x, y, 100)
+			restoreloc(x, y, 185)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
@@ -162,7 +162,7 @@ local function do_mine_coal(player, x, y)
 			give(player, "coal", 1)
 			advancestat(player, STAT_MINING, 200, 0)
 			changeloc(x, y, "coalrock3")
-			restoreloc(x, y, 40)
+			restoreloc(x, y, 100)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
@@ -180,7 +180,7 @@ local function do_mine_gold(player, x, y)
 			give(player, "gold", 1)
 			advancestat(player, STAT_MINING, 260, 0)
 			changeloc(x, y, "goldrock3")
-			restoreloc(x, y, 100)
+			restoreloc(x, y, 185)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
@@ -198,7 +198,7 @@ local function do_mine_mithril(player, x, y)
 			give(player, "mithril ore", 1)
 			advancestat(player, STAT_MINING, 320, 0)
 			changeloc(x, y, "mithrilrock3")
-			restoreloc(x, y, 170)
+			restoreloc(x, y, 375)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
@@ -216,7 +216,7 @@ local function do_mine_adamantite(player, x, y)
 			give(player, "adamantite ore", 1)
 			advancestat(player, STAT_MINING, 380, 0)
 			changeloc(x, y, "adamantiterock3")
-			restoreloc(x, y, 300)
+			restoreloc(x, y, 750)
 		end
 	else
 		mes(player, "@que@You only succeed in scratching the rock")
