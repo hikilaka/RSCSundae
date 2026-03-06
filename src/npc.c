@@ -295,19 +295,21 @@ npc_hunt_target(struct npc *npc)
 		return;
 	}
 
-	if (npc->mob.server->restrict_npc_aggression) {
-		restrict_hunt = true;
-		if (mob_wilderness_level(&npc->mob) > 0) {
-			restrict_hunt = false;
-		}
-	}
-
 	n = mob_get_nearby_players(&npc->mob, players, 128);
 	for (size_t i = 0; i < n; ++i) {
 		p = players[i];
 
 		if (p->mob.in_combat || p->retreat_timer > 0) {
 			continue;
+		}
+
+		restrict_hunt = false;
+
+		if (npc->mob.server->restrict_npc_aggression) {
+			restrict_hunt = true;
+			if (mob_wilderness_level(&p->mob) > 0) {
+				restrict_hunt = false;
+			}
 		}
 
 		if (restrict_hunt &&
