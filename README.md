@@ -82,7 +82,7 @@ Contributing
 
 Read `doc/style.md` first.
 
-Use `git format-patch`. You can email `stormy@mailfence.com`.
+Use `git format-patch`. You can email `stormy@fastmail.org`.
 
 Fuzzing & profiling
 -------------------
